@@ -59,20 +59,20 @@ public class AdminController {
             MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE
     })
-    public ResponseEntity<?> updateUserImage(@PathVariable("userId") Integer userId, @RequestPart(name = "image") MultipartFile multipartFile ) throws BadRequestException, NotFoundException, IOException {
+    public ResponseEntity<?> updateUserImage(@PathVariable("userId") Integer userId, @RequestParam(name = "image") MultipartFile multipartFile ) throws BadRequestException, NotFoundException, IOException {
 
         UpdateImageResponse updateImageResponse = null;
 
         if (!multipartFile.isEmpty()) {
             String image = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 
-            String uploadDir = photoImagePaths + userId;
+//            String uploadDir = photoImagePaths + userId;
+//
+//            FileUploadUtil.cleanDir(uploadDir);
+//
+//            FileUploadUtil.saveFile(uploadDir, image, multipartFile);
 
-            FileUploadUtil.cleanDir(uploadDir);
-
-            FileUploadUtil.saveFile(uploadDir, image, multipartFile);
-
-            updateImageResponse = userService.updateUserImage(image, userId);
+            updateImageResponse = userService.updateUserImage(image, multipartFile.getBytes(), userId);
 
 
         }

@@ -245,16 +245,16 @@ public class UserService extends BaseService {
 
     }
 
-    public UpdateImageResponse updateUserImage(String image,Integer userId) throws IOException {
-        userRepository.updateUserImage(image,userId);
-        ClassPathResource imageFile = new ClassPathResource("/user-photos/" + userId + "/" + image);
-
-        byte[] imageBytes = StreamUtils.copyToByteArray(imageFile.getInputStream());
+    public UpdateImageResponse updateUserImage(String image,byte[] procPic,Integer userId) throws IOException {
+        userRepository.updateUserImage(image,procPic,userId);
+//        ClassPathResource imageFile = new ClassPathResource("/user-photos/" + userId + "/" + image);
+//
+//        byte[] imageBytes = StreamUtils.copyToByteArray(imageFile.getInputStream());
 
         UpdateImageResponse updateImageResponse=new UpdateImageResponse();
         updateImageResponse.setImage(image);
         updateImageResponse.setUserId(userId);
-        updateImageResponse.setImageFile(imageBytes);
+        updateImageResponse.setImageFile(procPic);
         return  updateImageResponse;
     }
     //mapper
@@ -272,10 +272,10 @@ public class UserService extends BaseService {
 
         UserDto userDto = new UserDto();
         if(user.getImage()!=""||!user.getImage().isEmpty()){
-            ClassPathResource imageFile = new ClassPathResource(user.getPhotosImagePath());
-
-            byte[] imageBytes = StreamUtils.copyToByteArray(imageFile.getInputStream());
-            userDto.setImageFile(imageBytes);
+//            ClassPathResource imageFile = new ClassPathResource(user.getPhotosImagePath());
+//
+//            byte[] imageBytes = StreamUtils.copyToByteArray(imageFile.getInputStream());
+            userDto.setImageFile(user.getProfPic());
             userDto.setImage(user.getImage());
         }
         userDto.setId(user.getLoginId());
@@ -299,10 +299,8 @@ public class UserService extends BaseService {
                 .map(Role::getName)
                 .collect(Collectors.toList()));
         if(user.getImage()!=""||!user.getImage().isEmpty()){
-            ClassPathResource imageFile = new ClassPathResource(user.getPhotosImagePath());
 
-            byte[] imageBytes = StreamUtils.copyToByteArray(imageFile.getInputStream());
-            userDetailDto.setImageFile(imageBytes);
+            userDetailDto.setImageFile(user.getProfPic());
             userDetailDto.setImage(user.getImage());
         }
 

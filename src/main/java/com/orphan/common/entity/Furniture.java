@@ -23,4 +23,11 @@ public class Furniture extends BaseEntity {
     private FurnitureStatus status;
 
     private Integer quantity;
+
+    @Column(length = 128)
+    private String image;
+
+    @Lob
+    @Column(name="prof_pic")
+    private byte[] profPic;
 }

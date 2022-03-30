@@ -33,7 +33,12 @@ public class Children extends BaseEntity{
     @Temporal(TemporalType.DATE)
     private Date dateReceived;
 
+    @Column(length = 128)
     private String image;
+
+    @Lob
+    @Column(name="prof_pic")
+    private byte[] profPic;
 
     @ManyToOne
     @JoinColumn(name = "introducer_id")

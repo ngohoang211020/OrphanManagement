@@ -29,7 +29,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     boolean existsByLoginId(Integer loginId);
 
     @Modifying
-    @Query("UPDATE User u set u.image= ?1 WHERE u.loginId= ?2")
-    void updateUserImage(String image, Integer userId);
+    @Query("UPDATE User u set u.image= ?1, u.profPic= ?2 WHERE u.loginId= ?3")
+    void updateUserImage(String image,byte[] procPic, Integer userId);
 
 }
