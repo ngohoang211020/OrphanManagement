@@ -1,12 +1,12 @@
 package com.orphan.common.service;
 
 import com.orphan.common.entity.User;
-import com.orphan.common.repository.ChildrenRepository;
-import com.orphan.common.repository.UserRepository;
+import com.orphan.common.repository.*;
 import com.orphan.config.jwt.AccessToken;
 import com.orphan.config.jwt.JwtUtils;
 import com.orphan.config.security.UserPrincipal;
 import javassist.NotFoundException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +26,15 @@ public class BaseService {
 
     @Autowired
     private ChildrenRepository childrenRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private OrphanIntroducerRepository orphanIntroducerRepository;
+
+    @Autowired
+    private OrphanNuturerRepository orphanNuturerRepository;
 
     @Autowired
     private JwtUtils jwtProvider;

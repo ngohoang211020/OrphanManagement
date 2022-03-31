@@ -15,8 +15,15 @@ public class NotFoundException extends Exception {
 
     public static final String ERROR_USER_NOT_FOUND = "ERROR_USER_NOT_FOUND";
 
+    public static final String ERROR_CHILDREN_NOT_FOUND = "ERROR_CHILDREN_NOT_FOUND";
+
     public static final String ERROR_NOTIFICATION_NOT_FOUND = "ERROR_NOTIFICATION_NOT_FOUND";
 
+    public static final String ERROR_ORPHAN_INTRODUCER_NOT_FOUND = "ERROR_ORPHAN_INTRODUCER_NOT_FOUND";
+
+    public static final String ERROR_ORPHAN_NURTURER_NOT_FOUND = "ERROR_ORPHAN_NURTURER_NOT_FOUND";
+
+    public static final String ERROR_FURNITURE_NOT_FOUND = "ERROR_FURNITURE_NOT_FOUND";
 
 
 

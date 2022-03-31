@@ -15,6 +15,13 @@ public class APIConstants {
     public static final String NOT_FOUND_MESSAGE = "%s not found";
     public static final String USER = "User";
     public static final String ROLE = "Role";
+    public static final String CHILDREN = "Children";
+    public static final String NURTURER = "Orphan Nurturer";
+    public static final String INTRODUCER = "Orphan Introducer";
+    public static final String FURNITURE = "Furniture";
+
+
+
     public static final String ERROR_EMAIL_EXISTED = "Email register is Existed";
 
 }

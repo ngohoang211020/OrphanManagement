@@ -1,6 +1,12 @@
 package com.orphan.enums;
 
 public enum ChildrenStatus {
-    RECEIVED,
-    WAIT_TO_RECEIVE
+    RECEIVED("Đã được nhận nuôi"),
+    WAIT_TO_RECEIVE("Đang ở trung tâm");
+
+    private String code;
+
+    ChildrenStatus(String code) {
+        this.code = code;
+    }
 }

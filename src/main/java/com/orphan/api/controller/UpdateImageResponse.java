@@ -1,11 +1,11 @@
-package com.orphan.api.controller.admin.dto;
+package com.orphan.api.controller;
 
 import lombok.Data;
 
 @Data
 public class UpdateImageResponse {
 
-    private Integer userId;
+    private Integer Id;
 
     private byte[] imageFile;
 

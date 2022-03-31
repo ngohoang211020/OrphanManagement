@@ -87,8 +87,8 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 new ResponseMessageBuilder().code(HttpStatus.INTERNAL_SERVER_ERROR.value())
                         .message(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()).build());
 
-        return new Docket(DocumentationType.SWAGGER_2).groupName("User API").select()
-                .apis(RequestHandlerSelectors.basePackage("com.orphan.api.controller.user"))
+        return new Docket(DocumentationType.SWAGGER_2).groupName("Manager API").select()
+                .apis(RequestHandlerSelectors.basePackage("com.orphan.api.controller.manager"))
                 .paths(Predicates.not(PathSelectors.regex("/error.*"))).build()
                 .genericModelSubstitutes(APIResponse.class).alternateTypeRules(
                         newRule(resolver.resolve(DeferredResult.class,

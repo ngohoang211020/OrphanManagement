@@ -1,6 +1,6 @@
 package com.orphan.common.service;
 
-import com.orphan.api.controller.admin.dto.UpdateImageResponse;
+import com.orphan.api.controller.UpdateImageResponse;
 import com.orphan.api.controller.admin.dto.UserDetailDto;
 import com.orphan.api.controller.admin.dto.UserDto;
 import com.orphan.api.controller.common.dto.RegisterRequestDto;
@@ -14,12 +14,10 @@ import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
 import com.orphan.utils.constants.APIConstants;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -110,6 +108,8 @@ public class UserService extends BaseService {
 
         user.setAddress(registerRequestDto.getAddress());
 
+        user.setCreatedId(String.valueOf(getCurrentUserId()));
+
         this.userRepository.save(user);
 
         registerRequestDto.setLoginId(user.getLoginId());
@@ -139,12 +139,12 @@ public class UserService extends BaseService {
             user.setIdentification(registerRequestDto.getIdentification());
         }
 
-        if (user != null) {
-            if (!registerRequestDto.getPassword().isEmpty() || registerRequestDto.getPassword() != "") {
+
+        if (registerRequestDto.getPassword() != "") {
                 validatePassword(registerRequestDto.getPassword(), registerRequestDto.getConfirmPassword());
                 user.setPassword(passwordEncoder.encode(registerRequestDto.getPassword()));
-            }
         }
+
 
         List<Role> roleList = new ArrayList<>();
         if (registerRequestDto.getRoles().size() != 0) {
@@ -176,6 +176,8 @@ public class UserService extends BaseService {
         user.setDate_of_birth(OrphanUtils.StringToDate(registerRequestDto.getDate_of_birth()));
 
         user.setAddress(registerRequestDto.getAddress());
+
+        user.setModifiedId(String.valueOf(getCurrentUserId()));
 
         this.userRepository.save(user);
 
@@ -245,15 +247,16 @@ public class UserService extends BaseService {
 
     }
 
-    public UpdateImageResponse updateUserImage(String image,byte[] procPic,Integer userId) throws IOException {
-        userRepository.updateUserImage(image,procPic,userId);
+    public UpdateImageResponse updateUserImage(String image,byte[] procPic,Integer id) throws IOException {
+
+        userRepository.updateUserImage(image,procPic,id);
 //        ClassPathResource imageFile = new ClassPathResource("/user-photos/" + userId + "/" + image);
 //
 //        byte[] imageBytes = StreamUtils.copyToByteArray(imageFile.getInputStream());
 
         UpdateImageResponse updateImageResponse=new UpdateImageResponse();
         updateImageResponse.setImage(image);
-        updateImageResponse.setUserId(userId);
+        updateImageResponse.setId(id);
         updateImageResponse.setImageFile(procPic);
         return  updateImageResponse;
     }
@@ -288,8 +291,6 @@ public class UserService extends BaseService {
     }
 
     public UserDetailDto UserToUserDetailDto(User user) throws IOException {
-
-
 
         UserDetailDto userDetailDto = new UserDetailDto();
         userDetailDto.setId(user.getLoginId());

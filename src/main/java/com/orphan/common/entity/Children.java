@@ -30,9 +30,6 @@ public class Children extends BaseEntity{
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
 
-    @Temporal(TemporalType.DATE)
-    private Date dateReceived;
-
     @Column(length = 128)
     private String image;
 
@@ -44,4 +41,7 @@ public class Children extends BaseEntity{
     @JoinColumn(name = "introducer_id")
     private OrphanIntroducer orphanIntroducer;
 
+    @ManyToOne
+    @JoinColumn(name = "nurturer_id")
+    private OrphanNurturer orphanNurturer;
 }
