@@ -57,8 +57,6 @@ public class UserService extends BaseService {
     public RegisterRequestDto createUser(RegisterRequestDto registerRequestDto) throws BadRequestException {
         User user = new User();
 
-        validateEmail_Phone_Identification(registerRequestDto.getEmail(), registerRequestDto.getPhone(), registerRequestDto.getIdentification());
-
         validatePassword(registerRequestDto.getPassword(), registerRequestDto.getConfirmPassword());
 
         if (userRepository.existsByEmail(registerRequestDto.getEmail())) {
@@ -119,9 +117,6 @@ public class UserService extends BaseService {
 
     public RegisterRequestDto updateUser(RegisterRequestDto registerRequestDto, Integer userId) throws BadRequestException, NotFoundException {
         User user = findById(userId);
-
-        validateEmail_Phone_Identification(registerRequestDto.getEmail(), registerRequestDto.getPhone(), registerRequestDto.getIdentification());
-
 
         if (!user.getEmail().equals(registerRequestDto.getEmail())) {
             if (userRepository.existsByEmail(registerRequestDto.getEmail())) {
@@ -217,22 +212,22 @@ public class UserService extends BaseService {
         }
     }
 
-    public void validateEmail_Phone_Identification(String email, String phone, String identification) throws BadRequestException {
-        if (!OrphanUtils.isEmailValid(email)) {
-            throw new BadRequestException(BadRequestException.EMAIL_IS_INVALID,
-                    this.messageService.buildMessages("error.msg.email-invalid"));
-        }
-
-        if (!OrphanUtils.isPhoneNumber(phone)) {
-            throw new BadRequestException(BadRequestException.PHONE_NUMBER_IS_INVALID,
-                    this.messageService.buildMessages("error.msg.phone-number-invalid"));
-        }
-        if (!OrphanUtils.isIdentification(identification)) {
-            throw new BadRequestException(BadRequestException.IDENTIFICATION_IS_INVALID,
-                    this.messageService.buildMessages("error.msg.identification-number-invalid"));
-        }
-
-    }
+//    public void validateEmail_Phone_Identification(String email, String phone, String identification) throws BadRequestException {
+//        if (!OrphanUtils.isEmailValid(email)) {
+//            throw new BadRequestException(BadRequestException.EMAIL_IS_INVALID,
+//                    this.messageService.buildMessages("error.msg.email-invalid"));
+//        }
+//
+//        if (!OrphanUtils.isPhoneNumber(phone)) {
+//            throw new BadRequestException(BadRequestException.PHONE_NUMBER_IS_INVALID,
+//                    this.messageService.buildMessages("error.msg.phone-number-invalid"));
+//        }
+//        if (!OrphanUtils.isIdentification(identification)) {
+//            throw new BadRequestException(BadRequestException.IDENTIFICATION_IS_INVALID,
+//                    this.messageService.buildMessages("error.msg.identification-number-invalid"));
+//        }
+//
+//    }
 
     public void validatePassword(String password, String confirmPassword) throws BadRequestException {
         if (!OrphanUtils.isPassword(password)) {

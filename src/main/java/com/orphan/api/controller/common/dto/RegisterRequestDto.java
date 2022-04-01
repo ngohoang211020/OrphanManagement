@@ -1,5 +1,7 @@
 package com.orphan.api.controller.common.dto;
 
+import com.orphan.common.annotation.Identification;
+import com.orphan.common.annotation.Phone;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,6 +25,7 @@ public class RegisterRequestDto {
     private String email;
 
     @NotEmpty(message="{error.msg.phone-number-is-required}")
+    @Phone
     private String phone;
 
     @NotEmpty(message="{error.msg.date-of-birth-is-required}")
@@ -34,6 +37,7 @@ public class RegisterRequestDto {
     private String address;
 
     @NotEmpty(message="{error.msg.identification-is-required}")
+    @Identification
     private String identification;
 
     @NotEmpty(message="{error.msg.name-is-required}")
