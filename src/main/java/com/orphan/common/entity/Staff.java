@@ -13,7 +13,7 @@ public class Staff extends BasePeopleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer staff_id;
+    private Integer staffId;
 
     @Enumerated(EnumType.STRING)
     private TypeStaff typeStaff;

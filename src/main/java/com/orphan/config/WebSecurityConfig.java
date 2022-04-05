@@ -112,6 +112,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().rememberMe().key("uniqueAndSecret").tokenValiditySeconds(86400)
                 .and().logout().logoutUrl("/logout")
+                .invalidateHttpSession(true)
+                .clearAuthentication(true);
         ;
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

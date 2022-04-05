@@ -32,7 +32,7 @@ public class BasePeopleEntity {
     public String address;
 
     @Temporal(TemporalType.DATE)
-    public Date date_of_birth;
+    public Date dateOfBirth;
 
     public String identification;
 

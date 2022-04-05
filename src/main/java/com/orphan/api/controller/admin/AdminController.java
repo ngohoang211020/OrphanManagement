@@ -55,7 +55,7 @@ public class AdminController {
     }
 
     @ApiOperation("Update User Image")
-    @PutMapping(value = "/updateImage/{userId}", consumes = {
+    @PostMapping(value = "/{userId}/updateImage", consumes = {
             MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE
     })

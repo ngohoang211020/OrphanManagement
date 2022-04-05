@@ -1,5 +1,6 @@
 package com.orphan.api.controller.common.dto;
 
+import com.orphan.common.annotation.Date;
 import com.orphan.common.annotation.Identification;
 import com.orphan.common.annotation.Phone;
 import lombok.Getter;
@@ -29,8 +30,10 @@ public class RegisterRequestDto {
     private String phone;
 
     @NotEmpty(message="{error.msg.date-of-birth-is-required}")
+    @Date
     private String date_of_birth;
 
+    @NotEmpty
     private Boolean gender;
 
     @NotEmpty(message="{error.msg.address-1-is-required}")

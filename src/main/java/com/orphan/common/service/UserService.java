@@ -3,39 +3,52 @@ package com.orphan.common.service;
 import com.orphan.api.controller.UpdateImageResponse;
 import com.orphan.api.controller.admin.dto.UserDetailDto;
 import com.orphan.api.controller.admin.dto.UserDto;
+import com.orphan.api.controller.common.dto.PasswordDto;
 import com.orphan.api.controller.common.dto.RegisterRequestDto;
+import com.orphan.api.controller.common.dto.ResetPasswordDto;
 import com.orphan.common.entity.Role;
 import com.orphan.common.entity.User;
 import com.orphan.common.repository.RoleRepository;
 import com.orphan.common.repository.UserRepository;
+import com.orphan.config.EmailSenderService;
 import com.orphan.enums.ERole;
 import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
 import com.orphan.utils.constants.APIConstants;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.thymeleaf.context.Context;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class UserService extends BaseService {
+
+    private final Logger log = LoggerFactory.getLogger(UserService.class);
+
     private final UserRepository userRepository;
 
     private final RoleRepository roleRepository;
 
     private final PasswordEncoder passwordEncoder;
 
+    private final EmailSenderService service;
+
     private final MessageService messageService;
+
+    private static final String URL_CHANGE_PASSWORD_OPEN_WEB = "http://localhost:8080/api/v1/auth/change-password";
+
 
     public User findById(Integer userId) throws NotFoundException {
         Optional<User> user = userRepository.findById(userId);
@@ -102,7 +115,7 @@ public class UserService extends BaseService {
 
         user.setIdentification(registerRequestDto.getIdentification());
 
-        user.setDate_of_birth(OrphanUtils.StringToDate(registerRequestDto.getDate_of_birth()));
+        user.setDateOfBirth(OrphanUtils.StringToDate(registerRequestDto.getDate_of_birth()));
 
         user.setAddress(registerRequestDto.getAddress());
 
@@ -168,7 +181,7 @@ public class UserService extends BaseService {
 
         user.setGender(registerRequestDto.getGender());
 
-        user.setDate_of_birth(OrphanUtils.StringToDate(registerRequestDto.getDate_of_birth()));
+        user.setDateOfBirth(OrphanUtils.StringToDate(registerRequestDto.getDate_of_birth()));
 
         user.setAddress(registerRequestDto.getAddress());
 
@@ -243,19 +256,77 @@ public class UserService extends BaseService {
     }
 
     public UpdateImageResponse updateUserImage(String image,byte[] procPic,Integer id) throws IOException {
-
         userRepository.updateUserImage(image,procPic,id);
 //        ClassPathResource imageFile = new ClassPathResource("/user-photos/" + userId + "/" + image);
 //
 //        byte[] imageBytes = StreamUtils.copyToByteArray(imageFile.getInputStream());
-
         UpdateImageResponse updateImageResponse=new UpdateImageResponse();
         updateImageResponse.setImage(image);
         updateImageResponse.setId(id);
         updateImageResponse.setImageFile(procPic);
         return  updateImageResponse;
     }
+
+    /**
+     * Send reset token to mail
+     *
+     * @param resetPasswordDto
+     * @throws NotFoundException
+     */
+    public User resetPassword(ResetPasswordDto resetPasswordDto) throws NotFoundException {
+        Optional<User> user = this.userRepository.findByEmail(resetPasswordDto.getEmail());
+        if (!user.isPresent()) {
+            throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
+                    APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
+        }
+
+
+        try {
+            String resetPasswordLink = URL_CHANGE_PASSWORD_OPEN_WEB + "?email=" + resetPasswordDto.getEmail();
+            String subject = "Orphan Management – Reset your password";
+            Context context = new Context();
+            Map<String, Object> model = new HashMap<>();
+            model.put("link", resetPasswordLink);
+            context.setVariables(model);
+            String content = "<p>Hello,</p>"
+                    + "<p>You have requested to reset your password.</p>"
+                    + "<p>Click the link below to change your password:</p>"
+                    + "<p><a href=\"" + resetPasswordLink + "\">Change my password</a></p>"
+                    + "<br>"
+                    + "<p>Ignore this email if you do remember your password, "
+                    + "or you have not made the request.</p>";
+            service.sendEmailWithAttachment(resetPasswordDto.getEmail(), content, subject);
+        } catch (Exception ex) {
+            log.info("sendEmail error, error msg: {}", ex.getMessage());
+        }
+        return user.get();
+    }
+
+    /**
+     * Store reset token to db
+     *
+     * @param passwordDto dto request
+     * @param email  string
+     * @return User
+     * @throws NotFoundException
+     * @throws BadRequestException
+     */
+    public void changePassWord(PasswordDto passwordDto, String email) throws
+            NotFoundException, BadRequestException {
+        User user = this.getUserByEmail(email).get();
+
+       validatePassword(passwordDto.getNewPassWord(),passwordDto.getConfirmPassWord());
+
+        user.setPassword(passwordEncoder.encode(passwordDto.getNewPassWord()));
+        userRepository.save(user);
+    }
+
+
+
+
+
     //mapper
+
     public Role StringToRole(String role) {
         Optional<Role> oRole;
         if (role.equals(ERole.ROLE_MANAGER)) {
@@ -302,7 +373,7 @@ public class UserService extends BaseService {
 
         userDetailDto.setAddress(user.getAddress());
         userDetailDto.setGender(user.getGender());
-        userDetailDto.setDate_of_birth(OrphanUtils.DateToString(user.getDate_of_birth()));
+        userDetailDto.setDate_of_birth(OrphanUtils.DateToString(user.getDateOfBirth()));
         userDetailDto.setIdentification(user.getIdentification());
         userDetailDto.setPhone(user.getPhone());
         return userDetailDto;
@@ -319,7 +390,7 @@ public class UserService extends BaseService {
         user.setImage(userDetailDto.getImage());
         user.setAddress(userDetailDto.getAddress());
         user.setGender(userDetailDto.getGender());
-        user.setDate_of_birth(OrphanUtils.StringToDate(userDetailDto.getDate_of_birth()));
+        user.setDateOfBirth(OrphanUtils.StringToDate(userDetailDto.getDate_of_birth()));
         user.setIdentification(userDetailDto.getIdentification());
         user.setPhone(userDetailDto.getPhone());
         return user;

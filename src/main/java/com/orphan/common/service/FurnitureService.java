@@ -97,7 +97,7 @@ public class FurnitureService extends BaseService {
     }
 
     //mapper 
-    public FurnitureDto furnitureToFurnitureDto(Furniture furniture) {
+    private FurnitureDto furnitureToFurnitureDto(Furniture furniture) {
         FurnitureDto furnitureDto = new FurnitureDto();
         furnitureDto.setFurnitureId(furniture.getFurnitureId());
         furnitureDto.setImageFile(furniture.getProfPic());
@@ -108,7 +108,7 @@ public class FurnitureService extends BaseService {
         return furnitureDto;
     }
 
-    public Furniture furnitureRequestToFurniture(FurnitureRequest furnitureRequest) {
+    private Furniture furnitureRequestToFurniture(FurnitureRequest furnitureRequest) {
         Furniture furniture = new Furniture();
         furniture.setFurnitureId(furnitureRequest.getFurnitureId());
         furniture.setFurnitureName(furnitureRequest.getNameFurniture());

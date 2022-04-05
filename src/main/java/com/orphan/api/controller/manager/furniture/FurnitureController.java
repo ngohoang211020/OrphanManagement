@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -40,20 +41,20 @@ public class FurnitureController {
 
     @ApiOperation("Create new Furniture")
     @PostMapping
-    public APIResponse<?> createFurniture(@RequestBody FurnitureRequest furnitureRequest) throws NotFoundException {
+    public APIResponse<?> createFurniture(@RequestBody @Valid FurnitureRequest furnitureRequest) throws NotFoundException {
         furnitureRequest=furnitureService.createFurniture(furnitureRequest);
         return APIResponse.okStatus(furnitureRequest);
     }
 
     @ApiOperation("Update furniture detail")
     @PutMapping("/{furnitureId}")
-    public APIResponse<?> updateFurniture(@PathVariable("furnitureId")Integer furnitureId,@RequestBody FurnitureRequest furnitureRequest) throws NotFoundException {
+    public APIResponse<?> updateFurniture(@PathVariable("furnitureId")Integer furnitureId,@RequestBody @Valid FurnitureRequest furnitureRequest) throws NotFoundException {
         furnitureRequest=furnitureService.updateFurniture(furnitureRequest,furnitureId);
         return APIResponse.okStatus(furnitureRequest);
     }
 
     @ApiOperation("Update furniture Image")
-    @PutMapping("/updateImage/{furnitureId}")
+    @PostMapping("/{furnitureId}/updateImage")
     public APIResponse<?> updateFurnitureImage(@PathVariable("furnitureId")Integer furnitureId,@RequestParam("image") MultipartFile multipartFile) throws NotFoundException, IOException {
         UpdateImageResponse updateImageResponse = null;
 

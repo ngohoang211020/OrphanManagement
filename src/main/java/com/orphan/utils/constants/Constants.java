@@ -34,4 +34,5 @@ public class Constants {
 
     public static final String IDENTIFICATION_PATTERN = "^(\\d{9})";
 
+    public static final String DATE_PATTERN="([0-9]{2})\\/([0-9]{2})\\/([0-9]{4})";
 }
