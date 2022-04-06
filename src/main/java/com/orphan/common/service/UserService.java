@@ -322,6 +322,19 @@ public class UserService extends BaseService {
     }
 
 
+    public void changePassWord(PasswordDto passwordDto) throws
+            NotFoundException, BadRequestException {
+        Optional<User> user = this.getUserByLoginId(String.valueOf(getCurrentUserId()));
+        if(!user.isPresent()){
+            throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
+                    APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
+        }
+
+        validatePassword(passwordDto.getNewPassWord(),passwordDto.getConfirmPassWord());
+
+        user.get().setPassword(passwordEncoder.encode(passwordDto.getNewPassWord()));
+        userRepository.save(user.get());
+    }
 
 
 

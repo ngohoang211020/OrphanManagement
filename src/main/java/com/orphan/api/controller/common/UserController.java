@@ -1,6 +1,8 @@
 package com.orphan.api.controller.common;
 
 import com.google.gson.JsonObject;
+import com.orphan.api.controller.UpdateImageResponse;
+import com.orphan.api.controller.admin.dto.UserDetailDto;
 import com.orphan.api.controller.common.dto.LoginRequest;
 import com.orphan.api.controller.common.dto.PasswordDto;
 import com.orphan.api.controller.common.dto.RegisterRequestDto;
@@ -15,12 +17,17 @@ import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -38,6 +45,7 @@ public class UserController {
     private static final String LOGOUT_ENDPOINT = "/logout";
     private static final String RESET_PASSWORD_ENDPOINT = "/reset-password";
     private static final String CHANGE_PASSWORD_ENDPOINT = "/change-password";
+
 
     /**
      * Login
@@ -129,5 +137,71 @@ public class UserController {
         }
         userService.changePassWord(passwordDto, email);
         return APIResponse.okStatus(passwordDto);
+    }
+    /**
+     * View User login
+     * @return APIResponse
+     * @throws NotFoundException
+     */
+
+    @ApiOperation("View detail info of the currently logged user")
+    @GetMapping("/account")
+    public APIResponse<?> viewLoggedUserDetail() throws NotFoundException, BadRequestException, IOException {
+        UserDetailDto userDetailDto=userService.viewUserDetail(userService.getCurrentUserId());
+        return APIResponse.okStatus(userDetailDto);
+    }
+
+    /**
+     * Update User login
+     * @Param registerRequestDto RegisterRequestDto
+     * @return APIResponse
+     * @throws NotFoundException
+     */
+
+    @ApiOperation("Update detail info of the currently logged user")
+    @PostMapping("/account")
+    public APIResponse<?> updateLoggedUserDetail(@Valid @RequestBody RegisterRequestDto registerRequestDto, Errors errors) throws NotFoundException, BadRequestException, IOException {
+        if (errors.hasErrors()) {
+            JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
+            throw new BadRequestException(BadRequestException.ERROR_REGISTER_USER_INVALID, messages.toString(), true);
+        }
+        registerRequestDto=userService.updateUser(registerRequestDto,userService.getCurrentUserId());
+        return APIResponse.okStatus(registerRequestDto);
+    }
+
+    /**
+     * Update User Image
+     * @Param multipartFile MultipartFile
+     * @return APIResponse
+     * @throws NotFoundException
+     */
+    @ApiOperation("Update User Image")
+    @PostMapping(value = "/account/updateImage", consumes = {
+            MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE
+    })
+    public ResponseEntity<?> updateUserImage(@RequestParam(name = "image") MultipartFile multipartFile ) throws BadRequestException, NotFoundException, IOException {
+
+        UpdateImageResponse updateImageResponse = null;
+
+        if (!multipartFile.isEmpty()) {
+
+            String image = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+            updateImageResponse = userService.updateUserImage(image, multipartFile.getBytes(), userService.getCurrentUserId());
+
+        }
+        return APIResponse.okStatus(updateImageResponse);
+    }
+
+    /**
+     * Delete User Logged
+     * @return APIResponse
+     * @throws NotFoundException
+     */
+    @ApiOperation("Delete User Logged")
+    @DeleteMapping("/account")
+    public ResponseEntity<?> deleteUser() throws NotFoundException, BadRequestException {
+        userService.deleteUserById(userService.getCurrentUserId());
+        return APIResponse.okStatus();
     }
 }
