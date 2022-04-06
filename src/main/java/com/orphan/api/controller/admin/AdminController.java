@@ -11,6 +11,7 @@ import com.orphan.common.vo.PageInfo;
 import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
+import com.orphan.utils.constants.PageableConstants;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/admin")
@@ -34,13 +34,20 @@ public class AdminController {
 
     private final UserService userService;
 
-  //  private final String photoImagePaths="src/main/resources/user-photos/";
+    //  private final String photoImagePaths="src/main/resources/user-photos/";
 
-    @ApiOperation("Get All Users")
+    @ApiOperation("Get Users By Page")
     @GetMapping
-    public APIResponse<?> viewAllAccount(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page,
-                                         @ApiParam(value = "Limit") @RequestParam(required = false) Integer limit) throws NotFoundException {
-        PageInfo<UserDto> userDtoPageInfo = userService.viewAllUsers(page,limit);
+    public APIResponse<?> viewUsersByPage(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
+                                         ) throws NotFoundException {
+        PageInfo<UserDto> userDtoPageInfo;
+        if (page != null) {
+            userDtoPageInfo = userService.viewAllUsers(page, PageableConstants.limit);
+        }
+        else{
+            userDtoPageInfo = userService.viewAllUsers(1, PageableConstants.limit);
+
+        }
         return APIResponse.okStatus(userDtoPageInfo);
     }
 
@@ -53,13 +60,13 @@ public class AdminController {
 
     @ApiOperation("Create User")
     @PostMapping()
-    public ResponseEntity<?> createUser(@RequestBody @Valid  RegisterRequestDto newUserRegisterInfo
-           , Errors errors ) throws BadRequestException {
+    public ResponseEntity<?> createUser(@RequestBody @Valid RegisterRequestDto newUserRegisterInfo
+            , Errors errors) throws BadRequestException {
         if (errors.hasErrors()) {
             JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
             throw new BadRequestException(BadRequestException.ERROR_REGISTER_USER_INVALID, messages.toString(), true);
         }
-        RegisterRequestDto newRegisterRequest=userService.createUser(newUserRegisterInfo);
+        RegisterRequestDto newRegisterRequest = userService.createUser(newUserRegisterInfo);
 
         return APIResponse.okStatus(newRegisterRequest);
     }
@@ -69,7 +76,7 @@ public class AdminController {
             MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE
     })
-    public ResponseEntity<?> updateUserImage(@PathVariable("userId") Integer userId, @RequestParam(name = "image") MultipartFile multipartFile ) throws BadRequestException, NotFoundException, IOException {
+    public ResponseEntity<?> updateUserImage(@PathVariable("userId") Integer userId, @RequestParam(name = "image") MultipartFile multipartFile) throws BadRequestException, NotFoundException, IOException {
 
         UpdateImageResponse updateImageResponse = null;
 
@@ -99,7 +106,7 @@ public class AdminController {
             JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
             throw new BadRequestException(BadRequestException.ERROR_REGISTER_USER_INVALID, messages.toString(), true);
         }
-        RegisterRequestDto newUserDetailDto=userService.updateUser(registerRequestDto,userId);
+        RegisterRequestDto newUserDetailDto = userService.updateUser(registerRequestDto, userId);
         return APIResponse.okStatus(newUserDetailDto);
     }
 

@@ -10,6 +10,7 @@ import com.orphan.common.vo.PageInfo;
 import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
+import com.orphan.utils.constants.PageableConstants;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/manager/furniture")
@@ -31,17 +31,24 @@ public class FurnitureController {
 
     private final FurnitureService furnitureService;
 
-    @ApiOperation("Get All Furnitures")
+
+    @ApiOperation("Get Furnitures By Pages")
     @GetMapping
-    public APIResponse<?> viewAllFurnitures(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page,
-                                            @ApiParam(value = "Limit") @RequestParam(required = false) Integer limit) throws NotFoundException {
-        PageInfo<FurnitureDto> furnitureDtoList = furnitureService.viewAllFurnitures(page,limit);
-        return APIResponse.okStatus(furnitureDtoList);
+    public APIResponse<?> viewFurnituresByPages(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
+                                                ) throws NotFoundException {
+        PageInfo<FurnitureDto> furnitureDtoPageInfo;
+        if (page != null) {
+            furnitureDtoPageInfo = furnitureService.viewAllFurnitures(page, PageableConstants.limit);
+        } else {
+            furnitureDtoPageInfo = furnitureService.viewAllFurnitures(1, PageableConstants.limit);
+
+        }
+        return APIResponse.okStatus(furnitureDtoPageInfo);
     }
 
     @ApiOperation("View Furniture Detail")
     @GetMapping("/{furnitureId}")
-    public APIResponse<?> viewFurnitureDetail(@PathVariable("furnitureId")Integer furnitureId) throws NotFoundException {
+    public APIResponse<?> viewFurnitureDetail(@PathVariable("furnitureId") Integer furnitureId) throws NotFoundException {
         FurnitureDto furnitureDto = furnitureService.viewFurnitureDetail(furnitureId);
         return APIResponse.okStatus(furnitureDto);
     }
@@ -53,24 +60,24 @@ public class FurnitureController {
             JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
             throw new BadRequestException(BadRequestException.ERROR_REGISTER_USER_INVALID, messages.toString(), true);
         }
-        furnitureRequest=furnitureService.createFurniture(furnitureRequest);
+        furnitureRequest = furnitureService.createFurniture(furnitureRequest);
         return APIResponse.okStatus(furnitureRequest);
     }
 
     @ApiOperation("Update furniture detail")
     @PutMapping("/{furnitureId}")
-    public APIResponse<?> updateFurniture(@PathVariable("furnitureId")Integer furnitureId, @Valid @RequestBody FurnitureRequest furnitureRequest, Errors errors) throws NotFoundException, BadRequestException {
+    public APIResponse<?> updateFurniture(@PathVariable("furnitureId") Integer furnitureId, @Valid @RequestBody FurnitureRequest furnitureRequest, Errors errors) throws NotFoundException, BadRequestException {
         if (errors.hasErrors()) {
             JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
             throw new BadRequestException(BadRequestException.ERROR_REGISTER_USER_INVALID, messages.toString(), true);
         }
-        furnitureRequest=furnitureService.updateFurniture(furnitureRequest,furnitureId);
+        furnitureRequest = furnitureService.updateFurniture(furnitureRequest, furnitureId);
         return APIResponse.okStatus(furnitureRequest);
     }
 
     @ApiOperation("Update furniture Image")
     @PostMapping("/{furnitureId}/updateImage")
-    public APIResponse<?> updateFurnitureImage(@PathVariable("furnitureId")Integer furnitureId,@RequestParam("image") MultipartFile multipartFile) throws NotFoundException, IOException {
+    public APIResponse<?> updateFurnitureImage(@PathVariable("furnitureId") Integer furnitureId, @RequestParam("image") MultipartFile multipartFile) throws NotFoundException, IOException {
         UpdateImageResponse updateImageResponse = null;
 
         if (!multipartFile.isEmpty()) {
@@ -84,7 +91,7 @@ public class FurnitureController {
 
     @ApiOperation("Delete furniture")
     @DeleteMapping("/{furnitureId}")
-    public APIResponse<?> deleteFurniture(@PathVariable("furnitureId")Integer furnitureId) throws NotFoundException {
+    public APIResponse<?> deleteFurniture(@PathVariable("furnitureId") Integer furnitureId) throws NotFoundException {
         furnitureService.deleteById(furnitureId);
         return APIResponse.okStatus();
     }

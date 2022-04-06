@@ -8,4 +8,5 @@ public class PageableConstants {
 
     public static final int DEFAULT_PAGE_INIT = 1;
 
+    public static final Integer limit=5;
 }

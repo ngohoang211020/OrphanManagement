@@ -11,6 +11,7 @@ import com.orphan.common.vo.PageInfo;
 import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
+import com.orphan.utils.constants.PageableConstants;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/manager/staff")
@@ -32,12 +32,18 @@ public class StaffController {
 
     private final StaffService staffService;
 
-    @ApiOperation("Get All Staffs")
+    @ApiOperation("Get Staff By Pages")
     @GetMapping
-    public APIResponse<?> viewAllStaff(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page,
-                                       @ApiParam(value = "Limit") @RequestParam(required = false) Integer limit) throws NotFoundException {
-        PageInfo<StaffDto> staffDtoList = staffService.viewAllStaffs(page,limit);
-        return APIResponse.okStatus(staffDtoList);
+    public APIResponse<?> viewStaffsByPage(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
+                                           ) throws NotFoundException {
+        PageInfo<StaffDto> staffDtoPageInfo;
+        if (page != null) {
+            staffDtoPageInfo = staffService.viewAllStaffs(page, PageableConstants.limit);
+        } else {
+            staffDtoPageInfo = staffService.viewAllStaffs(1, PageableConstants.limit);
+
+        }
+        return APIResponse.okStatus(staffDtoPageInfo);
     }
 
     @ApiOperation("View Staff Detail")
@@ -49,7 +55,7 @@ public class StaffController {
 
     @ApiOperation("Create new Staff")
     @PostMapping
-    public APIResponse<?> createStaff( @Valid @RequestBody StaffRequest staffRequest, Errors errors) throws BadRequestException {
+    public APIResponse<?> createStaff(@Valid @RequestBody StaffRequest staffRequest, Errors errors) throws BadRequestException {
         if (errors.hasErrors()) {
             JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
             throw new BadRequestException(BadRequestException.ERROR_REGISTER_USER_INVALID, messages.toString(), true);
