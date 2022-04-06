@@ -20,7 +20,6 @@ public class StaffRequest {
     @Date
     private String dateOfBirth;
 
-    @NotEmpty
     private Boolean gender;
 
     @NotEmpty

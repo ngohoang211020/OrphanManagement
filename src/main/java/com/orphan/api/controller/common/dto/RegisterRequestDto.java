@@ -33,7 +33,6 @@ public class RegisterRequestDto {
     @Date
     private String date_of_birth;
 
-    @NotEmpty
     private Boolean gender;
 
     @NotEmpty(message="{error.msg.address-1-is-required}")

@@ -12,7 +12,9 @@ public class FurnitureRequest {
     @NotEmpty(message="{error.msg.furniture-is-required}")
     private String nameFurniture;
 
+    @NotEmpty
     private String status;
 
+    @NotEmpty
     private Integer quantity;
 }
