@@ -7,10 +7,12 @@ import com.orphan.api.controller.admin.dto.UserDto;
 import com.orphan.api.controller.common.dto.RegisterRequestDto;
 import com.orphan.common.response.APIResponse;
 import com.orphan.common.service.UserService;
+import com.orphan.common.vo.PageInfo;
 import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,9 +38,10 @@ public class AdminController {
 
     @ApiOperation("Get All Users")
     @GetMapping
-    public APIResponse<?> viewAllAccount() throws NotFoundException {
-        List<UserDto> userDtoList = userService.viewAllUsers();
-        return APIResponse.okStatus(userDtoList);
+    public APIResponse<?> viewAllAccount(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page,
+                                         @ApiParam(value = "Limit") @RequestParam(required = false) Integer limit) throws NotFoundException {
+        PageInfo<UserDto> userDtoPageInfo = userService.viewAllUsers(page,limit);
+        return APIResponse.okStatus(userDtoPageInfo);
     }
 
     @ApiOperation("View User Detail")

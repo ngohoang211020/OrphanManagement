@@ -10,6 +10,7 @@ import com.orphan.common.entity.Role;
 import com.orphan.common.entity.User;
 import com.orphan.common.repository.RoleRepository;
 import com.orphan.common.repository.UserRepository;
+import com.orphan.common.vo.PageInfo;
 import com.orphan.config.EmailSenderService;
 import com.orphan.enums.ERole;
 import com.orphan.exception.BadRequestException;
@@ -19,13 +20,14 @@ import com.orphan.utils.constants.APIConstants;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import org.thymeleaf.context.Context;
+
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -194,13 +196,14 @@ public class UserService extends BaseService {
         return registerRequestDto;
     }
 
-    public List<UserDto> viewAllUsers() throws NotFoundException {
-            List<User> userList = userRepository.findAll(Sort.by("fullName").ascending());
-        if (userList.isEmpty()) {
+    public PageInfo<UserDto> viewAllUsers(Integer page, Integer limit) throws NotFoundException {
+        PageRequest pageRequest=buildPageRequest(page,limit);
+        Page<User> userPage = userRepository.findByOrderByFullNameAsc(pageRequest);
+        if (userPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
         }
-        List<UserDto> userDtoList = userList.stream().map(user -> {
+        List<UserDto> userDtoList = userPage.getContent().stream().map(user -> {
             try {
                 return UserToUserDto(user);
             } catch (IOException e) {
@@ -208,7 +211,13 @@ public class UserService extends BaseService {
             }
             return null;
         }).collect(Collectors.toList());
-        return userDtoList;
+        PageInfo<UserDto> userDtoPageInfo=new PageInfo<>();
+        userDtoPageInfo.setPage(page);
+        userDtoPageInfo.setLimit(limit);
+        userDtoPageInfo.setResult(userDtoList);
+        userDtoPageInfo.setTotal(userPage.getTotalElements());
+        userDtoPageInfo.setPages(userPage.getTotalPages());
+        return userDtoPageInfo;
     }
 
     public UserDetailDto viewUserDetail(Integer userId) throws NotFoundException, IOException {

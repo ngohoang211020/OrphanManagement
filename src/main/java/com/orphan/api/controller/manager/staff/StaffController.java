@@ -7,10 +7,12 @@ import com.orphan.api.controller.manager.staff.dto.StaffDto;
 import com.orphan.api.controller.manager.staff.dto.StaffRequest;
 import com.orphan.common.response.APIResponse;
 import com.orphan.common.service.StaffService;
+import com.orphan.common.vo.PageInfo;
 import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
@@ -32,8 +34,9 @@ public class StaffController {
 
     @ApiOperation("Get All Staffs")
     @GetMapping
-    public APIResponse<?> viewAllStaff() throws NotFoundException {
-        List<StaffDto> staffDtoList = staffService.viewAllStaffs();
+    public APIResponse<?> viewAllStaff(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page,
+                                       @ApiParam(value = "Limit") @RequestParam(required = false) Integer limit) throws NotFoundException {
+        PageInfo<StaffDto> staffDtoList = staffService.viewAllStaffs(page,limit);
         return APIResponse.okStatus(staffDtoList);
     }
 

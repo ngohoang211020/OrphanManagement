@@ -6,10 +6,12 @@ import com.orphan.api.controller.manager.furniture.dto.FurnitureDto;
 import com.orphan.api.controller.manager.furniture.dto.FurnitureRequest;
 import com.orphan.common.response.APIResponse;
 import com.orphan.common.service.FurnitureService;
+import com.orphan.common.vo.PageInfo;
 import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
@@ -31,8 +33,9 @@ public class FurnitureController {
 
     @ApiOperation("Get All Furnitures")
     @GetMapping
-    public APIResponse<?> viewAllFurnitures() throws NotFoundException {
-        List<FurnitureDto> furnitureDtoList = furnitureService.viewAllFurnitures();
+    public APIResponse<?> viewAllFurnitures(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page,
+                                            @ApiParam(value = "Limit") @RequestParam(required = false) Integer limit) throws NotFoundException {
+        PageInfo<FurnitureDto> furnitureDtoList = furnitureService.viewAllFurnitures(page,limit);
         return APIResponse.okStatus(furnitureDtoList);
     }
 

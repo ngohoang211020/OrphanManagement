@@ -1,14 +1,18 @@
 package com.orphan.common.service;
 
 import com.orphan.api.controller.UpdateImageResponse;
+import com.orphan.api.controller.admin.dto.UserDto;
 import com.orphan.api.controller.manager.furniture.dto.FurnitureDto;
 import com.orphan.api.controller.manager.furniture.dto.FurnitureRequest;
 import com.orphan.common.entity.Furniture;
 import com.orphan.common.repository.FurnitureRepository;
+import com.orphan.common.vo.PageInfo;
 import com.orphan.enums.FurnitureStatus;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.constants.APIConstants;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,16 +73,23 @@ public class FurnitureService extends BaseService {
         furnitureRepository.deleteById(furnitureId);
     }
 
-    public List<FurnitureDto> viewAllFurnitures() throws NotFoundException {
-        List<Furniture> furnitureList = furnitureRepository.findAll(Sort.by("furnitureName").ascending());
-        if (furnitureList.isEmpty()) {
+    public PageInfo<FurnitureDto> viewAllFurnitures(Integer page, Integer limit) throws NotFoundException {
+        PageRequest pageRequest=buildPageRequest(page,limit);
+        Page<Furniture> furniturePage = furnitureRepository.findByOrderByFurnitureNameAsc(pageRequest);
+        if (furniturePage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_FURNITURE_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.FURNITURE));
         }
-        List<FurnitureDto> furnitureDtoList = furnitureList.stream().map(furniture -> {
+        List<FurnitureDto> furnitureDtoList = furniturePage.getContent().stream().map(furniture -> {
             return furnitureToFurnitureDto(furniture);
         }).collect(Collectors.toList());
-        return furnitureDtoList;
+        PageInfo<FurnitureDto> furnitureDtoPageInfo=new PageInfo<>();
+        furnitureDtoPageInfo.setPage(page);
+        furnitureDtoPageInfo.setLimit(limit);
+        furnitureDtoPageInfo.setResult(furnitureDtoList);
+        furnitureDtoPageInfo.setTotal(furniturePage.getTotalElements());
+        furnitureDtoPageInfo.setPages(furniturePage.getTotalPages());
+        return furnitureDtoPageInfo;
     }
 
     public FurnitureDto viewFurnitureDetail(Integer furnitureId) throws NotFoundException {

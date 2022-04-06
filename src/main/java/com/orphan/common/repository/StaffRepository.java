@@ -1,10 +1,14 @@
 package com.orphan.common.repository;
 
 import com.orphan.common.entity.Staff;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface StaffRepository extends JpaRepository<Staff, Integer> {
@@ -15,4 +19,9 @@ public interface StaffRepository extends JpaRepository<Staff, Integer> {
     @Modifying
     @Query("UPDATE Staff u set u.image= ?1, u.profPic= ?2 WHERE u.staffId= ?3")
     void updateStaffImage(String image,byte[] procPic, Integer staffId);
+
+    Page<Staff> findByOrderByFullNameAsc(Pageable pageable);
+
+
+
 }

@@ -5,12 +5,15 @@ import com.orphan.common.repository.*;
 import com.orphan.config.jwt.AccessToken;
 import com.orphan.config.jwt.JwtUtils;
 import com.orphan.config.security.UserPrincipal;
+import com.orphan.utils.constants.PageableConstants;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -126,4 +129,32 @@ public class BaseService {
     public String getEmailFromJwtToken(String token) {
         return jwtProvider.getUserNameFromJwtToken(token);
     }
+
+    /**
+     * Build {@link PageRequest} with page and limit
+     *
+     * @param page
+     * @param limit
+     * @return
+     */
+    public PageRequest buildPageRequest(Integer page, Integer limit) {
+        page = (limit == null || page == null) ? PageableConstants.DEFAULT_PAGE : page - PageableConstants.DEFAULT_PAGE_INIT;
+        limit = limit == null ? PageableConstants.DEFAULT_SIZE : limit;
+        return PageRequest.of(page, limit);
+    }
+
+    /**
+     * Build {@link PageRequest} with page, limit and sort
+     *
+     * @param page
+     * @param limit
+     * @param sort
+     * @return
+     */
+    public PageRequest buildPageRequest(Integer page, Integer limit, Sort sort) {
+        page = page == null ? PageableConstants.DEFAULT_PAGE : page - PageableConstants.DEFAULT_PAGE_INIT;
+        limit = limit == null ? PageableConstants.DEFAULT_SIZE : limit;
+        return PageRequest.of(page, limit, sort);
+    }
+
 }

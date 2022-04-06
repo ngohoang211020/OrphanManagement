@@ -1,17 +1,21 @@
 package com.orphan.common.service;
 
 import com.orphan.api.controller.UpdateImageResponse;
+import com.orphan.api.controller.admin.dto.UserDto;
 import com.orphan.api.controller.manager.staff.dto.StaffDetailDto;
 import com.orphan.api.controller.manager.staff.dto.StaffDto;
 import com.orphan.api.controller.manager.staff.dto.StaffRequest;
 import com.orphan.common.entity.Staff;
 import com.orphan.common.repository.StaffRepository;
+import com.orphan.common.vo.PageInfo;
 import com.orphan.enums.TypeStaff;
 import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
 import com.orphan.utils.constants.APIConstants;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -120,16 +124,23 @@ public class StaffService extends BaseService {
         return  updateImageResponse;
     }
 
-    public List<StaffDto> viewAllStaffs() throws NotFoundException {
-        List<Staff> staffList = staffRepository.findAll(Sort.by("fullName").ascending());
-        if (staffList.isEmpty()) {
+    public PageInfo<StaffDto> viewAllStaffs(Integer page, Integer limit) throws NotFoundException {
+        PageRequest pageRequest=buildPageRequest(page,limit);
+        Page<Staff> staffPage = staffRepository.findByOrderByFullNameAsc(pageRequest);
+        if (staffPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_STAFF_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.STAFF));
         }
-        List<StaffDto> staffDtoList = staffList.stream().map(staff -> {
+        List<StaffDto> staffDtoList = staffPage.getContent().stream().map(staff -> {
             return StaffToStaffDto(staff);
         }).collect(Collectors.toList());
-        return staffDtoList;
+        PageInfo<StaffDto> staffDtoPageInfo=new PageInfo<>();
+        staffDtoPageInfo.setPage(page);
+        staffDtoPageInfo.setLimit(limit);
+        staffDtoPageInfo.setResult(staffDtoList);
+        staffDtoPageInfo.setTotal(staffPage.getTotalElements());
+        staffDtoPageInfo.setPages(staffPage.getTotalPages());
+        return staffDtoPageInfo;
     }
 
     public StaffDetailDto viewStaffDetail(Integer staffId) throws NotFoundException {
