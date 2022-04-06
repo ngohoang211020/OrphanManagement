@@ -1,15 +1,19 @@
 package com.orphan.api.controller.manager.furniture;
 
+import com.google.gson.JsonObject;
 import com.orphan.api.controller.UpdateImageResponse;
 import com.orphan.api.controller.manager.furniture.dto.FurnitureDto;
 import com.orphan.api.controller.manager.furniture.dto.FurnitureRequest;
 import com.orphan.common.response.APIResponse;
 import com.orphan.common.service.FurnitureService;
+import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
+import com.orphan.utils.OrphanUtils;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,14 +45,22 @@ public class FurnitureController {
 
     @ApiOperation("Create new Furniture")
     @PostMapping
-    public APIResponse<?> createFurniture(@Valid @RequestBody FurnitureRequest furnitureRequest) throws NotFoundException {
+    public APIResponse<?> createFurniture(@Valid @RequestBody FurnitureRequest furnitureRequest, Errors errors) throws NotFoundException, BadRequestException {
+        if (errors.hasErrors()) {
+            JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
+            throw new BadRequestException(BadRequestException.ERROR_REGISTER_USER_INVALID, messages.toString(), true);
+        }
         furnitureRequest=furnitureService.createFurniture(furnitureRequest);
         return APIResponse.okStatus(furnitureRequest);
     }
 
     @ApiOperation("Update furniture detail")
     @PutMapping("/{furnitureId}")
-    public APIResponse<?> updateFurniture(@PathVariable("furnitureId")Integer furnitureId, @Valid @RequestBody FurnitureRequest furnitureRequest) throws NotFoundException {
+    public APIResponse<?> updateFurniture(@PathVariable("furnitureId")Integer furnitureId, @Valid @RequestBody FurnitureRequest furnitureRequest, Errors errors) throws NotFoundException, BadRequestException {
+        if (errors.hasErrors()) {
+            JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
+            throw new BadRequestException(BadRequestException.ERROR_REGISTER_USER_INVALID, messages.toString(), true);
+        }
         furnitureRequest=furnitureService.updateFurniture(furnitureRequest,furnitureId);
         return APIResponse.okStatus(furnitureRequest);
     }

@@ -85,7 +85,7 @@ public class UserController {
      */
     @ApiOperation("Register")
     @PostMapping(REGISTER_USER_INDIVIDUAL_ENDPOINT)
-    public APIResponse<?> registerUser(@Valid @RequestBody RegisterRequestDto registerRequestDto, BindingResult errors) throws Exception {
+    public APIResponse<?> registerUser(@Valid @RequestBody RegisterRequestDto registerRequestDto, Errors errors) throws Exception {
         if (errors.hasErrors()) {
             JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
             throw new BadRequestException(BadRequestException.ERROR_REGISTER_USER_INVALID, messages.toString(), true);
@@ -122,7 +122,11 @@ public class UserController {
      */
     @ApiOperation("Change password for account")
     @PostMapping(CHANGE_PASSWORD_ENDPOINT)
-    public APIResponse<PasswordDto> changePassword( @RequestBody PasswordDto passwordDto, @RequestParam("email") String email) throws NotFoundException, BadRequestException {
+    public APIResponse<PasswordDto> changePassword(@Valid @RequestBody PasswordDto passwordDto, @RequestParam("email") String email, Errors errors) throws NotFoundException, BadRequestException {
+        if (errors.hasErrors()) {
+            JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
+            throw new BadRequestException(BadRequestException.ERROR_REGISTER_USER_INVALID, messages.toString(), true);
+        }
         userService.changePassWord(passwordDto, email);
         return APIResponse.okStatus(passwordDto);
     }

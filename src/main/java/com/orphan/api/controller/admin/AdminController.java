@@ -1,5 +1,6 @@
 package com.orphan.api.controller.admin;
 
+import com.google.gson.JsonObject;
 import com.orphan.api.controller.UpdateImageResponse;
 import com.orphan.api.controller.admin.dto.UserDetailDto;
 import com.orphan.api.controller.admin.dto.UserDto;
@@ -8,12 +9,14 @@ import com.orphan.common.response.APIResponse;
 import com.orphan.common.service.UserService;
 import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
+import com.orphan.utils.OrphanUtils;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -48,7 +51,11 @@ public class AdminController {
     @ApiOperation("Create User")
     @PostMapping()
     public ResponseEntity<?> createUser(@RequestBody @Valid  RegisterRequestDto newUserRegisterInfo
-            ) throws BadRequestException {
+           , Errors errors ) throws BadRequestException {
+        if (errors.hasErrors()) {
+            JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
+            throw new BadRequestException(BadRequestException.ERROR_REGISTER_USER_INVALID, messages.toString(), true);
+        }
         RegisterRequestDto newRegisterRequest=userService.createUser(newUserRegisterInfo);
 
         return APIResponse.okStatus(newRegisterRequest);
@@ -84,7 +91,11 @@ public class AdminController {
             MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE
     })
-    public ResponseEntity<?> updateUserDetail(@PathVariable("userId") Integer userId, @RequestBody @Valid RegisterRequestDto registerRequestDto) throws BadRequestException, NotFoundException {
+    public ResponseEntity<?> updateUserDetail(@PathVariable("userId") Integer userId, @RequestBody @Valid RegisterRequestDto registerRequestDto, Errors errors) throws BadRequestException, NotFoundException {
+        if (errors.hasErrors()) {
+            JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
+            throw new BadRequestException(BadRequestException.ERROR_REGISTER_USER_INVALID, messages.toString(), true);
+        }
         RegisterRequestDto newUserDetailDto=userService.updateUser(registerRequestDto,userId);
         return APIResponse.okStatus(newUserDetailDto);
     }

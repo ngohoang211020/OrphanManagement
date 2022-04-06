@@ -1,5 +1,6 @@
 package com.orphan.api.controller.manager.staff;
 
+import com.google.gson.JsonObject;
 import com.orphan.api.controller.UpdateImageResponse;
 import com.orphan.api.controller.manager.staff.dto.StaffDetailDto;
 import com.orphan.api.controller.manager.staff.dto.StaffDto;
@@ -8,10 +9,12 @@ import com.orphan.common.response.APIResponse;
 import com.orphan.common.service.StaffService;
 import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
+import com.orphan.utils.OrphanUtils;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,14 +46,22 @@ public class StaffController {
 
     @ApiOperation("Create new Staff")
     @PostMapping
-    public APIResponse<?> createStaff( @Valid @RequestBody StaffRequest staffRequest) throws BadRequestException {
+    public APIResponse<?> createStaff( @Valid @RequestBody StaffRequest staffRequest, Errors errors) throws BadRequestException {
+        if (errors.hasErrors()) {
+            JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
+            throw new BadRequestException(BadRequestException.ERROR_REGISTER_USER_INVALID, messages.toString(), true);
+        }
         staffRequest = staffService.createStaff(staffRequest);
         return APIResponse.okStatus(staffRequest);
     }
 
     @ApiOperation("Update staff detail")
     @PutMapping("/{staffId}")
-    public APIResponse<?> updateStaff(@PathVariable("staffId") Integer staffId, @Valid @RequestBody StaffRequest staffRequest) throws NotFoundException, BadRequestException {
+    public APIResponse<?> updateStaff(@PathVariable("staffId") Integer staffId, @Valid @RequestBody StaffRequest staffRequest, Errors errors) throws NotFoundException, BadRequestException {
+        if (errors.hasErrors()) {
+            JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
+            throw new BadRequestException(BadRequestException.ERROR_REGISTER_USER_INVALID, messages.toString(), true);
+        }
         staffRequest = staffService.updateStaff(staffRequest, staffId);
         return APIResponse.okStatus(staffRequest);
     }
