@@ -41,14 +41,14 @@ public class FurnitureController {
 
     @ApiOperation("Create new Furniture")
     @PostMapping
-    public APIResponse<?> createFurniture(@RequestBody @Valid FurnitureRequest furnitureRequest) throws NotFoundException {
+    public APIResponse<?> createFurniture(@Valid @RequestBody FurnitureRequest furnitureRequest) throws NotFoundException {
         furnitureRequest=furnitureService.createFurniture(furnitureRequest);
         return APIResponse.okStatus(furnitureRequest);
     }
 
     @ApiOperation("Update furniture detail")
     @PutMapping("/{furnitureId}")
-    public APIResponse<?> updateFurniture(@PathVariable("furnitureId")Integer furnitureId,@RequestBody @Valid FurnitureRequest furnitureRequest) throws NotFoundException {
+    public APIResponse<?> updateFurniture(@PathVariable("furnitureId")Integer furnitureId, @Valid @RequestBody FurnitureRequest furnitureRequest) throws NotFoundException {
         furnitureRequest=furnitureService.updateFurniture(furnitureRequest,furnitureId);
         return APIResponse.okStatus(furnitureRequest);
     }

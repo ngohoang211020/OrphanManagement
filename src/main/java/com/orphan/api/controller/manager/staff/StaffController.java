@@ -43,14 +43,14 @@ public class StaffController {
 
     @ApiOperation("Create new Staff")
     @PostMapping
-    public APIResponse<?> createStaff(@RequestBody @Valid StaffRequest staffRequest) throws BadRequestException {
+    public APIResponse<?> createStaff( @Valid @RequestBody StaffRequest staffRequest) throws BadRequestException {
         staffRequest = staffService.createStaff(staffRequest);
         return APIResponse.okStatus(staffRequest);
     }
 
     @ApiOperation("Update staff detail")
     @PutMapping("/{staffId}")
-    public APIResponse<?> updateStaff(@PathVariable("staffId") Integer staffId, @RequestBody @Valid StaffRequest staffRequest) throws NotFoundException, BadRequestException {
+    public APIResponse<?> updateStaff(@PathVariable("staffId") Integer staffId, @Valid @RequestBody StaffRequest staffRequest) throws NotFoundException, BadRequestException {
         staffRequest = staffService.updateStaff(staffRequest, staffId);
         return APIResponse.okStatus(staffRequest);
     }

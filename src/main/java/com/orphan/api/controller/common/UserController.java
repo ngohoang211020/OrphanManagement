@@ -103,7 +103,7 @@ public class UserController {
      */
     @ApiOperation("Reset password for account")
     @PostMapping(RESET_PASSWORD_ENDPOINT)
-    public APIResponse<?> processResetPassword(@RequestBody @Valid ResetPasswordDto resetPasswordDto, Errors errors) throws NotFoundException, BadRequestException {
+    public APIResponse<?> processResetPassword( @Valid  @RequestBody ResetPasswordDto resetPasswordDto, Errors errors) throws NotFoundException, BadRequestException {
         if (errors.hasErrors()) {
             JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
             throw new BadRequestException(BadRequestException.ERROR_RESET_PASSWORD_BAD_REQUEST, messages.toString(), true);
@@ -122,7 +122,7 @@ public class UserController {
      */
     @ApiOperation("Change password for account")
     @PostMapping(CHANGE_PASSWORD_ENDPOINT)
-    public APIResponse<PasswordDto> changePassword(@RequestBody PasswordDto passwordDto, @RequestParam("email") String email) throws NotFoundException, BadRequestException {
+    public APIResponse<PasswordDto> changePassword( @RequestBody PasswordDto passwordDto, @RequestParam("email") String email) throws NotFoundException, BadRequestException {
         userService.changePassWord(passwordDto, email);
         return APIResponse.okStatus(passwordDto);
     }
