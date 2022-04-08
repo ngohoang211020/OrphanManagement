@@ -37,6 +37,9 @@ public class Children extends BaseEntity{
     @Column(name="prof_pic")
     private byte[] profPic;
 
+    @Temporal(TemporalType.DATE)
+    private Date adoptiveDate;
+
     @ManyToOne
     @JoinColumn(name = "introducer_id")
     private OrphanIntroducer orphanIntroducer;

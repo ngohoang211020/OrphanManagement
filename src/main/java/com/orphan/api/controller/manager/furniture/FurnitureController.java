@@ -31,16 +31,21 @@ public class FurnitureController {
 
     private final FurnitureService furnitureService;
 
+    @ApiOperation("Get All Furnitures")
+    @GetMapping("/all")
+    public APIResponse<?> viewAllFurnitures() throws NotFoundException {
+        return APIResponse.okStatus(furnitureService.viewAllFurnitures());
+    }
 
     @ApiOperation("Get Furnitures By Pages")
     @GetMapping
     public APIResponse<?> viewFurnituresByPages(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
-                                                ) throws NotFoundException {
+    ) throws NotFoundException {
         PageInfo<FurnitureDto> furnitureDtoPageInfo;
         if (page != null) {
-            furnitureDtoPageInfo = furnitureService.viewAllFurnitures(page, PageableConstants.limit);
+            furnitureDtoPageInfo = furnitureService.viewFurnituresByPage(page, PageableConstants.limit);
         } else {
-            furnitureDtoPageInfo = furnitureService.viewAllFurnitures(1, PageableConstants.limit);
+            furnitureDtoPageInfo = furnitureService.viewFurnituresByPage(1, PageableConstants.limit);
 
         }
         return APIResponse.okStatus(furnitureDtoPageInfo);

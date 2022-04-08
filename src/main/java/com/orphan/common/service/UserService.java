@@ -22,7 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -196,7 +195,7 @@ public class UserService extends BaseService {
         return registerRequestDto;
     }
 
-    public PageInfo<UserDto> viewAllUsers(Integer page, Integer limit) throws NotFoundException {
+    public PageInfo<UserDto> viewUsersByPage(Integer page, Integer limit) throws NotFoundException {
         PageRequest pageRequest=buildPageRequest(page,limit);
         Page<User> userPage = userRepository.findByOrderByFullNameAsc(pageRequest);
         if (userPage.getContent().isEmpty()) {
@@ -218,6 +217,23 @@ public class UserService extends BaseService {
         userDtoPageInfo.setTotal(userPage.getTotalElements());
         userDtoPageInfo.setPages(userPage.getTotalPages());
         return userDtoPageInfo;
+    }
+
+    public List<UserDto> viewAllUsers() throws NotFoundException {
+        List<User> userList = userRepository.findAll();
+        if (userList.isEmpty()) {
+            throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
+                    APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
+        }
+        List<UserDto> userDtoList = userList.stream().map(user -> {
+            try {
+                return UserToUserDto(user);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }).collect(Collectors.toList());
+        return userDtoList;
     }
 
     public UserDetailDto viewUserDetail(Integer userId) throws NotFoundException, IOException {

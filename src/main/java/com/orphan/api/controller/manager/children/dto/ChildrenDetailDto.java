@@ -10,6 +10,8 @@ public class ChildrenDetailDto extends ChildrenDto{
 
     private String nameOfIntroducer;
 
+    private String adoptiveDate;
+
     private String dateLeaved;
 
     private String nameOfNurturer;

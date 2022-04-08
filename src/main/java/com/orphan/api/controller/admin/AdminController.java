@@ -35,17 +35,21 @@ public class AdminController {
     private final UserService userService;
 
     //  private final String photoImagePaths="src/main/resources/user-photos/";
+    @ApiOperation("View All Users")
+    @GetMapping("/all")
+    public APIResponse<?> viewAllUsers() throws NotFoundException, IOException {
+        return APIResponse.okStatus(userService.viewAllUsers());
+    }
 
     @ApiOperation("Get Users By Page")
     @GetMapping
     public APIResponse<?> viewUsersByPage(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
-                                         ) throws NotFoundException {
+    ) throws NotFoundException {
         PageInfo<UserDto> userDtoPageInfo;
         if (page != null) {
-            userDtoPageInfo = userService.viewAllUsers(page, PageableConstants.limit);
-        }
-        else{
-            userDtoPageInfo = userService.viewAllUsers(1, PageableConstants.limit);
+            userDtoPageInfo = userService.viewUsersByPage(page, PageableConstants.limit);
+        } else {
+            userDtoPageInfo = userService.viewUsersByPage(1, PageableConstants.limit);
 
         }
         return APIResponse.okStatus(userDtoPageInfo);

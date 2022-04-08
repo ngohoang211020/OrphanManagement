@@ -14,6 +14,8 @@ import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
 import com.orphan.utils.constants.APIConstants;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -32,6 +34,9 @@ public class StaffService extends BaseService {
     private final StaffRepository staffRepository;
 
     private final MessageService messageService;
+
+    private static final Logger logger = LoggerFactory.getLogger(StaffService.class);
+
 
     public Staff findById(Integer staffId) throws NotFoundException {
         Optional<Staff> staffOptional = staffRepository.findById(staffId);
@@ -124,7 +129,7 @@ public class StaffService extends BaseService {
         return  updateImageResponse;
     }
 
-    public PageInfo<StaffDto> viewAllStaffs(Integer page, Integer limit) throws NotFoundException {
+    public PageInfo<StaffDto> viewStaffsByPage(Integer page, Integer limit) throws NotFoundException {
         PageRequest pageRequest=buildPageRequest(page,limit);
         Page<Staff> staffPage = staffRepository.findByOrderByFullNameAsc(pageRequest);
         if (staffPage.getContent().isEmpty()) {
@@ -141,6 +146,18 @@ public class StaffService extends BaseService {
         staffDtoPageInfo.setTotal(staffPage.getTotalElements());
         staffDtoPageInfo.setPages(staffPage.getTotalPages());
         return staffDtoPageInfo;
+    }
+
+    public List<StaffDto> viewAllStaffs() throws NotFoundException {
+        List<Staff> staffList = staffRepository.findAll();
+        if (staffList.isEmpty()) {
+            throw new NotFoundException(NotFoundException.ERROR_STAFF_NOT_FOUND,
+                    APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.STAFF));
+        }
+        List<StaffDto> staffDtoList = staffList.stream().map(staff -> {
+            return StaffToStaffDto(staff);
+        }).collect(Collectors.toList());
+        return staffDtoList;
     }
 
     public StaffDetailDto viewStaffDetail(Integer staffId) throws NotFoundException {

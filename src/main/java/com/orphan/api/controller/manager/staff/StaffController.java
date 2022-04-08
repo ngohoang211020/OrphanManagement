@@ -32,15 +32,21 @@ public class StaffController {
 
     private final StaffService staffService;
 
+    @ApiOperation("Get All Staffs")
+    @GetMapping("/all")
+    public APIResponse<?> viewAllStaffs() throws NotFoundException {
+        return APIResponse.okStatus(staffService.viewAllStaffs());
+    }
+
     @ApiOperation("Get Staff By Pages")
     @GetMapping
     public APIResponse<?> viewStaffsByPage(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
                                            ) throws NotFoundException {
         PageInfo<StaffDto> staffDtoPageInfo;
         if (page != null) {
-            staffDtoPageInfo = staffService.viewAllStaffs(page, PageableConstants.limit);
+            staffDtoPageInfo = staffService.viewStaffsByPage(page, PageableConstants.limit);
         } else {
-            staffDtoPageInfo = staffService.viewAllStaffs(1, PageableConstants.limit);
+            staffDtoPageInfo = staffService.viewStaffsByPage(1, PageableConstants.limit);
 
         }
         return APIResponse.okStatus(staffDtoPageInfo);
