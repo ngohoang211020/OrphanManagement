@@ -1,6 +1,5 @@
 package com.orphan.common.service;
 
-import com.orphan.api.controller.UpdateImageResponse;
 import com.orphan.api.controller.manager.children.dto.ChildrenDetailDto;
 import com.orphan.api.controller.manager.children.dto.ChildrenDto;
 import com.orphan.api.controller.manager.children.dto.ChildrenRequest;
@@ -61,7 +60,9 @@ public class ChildrenService extends BaseService {
         children.setDateOfBirth(OrphanUtils.StringToDate(childrenRequest.getDateOfBirth()));
         children.setFullName(childrenRequest.getFullName());
         children.setAdoptiveDate(OrphanUtils.StringToDate(childrenRequest.getAdoptiveDate()));
-
+        if(childrenRequest.getImage()!=""){
+            children.setImage(childrenRequest.getImage());
+        }
         children.setModifiedId(String.valueOf(getCurrentUserId()));
 
         this.childrenRepository.save(children);
@@ -114,14 +115,6 @@ public class ChildrenService extends BaseService {
         childrenRepository.deleteById(childrenId);
     }
 
-    public UpdateImageResponse updateChildrenImage(String image, byte[] procPic, Integer id) throws IOException {
-        childrenRepository.updateChildrenImage(image,procPic,id);
-        UpdateImageResponse updateImageResponse=new UpdateImageResponse();
-        updateImageResponse.setImage(image);
-        updateImageResponse.setId(id);
-        updateImageResponse.setImageFile(procPic);
-        return  updateImageResponse;
-    }
 
     //mapper
 
@@ -131,7 +124,6 @@ public class ChildrenService extends BaseService {
         childrenDto.setFullName(children.getFullName());
         childrenDto.setImage(children.getImage());
         childrenDto.setDateOfBirth(OrphanUtils.DateToString(children.getDateOfBirth()));
-        childrenDto.setImageFile(children.getProfPic());
         childrenDto.setStatus(children.getStatus().name());
 
         return childrenDto;
@@ -143,7 +135,6 @@ public class ChildrenService extends BaseService {
         childrenDetailDto.setFullName(children.getFullName());
         childrenDetailDto.setImage(children.getImage());
         childrenDetailDto.setDateOfBirth(OrphanUtils.DateToString(children.getDateOfBirth()));
-        childrenDetailDto.setImageFile(children.getProfPic());
         childrenDetailDto.setStatus(children.getStatus().name());
         childrenDetailDto.setGender(children.getGender());
         childrenDetailDto.setAdoptiveDate(OrphanUtils.DateToString(children.getAdoptiveDate()));
@@ -167,7 +158,7 @@ public class ChildrenService extends BaseService {
         children.setDateOfBirth(OrphanUtils.StringToDate(childrenRequest.getDateOfBirth()));
         children.setFullName(childrenRequest.getFullName());
         children.setAdoptiveDate(OrphanUtils.StringToDate(childrenRequest.getAdoptiveDate()));
-
+        children.setImage(childrenRequest.getImage());
         return children;
     }
 }

@@ -1,15 +1,11 @@
 package com.orphan.api.controller.manager.children;
 
 import com.google.gson.JsonObject;
-import com.orphan.api.controller.UpdateImageResponse;
 import com.orphan.api.controller.manager.children.dto.ChildrenDetailDto;
 import com.orphan.api.controller.manager.children.dto.ChildrenDto;
 import com.orphan.api.controller.manager.children.dto.ChildrenRequest;
-import com.orphan.api.controller.manager.furniture.dto.FurnitureDto;
-import com.orphan.api.controller.manager.furniture.dto.FurnitureRequest;
 import com.orphan.common.response.APIResponse;
 import com.orphan.common.service.ChildrenService;
-import com.orphan.common.service.FurnitureService;
 import com.orphan.common.vo.PageInfo;
 import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
@@ -82,20 +78,6 @@ public class ChildrenController {
         }
         childrenRequest = childrenService.updateChildrenDetail(childrenRequest, childrenId);
         return APIResponse.okStatus(childrenRequest);
-    }
-
-    @ApiOperation("Update children Image")
-    @PostMapping("/{childrenId}/updateImage")
-    public APIResponse<?> updateChildrenImage(@PathVariable("childrenId") Integer childrenId, @RequestParam("image") MultipartFile multipartFile) throws NotFoundException, IOException {
-        UpdateImageResponse updateImageResponse = null;
-
-        if (!multipartFile.isEmpty()) {
-            String image = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-
-            updateImageResponse = childrenService.updateChildrenImage(image, multipartFile.getBytes(), childrenId);
-
-        }
-        return APIResponse.okStatus(updateImageResponse);
     }
 
     @ApiOperation("Delete children")

@@ -16,12 +16,6 @@ public interface StaffRepository extends JpaRepository<Staff, Integer> {
 
     boolean existsByIdentification(String identification);
 
-    @Modifying
-    @Query("UPDATE Staff u set u.image= ?1, u.profPic= ?2 WHERE u.staffId= ?3")
-    void updateStaffImage(String image,byte[] procPic, Integer staffId);
-
     Page<Staff> findByOrderByFullNameAsc(Pageable pageable);
-
-
 
 }

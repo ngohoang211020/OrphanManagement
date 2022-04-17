@@ -1,7 +1,5 @@
 package com.orphan.common.service;
 
-import com.orphan.api.controller.UpdateImageResponse;
-import com.orphan.api.controller.admin.dto.UserDto;
 import com.orphan.api.controller.manager.staff.dto.StaffDetailDto;
 import com.orphan.api.controller.manager.staff.dto.StaffDto;
 import com.orphan.api.controller.manager.staff.dto.StaffRequest;
@@ -18,11 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -89,6 +85,10 @@ public class StaffService extends BaseService {
             staff.setIdentification(staffRequest.getIdentification());
         }
 
+        if(staffRequest.getImage()!=""){
+            staff.setImage(staffRequest.getImage());
+        }
+
         staff.setAddress(staffRequest.getAddress());
         staff.setFullName(staffRequest.getFullName());
         staff.setDateOfBirth(OrphanUtils.StringToDate(staffRequest.getDateOfBirth()));
@@ -113,20 +113,6 @@ public class StaffService extends BaseService {
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.STAFF));
         }
         staffRepository.deleteById(staffId);
-    }
-
-    public UpdateImageResponse updateStaffImage(String image, byte[] procPic, Integer id) throws IOException {
-
-        staffRepository.updateStaffImage(image,procPic,id);
-//        ClassPathResource imageFile = new ClassPathResource("/user-photos/" + userId + "/" + image);
-//
-//        byte[] imageBytes = StreamUtils.copyToByteArray(imageFile.getInputStream());
-
-        UpdateImageResponse updateImageResponse=new UpdateImageResponse();
-        updateImageResponse.setImage(image);
-        updateImageResponse.setId(id);
-        updateImageResponse.setImageFile(procPic);
-        return  updateImageResponse;
     }
 
     public PageInfo<StaffDto> viewStaffsByPage(Integer page, Integer limit) throws NotFoundException {
@@ -176,17 +162,16 @@ public class StaffService extends BaseService {
         staff.setGender(staffRequest.getGender());
         staff.setIdentification(staffRequest.getIdentification());
         staff.setPhone(staffRequest.getPhone());
+        staff.setImage(staffRequest.getImage());
         return staff;
     }
 
     private StaffDto StaffToStaffDto(Staff staff) {
         StaffDto staffDto = new StaffDto();
-
         staffDto.setStaffId(staff.getStaffId());
         staffDto.setPhone(staff.getPhone());
         staffDto.setFullName(staff.getFullName());
         staffDto.setImage(staff.getImage());
-        staffDto.setProcFile(staff.getProfPic());
         staffDto.setTypeStaff(staff.getTypeStaff().equals(TypeStaff.NhanVien) ? TypeStaff.NhanVien.name() : TypeStaff.CanBo.name());
 
         return staffDto;
@@ -199,7 +184,6 @@ public class StaffService extends BaseService {
         staffDetailDto.setPhone(staff.getPhone());
         staffDetailDto.setFullName(staff.getFullName());
         staffDetailDto.setImage(staff.getImage());
-        staffDetailDto.setProcFile(staff.getProfPic());
         staffDetailDto.setTypeStaff(staff.getTypeStaff().equals(TypeStaff.NhanVien) ? TypeStaff.NhanVien.name() : TypeStaff.CanBo.name());
 
         staffDetailDto.setAddress(staff.getAddress());

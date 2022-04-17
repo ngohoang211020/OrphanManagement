@@ -25,13 +25,4 @@ public class User extends BasePeopleEntity{
             @JoinColumn(name = "role_id", referencedColumnName = "id") })
     private List<Role> roles;
 
-    @Transient
-    public String getPhotosImagePath() {
-        if (loginId == null || getImage() == null) {
-            return "/user-photos/default-user.png";
-        }
-        return "/user-photos/" + this.loginId + "/" + this.getImage();
-
-    }
-
 }

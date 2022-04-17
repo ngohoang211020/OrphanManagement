@@ -39,4 +39,6 @@ public class StaffRequest {
     @NotEmpty(message="{error.msg.email-is-required}")
     @Email(message="{error.msg.email-is-invalid}")
     private String email;
+
+    private String image;
 }

@@ -15,5 +15,4 @@ public class UserDetailDto extends UserDto {
 
     private String date_of_birth;
 
-
 }

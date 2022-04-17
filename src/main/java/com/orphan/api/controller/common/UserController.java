@@ -1,7 +1,6 @@
 package com.orphan.api.controller.common;
 
 import com.google.gson.JsonObject;
-import com.orphan.api.controller.UpdateImageResponse;
 import com.orphan.api.controller.admin.dto.UserDetailDto;
 import com.orphan.api.controller.common.dto.LoginRequest;
 import com.orphan.api.controller.common.dto.PasswordDto;
@@ -17,16 +16,11 @@ import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
 import java.io.IOException;
 
 @RestController
@@ -60,30 +54,6 @@ public class UserController {
         return APIResponse.okStatus(authService.login(loginRequest));
     }
 
-//        /**
-//     * Logout
-//     *
-//     * @param request
-//     * @param response
-//     * @return AccessToken
-//     * @throws NotFoundException
-//     */
-//    @GetMapping(LOGOUT_ENDPOINT)
-//    @ApiOperation("Logout")
-//    public APIResponse<?> logoutPage(HttpServletRequest request, HttpServletResponse response) {
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        if (auth != null){
-//            new SecurityContextLogoutHandler().logout(request, response, auth);
-//        }
-//        SecurityContextHolder.getContext().setAuthentication(null);
-//        String authHeader = request.getHeader(Constants.AUTHORIZATION_HEADER);
-//        if (authHeader != null && authHeader.startsWith(Constants.JWT_TOKEN_TYPE)) {
-//            return authHeader.replace(Constants.JWT_TOKEN_TYPE, "");
-//        }
-//        return null;
-//        return APIResponse.okStatus();
-//    }
-
     /**
      * Register
      *
@@ -111,7 +81,7 @@ public class UserController {
      */
     @ApiOperation("Reset password for account")
     @PostMapping(RESET_PASSWORD_ENDPOINT)
-    public APIResponse<?> processResetPassword( @Valid  @RequestBody ResetPasswordDto resetPasswordDto, Errors errors) throws NotFoundException, BadRequestException {
+    public APIResponse<?> processResetPassword( @Valid @RequestBody ResetPasswordDto resetPasswordDto, Errors errors) throws NotFoundException, BadRequestException {
         if (errors.hasErrors()) {
             JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
             throw new BadRequestException(BadRequestException.ERROR_RESET_PASSWORD_BAD_REQUEST, messages.toString(), true);
@@ -167,30 +137,6 @@ public class UserController {
         }
         registerRequestDto=userService.updateUser(registerRequestDto,userService.getCurrentUserId());
         return APIResponse.okStatus(registerRequestDto);
-    }
-
-    /**
-     * Update User Image
-     * @Param multipartFile MultipartFile
-     * @return APIResponse
-     * @throws NotFoundException
-     */
-    @ApiOperation("Update User Image")
-    @PostMapping(value = "/account/updateImage", consumes = {
-            MediaType.APPLICATION_JSON_VALUE,
-            MediaType.MULTIPART_FORM_DATA_VALUE
-    })
-    public ResponseEntity<?> updateUserImage(@RequestParam(name = "image") MultipartFile multipartFile ) throws BadRequestException, NotFoundException, IOException {
-
-        UpdateImageResponse updateImageResponse = null;
-
-        if (!multipartFile.isEmpty()) {
-
-            String image = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-            updateImageResponse = userService.updateUserImage(image, multipartFile.getBytes(), userService.getCurrentUserId());
-
-        }
-        return APIResponse.okStatus(updateImageResponse);
     }
 
     /**

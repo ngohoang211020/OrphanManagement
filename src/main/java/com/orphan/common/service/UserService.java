@@ -1,6 +1,5 @@
 package com.orphan.common.service;
 
-import com.orphan.api.controller.UpdateImageResponse;
 import com.orphan.api.controller.admin.dto.UserDetailDto;
 import com.orphan.api.controller.admin.dto.UserDto;
 import com.orphan.api.controller.common.dto.PasswordDto;
@@ -116,6 +115,8 @@ public class UserService extends BaseService {
 
         user.setIdentification(registerRequestDto.getIdentification());
 
+        user.setImage(registerRequestDto.getImage());
+
         user.setDateOfBirth(OrphanUtils.StringToDate(registerRequestDto.getDate_of_birth()));
 
         user.setAddress(registerRequestDto.getAddress());
@@ -154,6 +155,9 @@ public class UserService extends BaseService {
                 user.setPassword(passwordEncoder.encode(registerRequestDto.getPassword()));
         }
 
+        if(registerRequestDto.getImage()!=""){
+            user.setImage(registerRequestDto.getImage());
+        }
 
         List<Role> roleList = new ArrayList<>();
         if (registerRequestDto.getRoles().size() != 0) {
@@ -280,18 +284,6 @@ public class UserService extends BaseService {
 
     }
 
-    public UpdateImageResponse updateUserImage(String image,byte[] procPic,Integer id) throws IOException {
-        userRepository.updateUserImage(image,procPic,id);
-//        ClassPathResource imageFile = new ClassPathResource("/user-photos/" + userId + "/" + image);
-//
-//        byte[] imageBytes = StreamUtils.copyToByteArray(imageFile.getInputStream());
-        UpdateImageResponse updateImageResponse=new UpdateImageResponse();
-        updateImageResponse.setImage(image);
-        updateImageResponse.setId(id);
-        updateImageResponse.setImageFile(procPic);
-        return  updateImageResponse;
-    }
-
     /**
      * Send reset token to mail
      *
@@ -340,7 +332,7 @@ public class UserService extends BaseService {
             NotFoundException, BadRequestException {
         User user = this.getUserByEmail(email).get();
 
-       validatePassword(passwordDto.getNewPassWord(),passwordDto.getConfirmPassWord());
+        validatePassword(passwordDto.getNewPassWord(),passwordDto.getConfirmPassWord());
 
         user.setPassword(passwordEncoder.encode(passwordDto.getNewPassWord()));
         userRepository.save(user);
@@ -365,7 +357,14 @@ public class UserService extends BaseService {
 
     //mapper
 
-    public Role StringToRole(String role) {
+    public String RoleToString(Role role){
+        if(role.getName().equals(ERole.ROLE_ADMIN))
+            return ERole.ROLE_ADMIN.name().toString();
+        else
+            return ERole.ROLE_MANAGER.name().toString();
+    }
+
+    public Role StringToRole(ERole role) {
         Optional<Role> oRole;
         if (role.equals(ERole.ROLE_MANAGER)) {
             oRole = roleRepository.findByName(ERole.ROLE_MANAGER);
@@ -378,11 +377,7 @@ public class UserService extends BaseService {
     public UserDto UserToUserDto(User user) throws IOException {
 
         UserDto userDto = new UserDto();
-        if(user.getImage()!=""||!user.getImage().isEmpty()){
-//            ClassPathResource imageFile = new ClassPathResource(user.getPhotosImagePath());
-//
-//            byte[] imageBytes = StreamUtils.copyToByteArray(imageFile.getInputStream());
-            userDto.setImageFile(user.getProfPic());
+        if(user.getImage()!=""){
             userDto.setImage(user.getImage());
         }
         userDto.setId(user.getLoginId());
@@ -401,14 +396,9 @@ public class UserService extends BaseService {
         userDetailDto.setEmail(user.getEmail());
         userDetailDto.setFullName(user.getFullName());
         userDetailDto.setRoles(user.getRoles().stream()
-                .map(Role::getName)
+                .map(role -> RoleToString(role))
                 .collect(Collectors.toList()));
-        if(user.getImage()!=""||!user.getImage().isEmpty()){
-
-            userDetailDto.setImageFile(user.getProfPic());
-            userDetailDto.setImage(user.getImage());
-        }
-
+        userDetailDto.setImage(user.getImage());
         userDetailDto.setAddress(user.getAddress());
         userDetailDto.setGender(user.getGender());
         userDetailDto.setDate_of_birth(OrphanUtils.DateToString(user.getDateOfBirth()));
@@ -423,7 +413,7 @@ public class UserService extends BaseService {
         user.setEmail(userDetailDto.getEmail());
         user.setFullName(userDetailDto.getFullName());
         user.setRoles(userDetailDto.getRoles().stream()
-                .map(role -> StringToRole(role))
+                .map(role -> StringToRole(ERole.valueOf(role)))
                 .collect(Collectors.toList()));
         user.setImage(userDetailDto.getImage());
         user.setAddress(userDetailDto.getAddress());
@@ -433,5 +423,6 @@ public class UserService extends BaseService {
         user.setPhone(userDetailDto.getPhone());
         return user;
     }
+
 
 }

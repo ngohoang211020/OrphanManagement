@@ -14,6 +14,4 @@ public class FurnitureDto {
     private Integer quantity;
 
     private String image;
-
-    private byte[] imageFile;
 }

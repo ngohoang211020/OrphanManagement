@@ -30,12 +30,8 @@ public class Children extends BaseEntity{
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
 
-    @Column(length = 128)
+    @Column(length = 256)
     private String image;
-
-    @Lob
-    @Column(name="prof_pic")
-    private byte[] profPic;
 
     @Temporal(TemporalType.DATE)
     private Date adoptiveDate;

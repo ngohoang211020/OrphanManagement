@@ -36,12 +36,8 @@ public class BasePeopleEntity {
 
     public String identification;
 
-    @Column(length = 128)
+    @Column(length = 256)
     private String image;
-
-    @Lob
-    @Column(name="prof_pic")
-    private byte[] profPic;
 
     @Column(name = "created_at")
     @CreationTimestamp

@@ -13,8 +13,6 @@ public class UserDto {
 
     private String fullName;
 
-    private byte[] imageFile;
-
     private String image;
 
     private List<String> roles;

@@ -45,6 +45,8 @@ public class RegisterRequestDto {
     @NotEmpty(message="{error.msg.name-is-required}")
     private String fullName;
 
+    private String image;
+
     private List<String> roles;
 
     public RegisterRequestDto() {

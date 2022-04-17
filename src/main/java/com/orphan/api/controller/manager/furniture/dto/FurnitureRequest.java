@@ -2,6 +2,7 @@ package com.orphan.api.controller.manager.furniture.dto;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
 @Data
@@ -15,6 +16,7 @@ public class FurnitureRequest {
     @NotEmpty
     private String status;
 
-    @NotEmpty
     private Integer quantity;
+
+    private String image;
 }
