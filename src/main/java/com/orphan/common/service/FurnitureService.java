@@ -1,7 +1,5 @@
 package com.orphan.common.service;
 
-import com.orphan.api.controller.UpdateImageResponse;
-import com.orphan.api.controller.admin.dto.UserDto;
 import com.orphan.api.controller.manager.furniture.dto.FurnitureDto;
 import com.orphan.api.controller.manager.furniture.dto.FurnitureRequest;
 import com.orphan.common.entity.Furniture;
@@ -15,11 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -63,6 +59,9 @@ public class FurnitureService extends BaseService {
         furniture.setStatus(furnitureRequest.getStatus().equals(FurnitureStatus.GOOD.name())  ? FurnitureStatus.GOOD : FurnitureStatus.NEED_FIX);
         furniture.setModifiedId(String.valueOf(getCurrentUserId()));
 
+        if(furnitureRequest.getImage()!=""){
+            furniture.setFurnitureName(furnitureRequest.getImage());
+        }
         this.furnitureRepository.save(furniture);
 
         furnitureRequest.setFurnitureId(furnitureId);
@@ -111,24 +110,13 @@ public class FurnitureService extends BaseService {
 
     public FurnitureDto viewFurnitureDetail(Integer furnitureId) throws NotFoundException {
         Furniture furniture = findById(furnitureId);
-
         return furnitureToFurnitureDto(furniture);
-    }
-
-    public UpdateImageResponse updateFurnitureImage(String image, byte[] procPic, Integer id) throws IOException {
-        furnitureRepository.updateFurnitureImage(image,procPic,id);
-        UpdateImageResponse updateImageResponse=new UpdateImageResponse();
-        updateImageResponse.setImage(image);
-        updateImageResponse.setId(id);
-        updateImageResponse.setImageFile(procPic);
-        return  updateImageResponse;
     }
 
     //mapper 
     private FurnitureDto furnitureToFurnitureDto(Furniture furniture) {
         FurnitureDto furnitureDto = new FurnitureDto();
         furnitureDto.setFurnitureId(furniture.getFurnitureId());
-        furnitureDto.setImageFile(furniture.getProfPic());
         furnitureDto.setImage(furniture.getImage());
         furnitureDto.setNameFurniture(furniture.getFurnitureName());
         furnitureDto.setQuantity(furniture.getQuantity());
@@ -139,6 +127,7 @@ public class FurnitureService extends BaseService {
     private Furniture furnitureRequestToFurniture(FurnitureRequest furnitureRequest) {
         Furniture furniture = new Furniture();
         furniture.setFurnitureId(furnitureRequest.getFurnitureId());
+        furniture.setImage(furnitureRequest.getImage());
         furniture.setFurnitureName(furnitureRequest.getNameFurniture());
         furniture.setQuantity(furnitureRequest.getQuantity());
         furniture.setStatus(furnitureRequest.getStatus().equals(FurnitureStatus.GOOD.name())  ? FurnitureStatus.GOOD : FurnitureStatus.NEED_FIX);

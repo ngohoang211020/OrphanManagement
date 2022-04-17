@@ -14,5 +14,4 @@ public class StaffDto {
 
     private String image;
 
-    private byte[] procFile;
 }

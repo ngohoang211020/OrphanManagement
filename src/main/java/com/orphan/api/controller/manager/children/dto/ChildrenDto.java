@@ -9,8 +9,6 @@ public class ChildrenDto {
 
     private String fullName;
 
-    private byte[] imageFile;
-
     private String image;
 
     private String status;

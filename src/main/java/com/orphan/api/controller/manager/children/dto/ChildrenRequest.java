@@ -24,4 +24,6 @@ public class ChildrenRequest {
     @NotEmpty(message="{error.msg.adoptive-Date-is-required}")
     @Date
     private String adoptiveDate;
+
+    private String image;
 }

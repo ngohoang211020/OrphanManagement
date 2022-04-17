@@ -12,7 +12,5 @@ import org.springframework.stereotype.Repository;
 public interface ChildrenRepository extends JpaRepository<Children, Integer> {
     Page<Children> findByOrderByFullNameAsc(Pageable pageable);
 
-    @Modifying
-    @Query("UPDATE Children u set u.image= ?1, u.profPic= ?2 WHERE u.id= ?3")
-    void updateChildrenImage(String image,byte[] procPic, Integer childrenId);
+
 }

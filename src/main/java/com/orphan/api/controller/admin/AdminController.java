@@ -1,7 +1,6 @@
 package com.orphan.api.controller.admin;
 
 import com.google.gson.JsonObject;
-import com.orphan.api.controller.UpdateImageResponse;
 import com.orphan.api.controller.admin.dto.UserDetailDto;
 import com.orphan.api.controller.admin.dto.UserDto;
 import com.orphan.api.controller.common.dto.RegisterRequestDto;
@@ -73,31 +72,6 @@ public class AdminController {
         RegisterRequestDto newRegisterRequest = userService.createUser(newUserRegisterInfo);
 
         return APIResponse.okStatus(newRegisterRequest);
-    }
-
-    @ApiOperation("Update User Image")
-    @PostMapping(value = "/{userId}/updateImage", consumes = {
-            MediaType.APPLICATION_JSON_VALUE,
-            MediaType.MULTIPART_FORM_DATA_VALUE
-    })
-    public ResponseEntity<?> updateUserImage(@PathVariable("userId") Integer userId, @RequestParam(name = "image") MultipartFile multipartFile) throws BadRequestException, NotFoundException, IOException {
-
-        UpdateImageResponse updateImageResponse = null;
-
-        if (!multipartFile.isEmpty()) {
-            String image = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-
-//            String uploadDir = photoImagePaths + userId;
-//
-//            FileUploadUtil.cleanDir(uploadDir);
-//
-//            FileUploadUtil.saveFile(uploadDir, image, multipartFile);
-
-            updateImageResponse = userService.updateUserImage(image, multipartFile.getBytes(), userId);
-
-
-        }
-        return APIResponse.okStatus(updateImageResponse);
     }
 
     @ApiOperation("Update User Info")

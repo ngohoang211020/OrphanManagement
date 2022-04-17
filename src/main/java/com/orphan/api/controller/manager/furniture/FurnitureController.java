@@ -1,7 +1,6 @@
 package com.orphan.api.controller.manager.furniture;
 
 import com.google.gson.JsonObject;
-import com.orphan.api.controller.UpdateImageResponse;
 import com.orphan.api.controller.manager.furniture.dto.FurnitureDto;
 import com.orphan.api.controller.manager.furniture.dto.FurnitureRequest;
 import com.orphan.common.response.APIResponse;
@@ -15,13 +14,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/manager/furniture")
@@ -78,20 +74,6 @@ public class FurnitureController {
         }
         furnitureRequest = furnitureService.updateFurniture(furnitureRequest, furnitureId);
         return APIResponse.okStatus(furnitureRequest);
-    }
-
-    @ApiOperation("Update furniture Image")
-    @PostMapping("/{furnitureId}/updateImage")
-    public APIResponse<?> updateFurnitureImage(@PathVariable("furnitureId") Integer furnitureId, @RequestParam("image") MultipartFile multipartFile) throws NotFoundException, IOException {
-        UpdateImageResponse updateImageResponse = null;
-
-        if (!multipartFile.isEmpty()) {
-            String image = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-
-            updateImageResponse = furnitureService.updateFurnitureImage(image, multipartFile.getBytes(), furnitureId);
-
-        }
-        return APIResponse.okStatus(updateImageResponse);
     }
 
     @ApiOperation("Delete furniture")

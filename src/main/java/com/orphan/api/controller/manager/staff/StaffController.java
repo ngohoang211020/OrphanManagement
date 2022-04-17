@@ -1,7 +1,6 @@
 package com.orphan.api.controller.manager.staff;
 
 import com.google.gson.JsonObject;
-import com.orphan.api.controller.UpdateImageResponse;
 import com.orphan.api.controller.manager.staff.dto.StaffDetailDto;
 import com.orphan.api.controller.manager.staff.dto.StaffDto;
 import com.orphan.api.controller.manager.staff.dto.StaffRequest;
@@ -16,13 +15,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/manager/staff")
@@ -41,7 +37,7 @@ public class StaffController {
     @ApiOperation("Get Staff By Pages")
     @GetMapping
     public APIResponse<?> viewStaffsByPage(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
-                                           ) throws NotFoundException {
+    ) throws NotFoundException {
         PageInfo<StaffDto> staffDtoPageInfo;
         if (page != null) {
             staffDtoPageInfo = staffService.viewStaffsByPage(page, PageableConstants.limit);
@@ -79,20 +75,6 @@ public class StaffController {
         }
         staffRequest = staffService.updateStaff(staffRequest, staffId);
         return APIResponse.okStatus(staffRequest);
-    }
-
-    @ApiOperation("Update Staff Image")
-    @PostMapping("/{staffId}/updateImage")
-    public APIResponse<?> updateFurnitureImage(@PathVariable("staffId") Integer staffId, @RequestParam("image") MultipartFile multipartFile) throws NotFoundException, IOException {
-        UpdateImageResponse updateImageResponse = null;
-
-        if (!multipartFile.isEmpty()) {
-            String image = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-
-            updateImageResponse = staffService.updateStaffImage(image, multipartFile.getBytes(), staffId);
-
-        }
-        return APIResponse.okStatus(updateImageResponse);
     }
 
     @ApiOperation("Delete Staff")
