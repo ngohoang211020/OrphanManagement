@@ -19,8 +19,8 @@ public class Furniture extends BaseEntity {
     @Column(nullable = false)
     private String furnitureName;
 
-    @Enumerated(EnumType.STRING)
-    private FurnitureStatus status;
+    @Column(nullable = false, unique = true)
+    private String status;
 
     private Integer quantity;
 

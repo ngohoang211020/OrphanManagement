@@ -33,7 +33,6 @@ public class AdminController {
 
     private final UserService userService;
 
-    //  private final String photoImagePaths="src/main/resources/user-photos/";
     @ApiOperation("View All Users")
     @GetMapping("/all")
     public APIResponse<?> viewAllUsers() throws NotFoundException, IOException {

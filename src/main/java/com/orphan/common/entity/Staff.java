@@ -1,6 +1,5 @@
 package com.orphan.common.entity;
 
-import com.orphan.enums.TypeStaff;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +14,7 @@ public class Staff extends BasePeopleEntity {
     @Column(name = "id")
     private Integer staffId;
 
-    @Enumerated(EnumType.STRING)
-    private TypeStaff typeStaff;
+    @Column(nullable = false, unique = true)
+    private String typeStaff;
 
 }

@@ -6,6 +6,7 @@ import com.orphan.api.controller.manager.staff.dto.StaffRequest;
 import com.orphan.common.entity.Staff;
 import com.orphan.common.repository.StaffRepository;
 import com.orphan.common.vo.PageInfo;
+import com.orphan.enums.FurnitureStatus;
 import com.orphan.enums.TypeStaff;
 import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
@@ -92,7 +93,7 @@ public class StaffService extends BaseService {
         staff.setAddress(staffRequest.getAddress());
         staff.setFullName(staffRequest.getFullName());
         staff.setDateOfBirth(OrphanUtils.StringToDate(staffRequest.getDateOfBirth()));
-        staff.setTypeStaff(staffRequest.getTypeStaff().equals(TypeStaff.NhanVien) ? TypeStaff.NhanVien : TypeStaff.CanBo);
+        staff.setTypeStaff(typeStaffToString(staffRequest.getTypeStaff()));
         staff.setEmail(staffRequest.getEmail());
         staff.setGender(staffRequest.getGender());
         staff.setIdentification(staffRequest.getIdentification());
@@ -100,7 +101,7 @@ public class StaffService extends BaseService {
 
         staff.setModifiedId(String.valueOf(getCurrentUserId()));
 
-        staff = staffRepository.save(staff);
+        this.staffRepository.save(staff);
 
         staffRequest.setStaffId(staffId);
 
@@ -140,9 +141,7 @@ public class StaffService extends BaseService {
             throw new NotFoundException(NotFoundException.ERROR_STAFF_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.STAFF));
         }
-        List<StaffDto> staffDtoList = staffList.stream().map(staff -> {
-            return StaffToStaffDto(staff);
-        }).collect(Collectors.toList());
+        List<StaffDto> staffDtoList = staffList.stream().map(staff -> StaffToStaffDto(staff)).collect(Collectors.toList());
         return staffDtoList;
     }
 
@@ -157,7 +156,7 @@ public class StaffService extends BaseService {
         staff.setAddress(staffRequest.getAddress());
         staff.setFullName(staffRequest.getFullName());
         staff.setDateOfBirth(OrphanUtils.StringToDate(staffRequest.getDateOfBirth()));
-        staff.setTypeStaff(staffRequest.getTypeStaff().equals(TypeStaff.NhanVien) ? TypeStaff.NhanVien : TypeStaff.CanBo);
+        staff.setTypeStaff(typeStaffToString(staffRequest.getTypeStaff()));
         staff.setEmail(staffRequest.getEmail());
         staff.setGender(staffRequest.getGender());
         staff.setIdentification(staffRequest.getIdentification());
@@ -172,7 +171,7 @@ public class StaffService extends BaseService {
         staffDto.setPhone(staff.getPhone());
         staffDto.setFullName(staff.getFullName());
         staffDto.setImage(staff.getImage());
-        staffDto.setTypeStaff(staff.getTypeStaff().equals(TypeStaff.NhanVien) ? TypeStaff.NhanVien.name() : TypeStaff.CanBo.name());
+        staffDto.setTypeStaff(typeStaffToString(staff.getTypeStaff()));
 
         return staffDto;
     }
@@ -184,13 +183,17 @@ public class StaffService extends BaseService {
         staffDetailDto.setPhone(staff.getPhone());
         staffDetailDto.setFullName(staff.getFullName());
         staffDetailDto.setImage(staff.getImage());
-        staffDetailDto.setTypeStaff(staff.getTypeStaff().equals(TypeStaff.NhanVien) ? TypeStaff.NhanVien.name() : TypeStaff.CanBo.name());
+        staffDetailDto.setTypeStaff(typeStaffToString(staff.getTypeStaff()));
 
         staffDetailDto.setAddress(staff.getAddress());
         staffDetailDto.setGender(staff.getGender());
         staffDetailDto.setEmail(staff.getEmail());
         staffDetailDto.setIdentification(staff.getIdentification());
-
+        staffDetailDto.setDateOfBirth(OrphanUtils.DateToString(staff.getDateOfBirth()));
         return staffDetailDto;
+    }
+
+    private String typeStaffToString(String typeStaff){
+        return typeStaff.equals(TypeStaff.NhanVien.getCode()) ? TypeStaff.NhanVien.getCode() : TypeStaff.CanBo.getCode();
     }
 }

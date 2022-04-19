@@ -18,7 +18,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,6 +32,8 @@ public class ChildrenService extends BaseService {
     private final OrphanIntroducerRepository orphanIntroducerRepository;
 
     private final OrphanNuturerRepository orphanNuturerRepository;
+
+
 
     public Children findById(Integer childrenId) throws NotFoundException {
         Optional<Children> childrenOptional = childrenRepository.findById(childrenId);
@@ -55,7 +56,7 @@ public class ChildrenService extends BaseService {
     public ChildrenRequest updateChildrenDetail(ChildrenRequest childrenRequest, Integer childrenId) throws NotFoundException {
         Children children = findById(childrenId);
 
-        children.setStatus(childrenRequest.getStatus().equals(ChildrenStatus.RECEIVED.name()) ? ChildrenStatus.RECEIVED : ChildrenStatus.WAIT_TO_RECEIVE);
+        children.setStatus(ChildrenStatusToString(childrenRequest.getStatus()));
         children.setGender(childrenRequest.getGender());
         children.setDateOfBirth(OrphanUtils.StringToDate(childrenRequest.getDateOfBirth()));
         children.setFullName(childrenRequest.getFullName());
@@ -72,7 +73,6 @@ public class ChildrenService extends BaseService {
 
     public ChildrenDetailDto viewChildrenDetail(Integer childrenId) throws NotFoundException {
         Children children = findById(childrenId);
-
         return ChildrenToChildrenDetailDto(children);
     }
 
@@ -124,7 +124,7 @@ public class ChildrenService extends BaseService {
         childrenDto.setFullName(children.getFullName());
         childrenDto.setImage(children.getImage());
         childrenDto.setDateOfBirth(OrphanUtils.DateToString(children.getDateOfBirth()));
-        childrenDto.setStatus(children.getStatus().name());
+        childrenDto.setStatus(ChildrenStatusToString(children.getStatus()));
 
         return childrenDto;
     }
@@ -135,7 +135,7 @@ public class ChildrenService extends BaseService {
         childrenDetailDto.setFullName(children.getFullName());
         childrenDetailDto.setImage(children.getImage());
         childrenDetailDto.setDateOfBirth(OrphanUtils.DateToString(children.getDateOfBirth()));
-        childrenDetailDto.setStatus(children.getStatus().name());
+        childrenDetailDto.setStatus(ChildrenStatusToString(children.getStatus()));
         childrenDetailDto.setGender(children.getGender());
         childrenDetailDto.setAdoptiveDate(OrphanUtils.DateToString(children.getAdoptiveDate()));
 
@@ -153,12 +153,16 @@ public class ChildrenService extends BaseService {
 
     private Children ChildrenRequestToChidren(ChildrenRequest childrenRequest) {
         Children children = new Children();
-        children.setStatus(childrenRequest.getStatus().equals(ChildrenStatus.RECEIVED.name()) ? ChildrenStatus.RECEIVED : ChildrenStatus.WAIT_TO_RECEIVE);
+        children.setStatus(ChildrenStatusToString(childrenRequest.getStatus()));
         children.setGender(childrenRequest.getGender());
         children.setDateOfBirth(OrphanUtils.StringToDate(childrenRequest.getDateOfBirth()));
         children.setFullName(childrenRequest.getFullName());
         children.setAdoptiveDate(OrphanUtils.StringToDate(childrenRequest.getAdoptiveDate()));
         children.setImage(childrenRequest.getImage());
         return children;
+    }
+
+    private String ChildrenStatusToString(String childrenStatus){
+        return childrenStatus.equals(ChildrenStatus.RECEIVED.getCode()) ? ChildrenStatus.RECEIVED.getCode() : ChildrenStatus.WAIT_TO_RECEIVE.getCode();
     }
 }

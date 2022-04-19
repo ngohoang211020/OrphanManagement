@@ -114,7 +114,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().logout().logoutUrl("/logout")
                 .invalidateHttpSession(true)
                 .clearAuthentication(true);
-        ;
+
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }

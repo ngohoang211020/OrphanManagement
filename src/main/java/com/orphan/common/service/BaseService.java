@@ -26,19 +26,14 @@ import java.util.Optional;
 public class BaseService {
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private ChildrenRepository childrenRepository;
-
     @Autowired
     private RoleRepository roleRepository;
-
     @Autowired
     private OrphanIntroducerRepository orphanIntroducerRepository;
-
     @Autowired
     private OrphanNuturerRepository orphanNuturerRepository;
-
     @Autowired
     private JwtUtils jwtProvider;
 

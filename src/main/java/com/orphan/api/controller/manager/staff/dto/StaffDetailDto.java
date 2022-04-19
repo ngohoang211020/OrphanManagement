@@ -11,4 +11,6 @@ public class StaffDetailDto extends StaffDto{
     private String identification;
 
     private String email;
+
+    private String dateOfBirth;
 }

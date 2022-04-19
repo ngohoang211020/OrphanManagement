@@ -4,6 +4,7 @@ import com.orphan.common.entity.Role;
 import com.orphan.common.entity.User;
 import com.orphan.common.repository.UserRepository;
 import com.orphan.config.security.UserPrincipal;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;

@@ -23,9 +23,8 @@ public class Children extends BaseEntity{
 
     private Boolean gender;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ChildrenStatus status;
+    @Column(nullable = false, unique = true)
+    private String status;
 
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
