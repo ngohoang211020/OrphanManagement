@@ -56,7 +56,7 @@ public class FurnitureService extends BaseService {
 
         furniture.setFurnitureName(furnitureRequest.getNameFurniture());
         furniture.setQuantity(furnitureRequest.getQuantity());
-        furniture.setStatus(furnitureRequest.getStatus().equals(FurnitureStatus.GOOD.name())  ? FurnitureStatus.GOOD : FurnitureStatus.NEED_FIX);
+        furniture.setStatus(furnitureStatusToString(furnitureRequest.getStatus()));
         furniture.setModifiedId(String.valueOf(getCurrentUserId()));
 
         if(furnitureRequest.getImage()!=""){
@@ -84,9 +84,7 @@ public class FurnitureService extends BaseService {
             throw new NotFoundException(NotFoundException.ERROR_FURNITURE_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.FURNITURE));
         }
-        List<FurnitureDto> furnitureDtoList = furniturePage.getContent().stream().map(furniture -> {
-            return furnitureToFurnitureDto(furniture);
-        }).collect(Collectors.toList());
+        List<FurnitureDto> furnitureDtoList = furniturePage.getContent().stream().map(furniture -> furnitureToFurnitureDto(furniture)).collect(Collectors.toList());
         PageInfo<FurnitureDto> furnitureDtoPageInfo=new PageInfo<>();
         furnitureDtoPageInfo.setPage(page);
         furnitureDtoPageInfo.setLimit(limit);
@@ -102,9 +100,7 @@ public class FurnitureService extends BaseService {
             throw new NotFoundException(NotFoundException.ERROR_FURNITURE_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.FURNITURE));
         }
-        List<FurnitureDto> furnitureDtoList = furnitureList.stream().map(furniture -> {
-            return furnitureToFurnitureDto(furniture);
-        }).collect(Collectors.toList());
+        List<FurnitureDto> furnitureDtoList = furnitureList.stream().map(furniture -> furnitureToFurnitureDto(furniture)).collect(Collectors.toList());
         return  furnitureDtoList;
     }
 
@@ -120,7 +116,7 @@ public class FurnitureService extends BaseService {
         furnitureDto.setImage(furniture.getImage());
         furnitureDto.setNameFurniture(furniture.getFurnitureName());
         furnitureDto.setQuantity(furniture.getQuantity());
-        furnitureDto.setStatus(furniture.getStatus().equals(FurnitureStatus.GOOD) ? FurnitureStatus.GOOD.name() : FurnitureStatus.NEED_FIX.name());
+        furnitureDto.setStatus(furnitureStatusToString(furniture.getStatus()));
         return furnitureDto;
     }
 
@@ -130,9 +126,12 @@ public class FurnitureService extends BaseService {
         furniture.setImage(furnitureRequest.getImage());
         furniture.setFurnitureName(furnitureRequest.getNameFurniture());
         furniture.setQuantity(furnitureRequest.getQuantity());
-        furniture.setStatus(furnitureRequest.getStatus().equals(FurnitureStatus.GOOD.name())  ? FurnitureStatus.GOOD : FurnitureStatus.NEED_FIX);
+        furniture.setStatus(furnitureStatusToString(furnitureRequest.getStatus()));
         return furniture;
     }
 
+    private String furnitureStatusToString(String furnitureStatus){
+        return furnitureStatus.equals(FurnitureStatus.GOOD.getCode()) ? FurnitureStatus.GOOD.getCode() : FurnitureStatus.NEED_FIX.getCode();
+    }
 
 }

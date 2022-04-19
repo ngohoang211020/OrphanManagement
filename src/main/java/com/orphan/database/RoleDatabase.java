@@ -22,8 +22,8 @@ public class RoleDatabase {
             @Override
             public void run(String... args) throws Exception {
                 List<Role> roleList = new ArrayList<>();
-                roleList.add(new Role(1, ERole.ROLE_ADMIN));
-                roleList.add(new Role(2, ERole.ROLE_MANAGER));
+                roleList.add(new Role(1, ERole.ROLE_ADMIN.getCode()));
+                roleList.add(new Role(2, ERole.ROLE_MANAGER.getCode()));
                 roleRepository.saveAll(roleList);
             }
         };

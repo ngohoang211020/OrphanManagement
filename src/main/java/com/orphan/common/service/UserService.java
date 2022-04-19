@@ -89,17 +89,17 @@ public class UserService extends BaseService {
             registerRequestDto.getRoles().forEach(role -> {
                 switch (role) {
                     case "admin":
-                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN).get();
+                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN.getCode()).get();
                         roleList.add(adminRole);
                         break;
                     case "manager":
-                        Role modRole = roleRepository.findByName(ERole.ROLE_MANAGER).get();
+                        Role modRole = roleRepository.findByName(ERole.ROLE_MANAGER.getCode()).get();
                         roleList.add(modRole);
                         break;
                 }
             });
         } else {
-            Role userRole = roleRepository.findByName(ERole.ROLE_MANAGER).get();
+            Role userRole = roleRepository.findByName(ERole.ROLE_MANAGER.getCode()).get();
             roleList.add(userRole);
         }
 
@@ -164,17 +164,17 @@ public class UserService extends BaseService {
             registerRequestDto.getRoles().forEach(role -> {
                 switch (role) {
                     case "admin":
-                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN).get();
+                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN.getCode()).get();
                         roleList.add(adminRole);
                         break;
                     case "manager":
-                        Role modRole = roleRepository.findByName(ERole.ROLE_MANAGER).get();
+                        Role modRole = roleRepository.findByName(ERole.ROLE_MANAGER.getCode()).get();
                         roleList.add(modRole);
                         break;
                 }
             });
         } else {
-            Role userRole = roleRepository.findByName(ERole.ROLE_MANAGER).get();
+            Role userRole = roleRepository.findByName(ERole.ROLE_MANAGER.getCode()).get();
             roleList.add(userRole);
         }
 
@@ -357,19 +357,12 @@ public class UserService extends BaseService {
 
     //mapper
 
-    public String RoleToString(Role role){
-        if(role.getName().equals(ERole.ROLE_ADMIN))
-            return ERole.ROLE_ADMIN.name().toString();
-        else
-            return ERole.ROLE_MANAGER.name().toString();
-    }
-
-    public Role StringToRole(ERole role) {
+    public Role StringToRole(String role) {
         Optional<Role> oRole;
-        if (role.equals(ERole.ROLE_MANAGER)) {
-            oRole = roleRepository.findByName(ERole.ROLE_MANAGER);
+        if (role.equals(ERole.ROLE_ADMIN.getCode())) {
+            oRole = roleRepository.findByName(ERole.ROLE_ADMIN.getCode());
         } else {
-            oRole = roleRepository.findByName(ERole.ROLE_ADMIN);
+            oRole = roleRepository.findByName(ERole.ROLE_MANAGER.getCode());
         }
         return oRole.get();
     }
@@ -396,7 +389,7 @@ public class UserService extends BaseService {
         userDetailDto.setEmail(user.getEmail());
         userDetailDto.setFullName(user.getFullName());
         userDetailDto.setRoles(user.getRoles().stream()
-                .map(role -> RoleToString(role))
+                .map(role -> role.getName())
                 .collect(Collectors.toList()));
         userDetailDto.setImage(user.getImage());
         userDetailDto.setAddress(user.getAddress());
@@ -413,7 +406,7 @@ public class UserService extends BaseService {
         user.setEmail(userDetailDto.getEmail());
         user.setFullName(userDetailDto.getFullName());
         user.setRoles(userDetailDto.getRoles().stream()
-                .map(role -> StringToRole(ERole.valueOf(role)))
+                .map(role -> StringToRole(role))
                 .collect(Collectors.toList()));
         user.setImage(userDetailDto.getImage());
         user.setAddress(userDetailDto.getAddress());
