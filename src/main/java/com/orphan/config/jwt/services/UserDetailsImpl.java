@@ -32,7 +32,7 @@ public class UserDetailsImpl implements UserDetails {
 
     public static UserDetailsImpl build(User user) {
         List<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName().equals(ERole.ROLE_ADMIN.getCode())?ERole.ROLE_ADMIN.getCode():ERole.ROLE_MANAGER.getCode()))
+                .map(role -> new SimpleGrantedAuthority(role.getName().equals(ERole.ROLE_ADMIN.getCode()) ? ERole.ROLE_ADMIN.getCode() : ERole.ROLE_MANAGER.getCode()))
                 .collect(Collectors.toList());
 
         return new UserDetailsImpl(
