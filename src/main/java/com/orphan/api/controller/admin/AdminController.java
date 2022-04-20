@@ -27,6 +27,8 @@ import java.io.IOException;
 @RequestMapping("/api/v1/admin")
 @PreAuthorize("hasRole('ADMIN')")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*", maxAge = 3600)
+
 public class AdminController {
 
     private final UserService userService;

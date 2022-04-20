@@ -25,6 +25,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/auth")
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequiredArgsConstructor
 public class UserController {
 

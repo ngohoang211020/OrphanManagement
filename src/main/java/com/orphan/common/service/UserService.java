@@ -88,11 +88,11 @@ public class UserService extends BaseService {
         if (registerRequestDto.getRoles().size() != 0) {
             registerRequestDto.getRoles().forEach(role -> {
                 switch (role) {
-                    case "ROLE_ADMIN":
+                    case "admin":
                         Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN.getCode()).get();
                         roleList.add(adminRole);
                         break;
-                    case "ROLE_MANAGER":
+                    case "manager":
                         Role modRole = roleRepository.findByName(ERole.ROLE_MANAGER.getCode()).get();
                         roleList.add(modRole);
                         break;
@@ -163,11 +163,11 @@ public class UserService extends BaseService {
         if (registerRequestDto.getRoles().size() != 0) {
             registerRequestDto.getRoles().forEach(role -> {
                 switch (role) {
-                    case "ROLE_ADMIN":
+                    case "admin":
                         Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN.getCode()).get();
                         roleList.add(adminRole);
                         break;
-                    case "ROLE_MANAGER":
+                    case "manager":
                         Role modRole = roleRepository.findByName(ERole.ROLE_MANAGER.getCode()).get();
                         roleList.add(modRole);
                         break;
