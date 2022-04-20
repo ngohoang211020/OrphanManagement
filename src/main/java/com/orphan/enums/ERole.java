@@ -1,8 +1,8 @@
 package com.orphan.enums;
 
 public enum ERole {
-    ROLE_ADMIN("admin"),
-    ROLE_MANAGER("manager");
+    ROLE_ADMIN("ROLE_ADMIN"),
+    ROLE_MANAGER("ROLE_MANAGER");
 
     private String code;
 
