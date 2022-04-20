@@ -45,11 +45,12 @@ public class JwtUtils {
             validity = new Date(now + TokenEnum.TOKEN_JWT_EXPIRED.getValue() * dateToMilliseconds);
         }
         //Build access token
-        String jwt = Jwts.builder().setSubject(String.valueOf(name))
+        String jwt = Jwts.builder().setSubject(name)
                 .setIssuedAt(new Date())
                 .setAudience(String.valueOf(refreshTokenExpiration.getTime()))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
+        //Build access token
 
         //Build refresh token
         String refreshToken = Jwts.builder().setSubject(name)

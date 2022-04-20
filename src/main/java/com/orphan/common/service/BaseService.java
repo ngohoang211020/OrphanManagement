@@ -23,6 +23,7 @@ import java.util.Optional;
 
 @Service
 @Slf4j
+
 public class BaseService {
     @Autowired
     private UserRepository userRepository;

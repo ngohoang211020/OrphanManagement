@@ -89,17 +89,17 @@ public class UserService extends BaseService {
             registerRequestDto.getRoles().forEach(role -> {
                 switch (role) {
                     case "admin":
-                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN.getCode()).get();
+                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN.toString()).get();
                         roleList.add(adminRole);
                         break;
                     case "manager":
-                        Role modRole = roleRepository.findByName(ERole.ROLE_MANAGER.getCode()).get();
+                        Role modRole = roleRepository.findByName(ERole.ROLE_MANAGER.toString()).get();
                         roleList.add(modRole);
                         break;
                 }
             });
         } else {
-            Role userRole = roleRepository.findByName(ERole.ROLE_MANAGER.getCode()).get();
+            Role userRole = roleRepository.findByName(ERole.ROLE_MANAGER.toString()).get();
             roleList.add(userRole);
         }
 
@@ -164,17 +164,17 @@ public class UserService extends BaseService {
             registerRequestDto.getRoles().forEach(role -> {
                 switch (role) {
                     case "admin":
-                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN.getCode()).get();
+                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN.toString()).get();
                         roleList.add(adminRole);
                         break;
                     case "manager":
-                        Role modRole = roleRepository.findByName(ERole.ROLE_MANAGER.getCode()).get();
+                        Role modRole = roleRepository.findByName(ERole.ROLE_MANAGER.toString()).get();
                         roleList.add(modRole);
                         break;
                 }
             });
         } else {
-            Role userRole = roleRepository.findByName(ERole.ROLE_MANAGER.getCode()).get();
+            Role userRole = roleRepository.findByName(ERole.ROLE_MANAGER.toString()).get();
             roleList.add(userRole);
         }
 
@@ -253,23 +253,6 @@ public class UserService extends BaseService {
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
         }
     }
-
-//    public void validateEmail_Phone_Identification(String email, String phone, String identification) throws BadRequestException {
-//        if (!OrphanUtils.isEmailValid(email)) {
-//            throw new BadRequestException(BadRequestException.EMAIL_IS_INVALID,
-//                    this.messageService.buildMessages("error.msg.email-invalid"));
-//        }
-//
-//        if (!OrphanUtils.isPhoneNumber(phone)) {
-//            throw new BadRequestException(BadRequestException.PHONE_NUMBER_IS_INVALID,
-//                    this.messageService.buildMessages("error.msg.phone-number-invalid"));
-//        }
-//        if (!OrphanUtils.isIdentification(identification)) {
-//            throw new BadRequestException(BadRequestException.IDENTIFICATION_IS_INVALID,
-//                    this.messageService.buildMessages("error.msg.identification-number-invalid"));
-//        }
-//
-//    }
 
     public void validatePassword(String password, String confirmPassword) throws BadRequestException {
         if (!OrphanUtils.isPassword(password)) {
@@ -359,10 +342,10 @@ public class UserService extends BaseService {
 
     public Role StringToRole(String role) {
         Optional<Role> oRole;
-        if (role.equals(ERole.ROLE_ADMIN.getCode())) {
-            oRole = roleRepository.findByName(ERole.ROLE_ADMIN.getCode());
+        if (role.equals(ERole.ROLE_ADMIN.toString())) {
+            oRole = roleRepository.findByName(ERole.ROLE_ADMIN.toString());
         } else {
-            oRole = roleRepository.findByName(ERole.ROLE_MANAGER.getCode());
+            oRole = roleRepository.findByName(ERole.ROLE_MANAGER.toString());
         }
         return oRole.get();
     }
