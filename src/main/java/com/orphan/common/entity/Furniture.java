@@ -18,7 +18,7 @@ public class Furniture extends BaseEntity {
     @Column(nullable = false)
     private String furnitureName;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String status;
 
     private Integer quantity;

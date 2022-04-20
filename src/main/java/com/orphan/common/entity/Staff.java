@@ -14,7 +14,7 @@ public class Staff extends BasePeopleEntity {
     @Column(name = "id")
     private Integer staffId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String typeStaff;
 
 }

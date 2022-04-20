@@ -23,7 +23,7 @@ public class Children extends BaseEntity{
 
     private Boolean gender;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String status;
 
     @Temporal(TemporalType.DATE)
