@@ -45,7 +45,7 @@ public class JwtUtils {
             validity = new Date(now + TokenEnum.TOKEN_JWT_EXPIRED.getValue() * dateToMilliseconds);
         }
         //Build access token
-        String jwt = Jwts.builder().setSubject(name)
+        String jwt = Jwts.builder().setSubject(String.valueOf(name))
                 .setIssuedAt(new Date())
                 .setAudience(String.valueOf(refreshTokenExpiration.getTime()))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
@@ -59,7 +59,7 @@ public class JwtUtils {
 
         AccessToken accessToken = new AccessToken();
         accessToken.setToken(jwt);
-        accessToken.setExpried(validity);
+        accessToken.setExpired(validity);
         accessToken.setRefreshToken(refreshToken);
         accessToken.setUserId(principal.getUserId());
         accessToken.setTokenType(Constants.JWT_TOKEN_TYPE);
@@ -73,12 +73,12 @@ public class JwtUtils {
      * @return token
      */
 
-    public String createTokenRegister(String email) {
+    public String createTokenRegister(String name) {
         //Build access token
         long now = (new Date()).getTime();
         long dateToMilliseconds = 86400000 ;
         Date validity = new Date(now + dateToMilliseconds);
-        String jwt = Jwts.builder().setSubject(email)
+        String jwt = Jwts.builder().setSubject(name)
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS512, this.jwtSecret).compact();
         return jwt;

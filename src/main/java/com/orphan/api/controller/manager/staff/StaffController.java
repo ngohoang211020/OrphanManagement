@@ -22,7 +22,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/manager/staff")
-@PreAuthorize("hasRole('ROLE_MANAGER')")
+@PreAuthorize("hasRole('MANAGER')")
 @RequiredArgsConstructor
 public class StaffController {
 

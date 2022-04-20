@@ -31,17 +31,10 @@ import org.springframework.web.filter.CorsFilter;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
+    UserDetailsServiceImpl userDetailsService;
+
+    @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new UserDetailsServiceImpl();
-    }
-
-    @Bean
-    public PasswordEncoder PasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
@@ -51,13 +44,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     //cung cap thong tin user cho spring va cung cấp password encoder
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        authenticationManagerBuilder.userDetailsService(userDetailsService()).passwordEncoder(PasswordEncoder());
+        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+    //ma hoa password
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     public static final String[] AUTH_WHITELIST = {

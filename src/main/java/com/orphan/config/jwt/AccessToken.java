@@ -14,7 +14,7 @@ public class AccessToken {
 	@ApiModelProperty(value = "Access token", readOnly = true)
 	private String token;
 	@ApiModelProperty(value = "Access token expried date", readOnly = true)
-	private Date expried;
+	private Date expired;
 
 	@ApiModelProperty(value = "Refresh token")
 	@NotNull(message = "Refresh token {validation.not-null}")

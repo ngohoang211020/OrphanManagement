@@ -20,7 +20,6 @@ import java.util.Date;
 public class OrphanUtils {
     private static final Logger log = LoggerFactory.getLogger(OrphanUtils.class);
 
-
     /**
      * Check email in right format
      *

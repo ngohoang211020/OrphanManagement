@@ -5,6 +5,7 @@ import com.orphan.common.entity.User;
 import com.orphan.common.repository.UserRepository;
 import com.orphan.config.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -16,14 +17,14 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class UserDetailsServiceImpl implements UserDetailsService {
-
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(userName)
+        User user = userRepository.findById(Integer.valueOf(userName))
                 .orElseThrow(() -> new UsernameNotFoundException("Email " + userName + " not found"));
         UserDetails userDetails = null;
         try {
