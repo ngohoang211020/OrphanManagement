@@ -1,6 +1,5 @@
 package com.orphan.common.entity;
 
-import com.orphan.enums.ERole;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -36,7 +35,4 @@ public class Role {
         this.name = name;
     }
 
-    public String getName(){
-        return name.toString();
-    }
 }

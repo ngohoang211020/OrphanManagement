@@ -24,9 +24,8 @@ import javax.validation.Valid;
 import java.io.IOException;
 
 @RestController
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/api/v1/manager/children")
-@PreAuthorize("hasRole('MANAGER')")
+@PreAuthorize("hasRole('ROLE_MANAGER')")
 @RequiredArgsConstructor
 public class ChildrenController {
 

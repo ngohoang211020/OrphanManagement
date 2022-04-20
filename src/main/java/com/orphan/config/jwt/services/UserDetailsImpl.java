@@ -2,7 +2,6 @@ package com.orphan.config.jwt.services;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.orphan.common.entity.User;
-import com.orphan.enums.ERole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,7 +31,7 @@ public class UserDetailsImpl implements UserDetails {
 
     public static UserDetailsImpl build(User user) {
         List<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName().equals(ERole.ROLE_ADMIN.getCode()) ? ERole.ROLE_ADMIN.getCode() : ERole.ROLE_MANAGER.getCode()))
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
 
         return new UserDetailsImpl(
@@ -41,7 +40,6 @@ public class UserDetailsImpl implements UserDetails {
                 user.getPassword(),
                 authorities);
     }
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

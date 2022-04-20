@@ -1,6 +1,5 @@
 package com.orphan.config.jwt;
 
-import com.orphan.config.jwt.services.UserDetailsImpl;
 import com.orphan.config.security.UserPrincipal;
 import com.orphan.enums.TokenEnum;
 import com.orphan.utils.constants.Constants;
@@ -12,9 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Component
 public class JwtUtils {

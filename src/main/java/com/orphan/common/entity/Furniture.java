@@ -1,6 +1,5 @@
 package com.orphan.common.entity;
 
-import com.orphan.enums.FurnitureStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,10 +23,7 @@ public class Furniture extends BaseEntity {
 
     private Integer quantity;
 
-    @Column(length = 128)
+    @Column(length = 256)
     private String image;
 
-    @Lob
-    @Column(name="prof_pic")
-    private byte[] profPic;
 }

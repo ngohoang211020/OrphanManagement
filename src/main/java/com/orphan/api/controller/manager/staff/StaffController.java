@@ -22,8 +22,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/manager/staff")
-@PreAuthorize("hasRole('MANAGER')")
-@CrossOrigin(origins = "*", maxAge = 3600)
+@PreAuthorize("hasRole('ROLE_MANAGER')")
 @RequiredArgsConstructor
 public class StaffController {
 
