@@ -131,7 +131,7 @@ public class FurnitureService extends BaseService {
     }
 
     private String furnitureStatusToString(String furnitureStatus){
-        return furnitureStatus.equals(FurnitureStatus.GOOD.getCode()) ? FurnitureStatus.GOOD.getCode() : FurnitureStatus.NEED_FIX.getCode();
+        return furnitureStatus.equals(FurnitureStatus.GOOD.toString()) ? FurnitureStatus.GOOD.toString() : FurnitureStatus.NEED_FIX.getCode();
     }
 
 }
