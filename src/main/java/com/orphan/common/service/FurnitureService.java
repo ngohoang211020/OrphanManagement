@@ -43,7 +43,7 @@ public class FurnitureService extends BaseService {
         Furniture furniture = furnitureRequestToFurniture(furnitureRequest);
         furniture.setCreatedId(String.valueOf(getCurrentUserId()));
 
-        furniture=furnitureRepository.save(furniture);
+        furniture=this.furnitureRepository.save(furniture);
 
         furnitureRequest.setFurnitureId(furniture.getFurnitureId());
 
@@ -61,6 +61,7 @@ public class FurnitureService extends BaseService {
 
         if(furnitureRequest.getImage()!=""){
             furniture.setFurnitureName(furnitureRequest.getImage());
+            furnitureRequest.setImage(furniture.getImage());
         }
         this.furnitureRepository.save(furniture);
 

@@ -1,12 +1,8 @@
 package com.orphan.common.service;
 
-import com.orphan.api.controller.manager.staff.dto.StaffDetailDto;
-import com.orphan.api.controller.manager.staff.dto.StaffDto;
-import com.orphan.api.controller.manager.staff.dto.StaffRequest;
 import com.orphan.common.entity.Staff;
 import com.orphan.common.repository.StaffRepository;
 import com.orphan.common.vo.PageInfo;
-import com.orphan.enums.FurnitureStatus;
 import com.orphan.enums.TypeStaff;
 import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;

@@ -33,6 +33,13 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     Page<User> findByOrderByFullNameAsc(Pageable pageable);
 
+    @Query("select u from User u inner join u.roles roles where roles.name = ?1")
+    List<User> findByRoles_Name(String name);
+
+    @Query("select u from User u inner join u.roles roles where roles.name = ?1 order by u.fullName")
+    Page<User> findByRoles_NameOrderByFullNameAsc(String name, Pageable pageable);
+
+
 
 
 }

@@ -22,8 +22,11 @@ public class RoleDatabase {
             @Override
             public void run(String... args) throws Exception {
                 List<Role> roleList = new ArrayList<>();
-                roleList.add(new Role(1, ERole.ROLE_ADMIN.toString()));
-                roleList.add(new Role(2, ERole.ROLE_MANAGER.toString()));
+                roleList.add(new Role(1, ERole.ROLE_ADMIN.getCode(),"Quản trị viên"));
+                roleList.add(new Role(2, ERole.ROLE_EMPLOYEE.getCode(),"Quản lý thông tin trẻ em"));
+                roleList.add(new Role(3, ERole.ROLE_MANAGER_LOGISTIC.getCode(),"Quản lý hoạt động trung tâm"));
+                roleList.add(new Role(4, ERole.ROLE_MANAGER_HR.getCode(),"Quản trị nhân sự"));
+                roleList.add(new Role(5, ERole.ROLE_MANAGER_CHILDREN.getCode(),"Nhân viên"));
                 roleRepository.saveAll(roleList);
             }
         };
