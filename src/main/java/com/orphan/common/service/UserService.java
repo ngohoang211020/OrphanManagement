@@ -49,7 +49,7 @@ public class UserService extends BaseService {
 
     private static final String URL_CHANGE_PASSWORD_OPEN_WEB = "https://orphanmanagement.herokuapp.com/api/v1/auth/change-password";
 
-
+    //findUserById
     public User findById(Integer userId) throws NotFoundException {
         Optional<User> user = userRepository.findById(userId);
         if (!user.isPresent()) {
@@ -59,14 +59,7 @@ public class UserService extends BaseService {
         return user.get();
     }
 
-    /**
-     * Register individual
-     *
-     * @param registerRequestDto
-     * @return String
-     */
-
-
+    //Create Account
     public RegisterRequestDto createUser(RegisterRequestDto registerRequestDto) throws BadRequestException {
         User user = new User();
 
@@ -88,18 +81,30 @@ public class UserService extends BaseService {
         if (registerRequestDto.getRoles().size() != 0) {
             registerRequestDto.getRoles().forEach(role -> {
                 switch (role) {
-                    case "admin":
-                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN.toString()).get();
+                    case "ROLE_ADMIN":
+                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN.getCode()).get();
                         roleList.add(adminRole);
                         break;
-                    case "manager":
-                        Role modRole = roleRepository.findByName(ERole.ROLE_MANAGER.toString()).get();
-                        roleList.add(modRole);
+                    case "ROLE_MANAGER_CHILDREN":
+                        Role childrenManager = roleRepository.findByName(ERole.ROLE_MANAGER_CHILDREN.getCode()).get();
+                        roleList.add(childrenManager);
+                        break;
+                    case "ROLE_MANAGER_LOGISTIC":
+                        Role logisticManager = roleRepository.findByName(ERole.ROLE_MANAGER_LOGISTIC.getCode()).get();
+                        roleList.add(logisticManager);
+                        break;
+                    case "ROLE_MANAGER_HR":
+                        Role hrManager = roleRepository.findByName(ERole.ROLE_MANAGER_HR.getCode()).get();
+                        roleList.add(hrManager);
+                        break;
+                    case "ROLE_EMPLOYEE":
+                        Role employee = roleRepository.findByName(ERole.ROLE_EMPLOYEE.getCode()).get();
+                        roleList.add(employee);
                         break;
                 }
             });
         } else {
-            Role userRole = roleRepository.findByName(ERole.ROLE_MANAGER.toString()).get();
+            Role userRole = roleRepository.findByName(ERole.ROLE_EMPLOYEE.getCode()).get();
             roleList.add(userRole);
         }
 
@@ -130,6 +135,7 @@ public class UserService extends BaseService {
         return registerRequestDto;
     }
 
+    //Update Account
     public RegisterRequestDto updateUser(RegisterRequestDto registerRequestDto, Integer userId) throws BadRequestException, NotFoundException {
         User user = findById(userId);
 
@@ -151,11 +157,11 @@ public class UserService extends BaseService {
 
 
         if (registerRequestDto.getPassword() != "") {
-                validatePassword(registerRequestDto.getPassword(), registerRequestDto.getConfirmPassword());
-                user.setPassword(passwordEncoder.encode(registerRequestDto.getPassword()));
+            validatePassword(registerRequestDto.getPassword(), registerRequestDto.getConfirmPassword());
+            user.setPassword(passwordEncoder.encode(registerRequestDto.getPassword()));
         }
 
-        if(registerRequestDto.getImage()!=""){
+        if (registerRequestDto.getImage() != "") {
             user.setImage(registerRequestDto.getImage());
         }
 
@@ -163,18 +169,30 @@ public class UserService extends BaseService {
         if (registerRequestDto.getRoles().size() != 0) {
             registerRequestDto.getRoles().forEach(role -> {
                 switch (role) {
-                    case "admin":
-                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN.toString()).get();
+                    case "ROLE_ADMIN":
+                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN.getCode()).get();
                         roleList.add(adminRole);
                         break;
-                    case "manager":
-                        Role modRole = roleRepository.findByName(ERole.ROLE_MANAGER.toString()).get();
-                        roleList.add(modRole);
+                    case "ROLE_MANAGER_CHILDREN":
+                        Role childrenManager = roleRepository.findByName(ERole.ROLE_MANAGER_CHILDREN.getCode()).get();
+                        roleList.add(childrenManager);
+                        break;
+                    case "ROLE_MANAGER_LOGISTIC":
+                        Role logisticManager = roleRepository.findByName(ERole.ROLE_MANAGER_LOGISTIC.getCode()).get();
+                        roleList.add(logisticManager);
+                        break;
+                    case "ROLE_MANAGER_HR":
+                        Role hrManager = roleRepository.findByName(ERole.ROLE_MANAGER_HR.getCode()).get();
+                        roleList.add(hrManager);
+                        break;
+                    case "ROLE_EMPLOYEE":
+                        Role employee = roleRepository.findByName(ERole.ROLE_EMPLOYEE.getCode()).get();
+                        roleList.add(employee);
                         break;
                 }
             });
         } else {
-            Role userRole = roleRepository.findByName(ERole.ROLE_MANAGER.toString()).get();
+            Role userRole = roleRepository.findByName(ERole.ROLE_EMPLOYEE.getCode()).get();
             roleList.add(userRole);
         }
 
@@ -199,8 +217,9 @@ public class UserService extends BaseService {
         return registerRequestDto;
     }
 
+    //View By Page
     public PageInfo<UserDto> viewUsersByPage(Integer page, Integer limit) throws NotFoundException {
-        PageRequest pageRequest=buildPageRequest(page,limit);
+        PageRequest pageRequest = buildPageRequest(page, limit);
         Page<User> userPage = userRepository.findByOrderByFullNameAsc(pageRequest);
         if (userPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
@@ -214,7 +233,7 @@ public class UserService extends BaseService {
             }
             return null;
         }).collect(Collectors.toList());
-        PageInfo<UserDto> userDtoPageInfo=new PageInfo<>();
+        PageInfo<UserDto> userDtoPageInfo = new PageInfo<>();
         userDtoPageInfo.setPage(page);
         userDtoPageInfo.setLimit(limit);
         userDtoPageInfo.setResult(userDtoList);
@@ -223,6 +242,7 @@ public class UserService extends BaseService {
         return userDtoPageInfo;
     }
 
+    //View All
     public List<UserDto> viewAllUsers() throws NotFoundException {
         List<User> userList = userRepository.findAll();
         if (userList.isEmpty()) {
@@ -240,11 +260,13 @@ public class UserService extends BaseService {
         return userDtoList;
     }
 
+    //View detail by id
     public UserDetailDto viewUserDetail(Integer userId) throws NotFoundException, IOException {
         UserDetailDto userDetailDto = UserToUserDetailDto(findById(userId));
         return userDetailDto;
     }
 
+    //delete by id
     public void deleteUserById(Integer userId) throws NotFoundException {
         if (userRepository.existsByLoginId(userId)) {
             userRepository.deleteById(userId);
@@ -254,25 +276,7 @@ public class UserService extends BaseService {
         }
     }
 
-    public void validatePassword(String password, String confirmPassword) throws BadRequestException {
-        if (!OrphanUtils.isPassword(password)) {
-            throw new BadRequestException(BadRequestException.PASSWORD_IS_INVALID,
-                    this.messageService.buildMessages("error.msg.password-invalid"));
-        }
-
-        if (!password.equals(confirmPassword)) {
-            throw new BadRequestException(BadRequestException.ERROR_PASSWORD_NOT_MATCH_CONFIRM_PASSWORD,
-                    APIConstants.ERROR_NEW_PASSWORD_NOT_MATCH_CONFIRM_PASSWORD, false);
-        }
-
-    }
-
-    /**
-     * Send reset token to mail
-     *
-     * @param resetPasswordDto
-     * @throws NotFoundException
-     */
+    //send api to email need change password
     public User resetPassword(ResetPasswordDto resetPasswordDto) throws NotFoundException {
         Optional<User> user = this.userRepository.findByEmail(resetPasswordDto.getEmail());
         if (!user.isPresent()) {
@@ -302,50 +306,49 @@ public class UserService extends BaseService {
         return user.get();
     }
 
-    /**
-     * Store reset token to db
-     *
-     * @param passwordDto dto request
-     * @param email  string
-     * @return User
-     * @throws NotFoundException
-     * @throws BadRequestException
-     */
+    //call send email change password api
     public void changePassWord(PasswordDto passwordDto, String email) throws
             NotFoundException, BadRequestException {
         User user = this.getUserByEmail(email).get();
 
-        validatePassword(passwordDto.getNewPassWord(),passwordDto.getConfirmPassWord());
+        validatePassword(passwordDto.getNewPassWord(), passwordDto.getConfirmPassWord());
 
         user.setPassword(passwordEncoder.encode(passwordDto.getNewPassWord()));
         userRepository.save(user);
     }
 
-
+    //change password
     public void changePassWord(PasswordDto passwordDto) throws
             NotFoundException, BadRequestException {
         Optional<User> user = this.getUserByLoginId(String.valueOf(getCurrentUserId()));
-        if(!user.isPresent()){
+        if (!user.isPresent()) {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
         }
 
-        validatePassword(passwordDto.getNewPassWord(),passwordDto.getConfirmPassWord());
+        validatePassword(passwordDto.getNewPassWord(), passwordDto.getConfirmPassWord());
 
         user.get().setPassword(passwordEncoder.encode(passwordDto.getNewPassWord()));
         userRepository.save(user.get());
     }
 
-
+    //-------------------------Employee Service---------------------
 
     //mapper
 
     public Role StringToRole(String role) {
         Optional<Role> oRole;
-        if (role.equals(ERole.ROLE_ADMIN.toString())) {
-            oRole = roleRepository.findByName(ERole.ROLE_ADMIN.toString());
+        if (role.equals(ERole.ROLE_ADMIN.getCode())) {
+            oRole = roleRepository.findByName(ERole.ROLE_ADMIN.getCode());
+        } else if (role.equals(ERole.ROLE_MANAGER_HR.getCode())) {
+            oRole = roleRepository.findByName(ERole.ROLE_MANAGER_HR.getCode());
+        } else if (role.equals(ERole.ROLE_MANAGER_LOGISTIC.getCode())) {
+            oRole = roleRepository.findByName(ERole.ROLE_MANAGER_LOGISTIC.getCode());
+
+        } else if (role.equals(ERole.ROLE_MANAGER_CHILDREN.getCode())) {
+            oRole = roleRepository.findByName(ERole.ROLE_MANAGER_CHILDREN.getCode());
         } else {
-            oRole = roleRepository.findByName(ERole.ROLE_MANAGER.toString());
+            oRole = roleRepository.findByName(ERole.ROLE_EMPLOYEE.getCode());
         }
         return oRole.get();
     }
@@ -353,7 +356,7 @@ public class UserService extends BaseService {
     public UserDto UserToUserDto(User user) throws IOException {
 
         UserDto userDto = new UserDto();
-        if(user.getImage()!=""){
+        if (user.getImage() != "") {
             userDto.setImage(user.getImage());
         }
         userDto.setId(user.getLoginId());
@@ -400,5 +403,16 @@ public class UserService extends BaseService {
         return user;
     }
 
+    public void validatePassword(String password, String confirmPassword) throws BadRequestException {
+        if (!OrphanUtils.isPassword(password)) {
+            throw new BadRequestException(BadRequestException.PASSWORD_IS_INVALID,
+                    this.messageService.buildMessages("error.msg.password-invalid"));
+        }
 
+        if (!password.equals(confirmPassword)) {
+            throw new BadRequestException(BadRequestException.ERROR_PASSWORD_NOT_MATCH_CONFIRM_PASSWORD,
+                    APIConstants.ERROR_NEW_PASSWORD_NOT_MATCH_CONFIRM_PASSWORD, false);
+        }
+
+    }
 }

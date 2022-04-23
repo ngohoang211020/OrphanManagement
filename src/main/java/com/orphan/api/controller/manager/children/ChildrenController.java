@@ -25,7 +25,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/manager/children")
-@PreAuthorize("hasRole('MANAGER')")
+@PreAuthorize("hasAnyRole('ADMIN','MANAGER_CHILDREN')")
 @RequiredArgsConstructor
 public class ChildrenController {
 

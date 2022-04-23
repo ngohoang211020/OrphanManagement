@@ -22,6 +22,9 @@ public class Role {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Column(nullable = false,unique = true)
+    private String description;
+
     @Column(name = "created_at")
     @CreationTimestamp
     public LocalDateTime createdAt;
@@ -30,6 +33,11 @@ public class Role {
     @UpdateTimestamp
     public LocalDateTime modifiedAt;
 
+    public Role(Integer id, String name,String description) {
+        this.id = id;
+        this.name = name;
+        this.description=description;
+    }
     public Role(Integer id, String name) {
         this.id = id;
         this.name = name;

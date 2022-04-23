@@ -21,7 +21,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/manager/furniture")
-@PreAuthorize("hasRole('MANAGER')")
+@PreAuthorize("hasAnyRole('ADMIN','MANAGER_LOGISTIC')")
 @RequiredArgsConstructor
 public class FurnitureController {
 
