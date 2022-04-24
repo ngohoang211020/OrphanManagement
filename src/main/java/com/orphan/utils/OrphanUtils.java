@@ -129,11 +129,4 @@ public class OrphanUtils {
     }
 
 
-//    public static ERole StringToERole(String role) {
-//        if (role.equals(ERole.ROLE_ADMIN)) {
-//            return ERole.ROLE_ADMIN;
-//        } else return ERole.ROLE_MANAGER;
-//    }
-
-
 }

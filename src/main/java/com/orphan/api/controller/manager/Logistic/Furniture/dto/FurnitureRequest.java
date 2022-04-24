@@ -1,10 +1,8 @@
-package com.orphan.api.controller.manager.furniture.dto;
+package com.orphan.api.controller.manager.Logistic.Furniture.dto;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
 @Getter

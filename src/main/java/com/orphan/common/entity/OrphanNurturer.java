@@ -20,6 +20,4 @@ public class OrphanNurturer extends BasePeopleEntity {
     @OneToMany(mappedBy = "orphanNurturer", cascade = CascadeType.ALL)
     private List<Children> childrens;
 
-    @Temporal(TemporalType.DATE)
-    private Date dateReceivedOfNurturer;
 }

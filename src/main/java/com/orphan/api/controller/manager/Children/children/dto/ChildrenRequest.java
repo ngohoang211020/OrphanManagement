@@ -1,11 +1,14 @@
-package com.orphan.api.controller.manager.children.dto;
+package com.orphan.api.controller.manager.Children.children.dto;
 
 import com.orphan.common.annotation.Date;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
 
-@Data
+@Getter
+@Setter
 public class ChildrenRequest {
     private Integer id;
 
@@ -25,5 +28,12 @@ public class ChildrenRequest {
     @Date
     private String adoptiveDate;
 
+    private Integer introducerId;
+
     private String image;
+
+    private Integer nurturerId;
+
+    private String dateReceivedOfNurturer;
+
 }

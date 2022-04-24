@@ -17,9 +17,6 @@ public class OrphanIntroducer extends BasePeopleEntity{
     @Column(name = "id")
     private Integer introducerId;
 
-    @Temporal(TemporalType.DATE)
-    private Date dateIntroduce;
-
     @OneToMany(mappedBy = "orphanIntroducer", cascade = CascadeType.ALL)
     private List<Children> childrens;
 }

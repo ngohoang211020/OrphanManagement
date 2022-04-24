@@ -1,4 +1,4 @@
-package com.orphan.api.controller.manager.children.dto;
+package com.orphan.api.controller.manager.Children.children.dto;
 
 import lombok.Data;
 
@@ -11,8 +11,6 @@ public class ChildrenDetailDto extends ChildrenDto{
     private String nameOfIntroducer;
 
     private String adoptiveDate;
-
-    private String dateLeaved;
 
     private String nameOfNurturer;
 }

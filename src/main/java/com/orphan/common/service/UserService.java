@@ -1,5 +1,6 @@
 package com.orphan.common.service;
 
+import com.orphan.api.controller.admin.dto.RoleDto;
 import com.orphan.api.controller.admin.dto.UserDetailDto;
 import com.orphan.api.controller.admin.dto.UserDto;
 import com.orphan.api.controller.common.dto.PasswordDto;
@@ -353,6 +354,13 @@ public class UserService extends BaseService {
         return oRole.get();
     }
 
+    public RoleDto RoleToRoleDto(Role role){
+        RoleDto roleDto=new RoleDto();
+        roleDto.setRoleName(role.getName());
+        roleDto.setRoleId(role.getId());
+        roleDto.setDescription(role.getDescription());
+        return roleDto;
+    }
     public UserDto UserToUserDto(User user) throws IOException {
 
         UserDto userDto = new UserDto();
@@ -363,7 +371,7 @@ public class UserService extends BaseService {
         userDto.setEmail(user.getEmail());
         userDto.setFullName(user.getFullName());
         userDto.setRoles(user.getRoles().stream()
-                .map(role -> role.getName())
+                .map(role -> RoleToRoleDto(role))
                 .collect(Collectors.toList()));
         return userDto;
     }
@@ -375,7 +383,7 @@ public class UserService extends BaseService {
         userDetailDto.setEmail(user.getEmail());
         userDetailDto.setFullName(user.getFullName());
         userDetailDto.setRoles(user.getRoles().stream()
-                .map(role -> role.getName())
+                .map(role -> RoleToRoleDto(role))
                 .collect(Collectors.toList()));
         userDetailDto.setImage(user.getImage());
         userDetailDto.setAddress(user.getAddress());
@@ -386,22 +394,6 @@ public class UserService extends BaseService {
         return userDetailDto;
     }
 
-    public User UserDetailDtoToUser(UserDetailDto userDetailDto) {
-        User user = new User();
-        user.setLoginId(userDetailDto.getId());
-        user.setEmail(userDetailDto.getEmail());
-        user.setFullName(userDetailDto.getFullName());
-        user.setRoles(userDetailDto.getRoles().stream()
-                .map(role -> StringToRole(role))
-                .collect(Collectors.toList()));
-        user.setImage(userDetailDto.getImage());
-        user.setAddress(userDetailDto.getAddress());
-        user.setGender(userDetailDto.getGender());
-        user.setDateOfBirth(OrphanUtils.StringToDate(userDetailDto.getDate_of_birth()));
-        user.setIdentification(userDetailDto.getIdentification());
-        user.setPhone(userDetailDto.getPhone());
-        return user;
-    }
 
     public void validatePassword(String password, String confirmPassword) throws BadRequestException {
         if (!OrphanUtils.isPassword(password)) {

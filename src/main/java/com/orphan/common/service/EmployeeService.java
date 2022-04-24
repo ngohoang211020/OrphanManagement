@@ -1,7 +1,7 @@
 package com.orphan.common.service;
 
 import com.orphan.api.controller.admin.dto.UserDto;
-import com.orphan.api.controller.manager.staff.dto.EmployeeRequest;
+import com.orphan.api.controller.manager.HR.Employee.dto.EmployeeRequest;
 import com.orphan.common.entity.Role;
 import com.orphan.common.entity.User;
 import com.orphan.common.repository.RoleRepository;

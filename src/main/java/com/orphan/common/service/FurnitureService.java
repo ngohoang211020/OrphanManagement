@@ -1,7 +1,7 @@
 package com.orphan.common.service;
 
-import com.orphan.api.controller.manager.furniture.dto.FurnitureDto;
-import com.orphan.api.controller.manager.furniture.dto.FurnitureRequest;
+import com.orphan.api.controller.manager.Logistic.Furniture.dto.FurnitureDto;
+import com.orphan.api.controller.manager.Logistic.Furniture.dto.FurnitureRequest;
 import com.orphan.common.entity.Furniture;
 import com.orphan.common.repository.FurnitureRepository;
 import com.orphan.common.vo.PageInfo;

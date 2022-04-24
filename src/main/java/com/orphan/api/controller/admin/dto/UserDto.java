@@ -15,5 +15,5 @@ public class UserDto {
 
     private String image;
 
-    private List<String> roles;
+    private List<RoleDto> roles;
 }

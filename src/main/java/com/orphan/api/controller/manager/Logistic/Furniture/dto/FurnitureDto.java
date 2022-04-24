@@ -1,4 +1,4 @@
-package com.orphan.api.controller.manager.furniture.dto;
+package com.orphan.api.controller.manager.Logistic.Furniture.dto;
 
 import lombok.Data;
 

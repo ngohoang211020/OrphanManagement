@@ -1,6 +1,5 @@
 package com.orphan.common.entity;
 
-import com.orphan.enums.ChildrenStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -34,6 +33,9 @@ public class Children extends BaseEntity{
 
     @Temporal(TemporalType.DATE)
     private Date adoptiveDate;
+
+    @Temporal(TemporalType.DATE)
+    private Date dateReceivedOfNurturer;
 
     @ManyToOne
     @JoinColumn(name = "introducer_id")

@@ -1,9 +1,9 @@
-package com.orphan.api.controller.manager.children;
+package com.orphan.api.controller.manager.Children.children;
 
 import com.google.gson.JsonObject;
-import com.orphan.api.controller.manager.children.dto.ChildrenDetailDto;
-import com.orphan.api.controller.manager.children.dto.ChildrenDto;
-import com.orphan.api.controller.manager.children.dto.ChildrenRequest;
+import com.orphan.api.controller.manager.Children.children.dto.ChildrenDetailDto;
+import com.orphan.api.controller.manager.Children.children.dto.ChildrenDto;
+import com.orphan.api.controller.manager.Children.children.dto.ChildrenRequest;
 import com.orphan.common.response.APIResponse;
 import com.orphan.common.service.ChildrenService;
 import com.orphan.common.vo.PageInfo;
@@ -15,13 +15,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/manager/children")
@@ -71,7 +68,7 @@ public class ChildrenController {
 
     @ApiOperation("Update children detail")
     @PutMapping("/{childrenId}")
-    public APIResponse<?> updateFurniture(@PathVariable("childrenId") Integer childrenId, @Valid @RequestBody ChildrenRequest childrenRequest, Errors errors) throws NotFoundException, BadRequestException {
+    public APIResponse<?> updateChildren(@PathVariable("childrenId") Integer childrenId, @Valid @RequestBody ChildrenRequest childrenRequest, Errors errors) throws NotFoundException, BadRequestException {
         if (errors.hasErrors()) {
             JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
             throw new BadRequestException(BadRequestException.ERROR_REGISTER_USER_INVALID, messages.toString(), true);
@@ -82,7 +79,7 @@ public class ChildrenController {
 
     @ApiOperation("Delete children")
     @DeleteMapping("/{childrenId}")
-    public APIResponse<?> deleteFurniture(@PathVariable("childrenId") Integer childrenId) throws NotFoundException {
+    public APIResponse<?> deleteChildren(@PathVariable("childrenId") Integer childrenId) throws NotFoundException {
         childrenService.deleteById(childrenId);
         return APIResponse.okStatus();
     }

@@ -1,4 +1,4 @@
-package com.orphan.api.controller.manager.staff.dto;
+package com.orphan.api.controller.manager.HR.Employee.dto;
 
 import com.orphan.common.annotation.Date;
 import com.orphan.common.annotation.Identification;

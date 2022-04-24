@@ -1,8 +1,8 @@
-package com.orphan.api.controller.manager.furniture;
+package com.orphan.api.controller.manager.Logistic.Furniture;
 
 import com.google.gson.JsonObject;
-import com.orphan.api.controller.manager.furniture.dto.FurnitureDto;
-import com.orphan.api.controller.manager.furniture.dto.FurnitureRequest;
+import com.orphan.api.controller.manager.Logistic.Furniture.dto.FurnitureDto;
+import com.orphan.api.controller.manager.Logistic.Furniture.dto.FurnitureRequest;
 import com.orphan.common.response.APIResponse;
 import com.orphan.common.service.FurnitureService;
 import com.orphan.common.vo.PageInfo;

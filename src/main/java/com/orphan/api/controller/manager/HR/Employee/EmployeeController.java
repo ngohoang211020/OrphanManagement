@@ -1,9 +1,9 @@
-package com.orphan.api.controller.manager.staff;
+package com.orphan.api.controller.manager.HR.Employee;
 
 import com.google.gson.JsonObject;
 import com.orphan.api.controller.admin.dto.UserDetailDto;
 import com.orphan.api.controller.admin.dto.UserDto;
-import com.orphan.api.controller.manager.staff.dto.EmployeeRequest;
+import com.orphan.api.controller.manager.HR.Employee.dto.EmployeeRequest;
 import com.orphan.common.response.APIResponse;
 import com.orphan.common.service.EmployeeService;
 import com.orphan.common.service.UserService;
@@ -80,7 +80,7 @@ public class EmployeeController {
         return APIResponse.okStatus(employeeRequest);
     }
 
-    @ApiOperation("Delete Staff")
+    @ApiOperation("Delete employee")
     @DeleteMapping("/{employeeId}")
     public APIResponse<?> deleteEmployee(@PathVariable("employeeId") Integer employeeId) throws NotFoundException {
         userService.deleteUserById(employeeId);
