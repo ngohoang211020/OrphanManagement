@@ -164,12 +164,7 @@ public class OrphanIntroducerService extends BaseService {
     }
 
     public void deleteIntroducer(Integer introduceId) throws NotFoundException {
-        List<Children> childrenList=childrenRepository.findByOrphanIntroducer_IntroducerId(introduceId);
-       if(!childrenList.isEmpty()) {
-           for (Integer i = 0; i < childrenList.size(); i++) {
-               childrenList.get(i).setOrphanIntroducer(null);
-           }
-       }
+       childrenRepository.updateOrphanIntroducerByOrphanIntroducer_IntroducerId(null,introduceId);
        if(orphanIntroducerRepository.existsById(introduceId)){
            orphanIntroducerRepository.deleteById(introduceId);
        }
@@ -212,7 +207,5 @@ public class OrphanIntroducerService extends BaseService {
         return  introducerDto;
     }
 
-
-    //mapper
 
 }
