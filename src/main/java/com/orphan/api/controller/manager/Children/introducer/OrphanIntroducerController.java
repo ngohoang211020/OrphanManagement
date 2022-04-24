@@ -35,7 +35,7 @@ public class OrphanIntroducerController {
     @ApiOperation("Get All Introducers")
     @GetMapping("/all")
     public APIResponse<?> viewAllIntroducers() throws NotFoundException {
-        return APIResponse.okStatus(orphanIntroducerService.viewAllUsers());
+        return APIResponse.okStatus(orphanIntroducerService.viewAllIntroducers());
     }
 
     @ApiOperation("Get Introducers By Pages")

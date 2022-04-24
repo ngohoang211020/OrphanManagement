@@ -1,7 +1,6 @@
 package com.orphan.api.controller.manager.Children.children.dto;
 
 import com.orphan.common.annotation.Date;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +14,6 @@ public class ChildrenRequest {
     @NotEmpty(message="{error.msg.name-is-required}")
     private String fullName;
 
-    @NotEmpty
     private String status;
 
     @NotEmpty(message="{error.msg.date-of-birth-is-required}")

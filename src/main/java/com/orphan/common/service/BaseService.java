@@ -7,7 +7,6 @@ import com.orphan.config.jwt.JwtUtils;
 import com.orphan.config.security.UserPrincipal;
 import com.orphan.utils.constants.PageableConstants;
 import javassist.NotFoundException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +33,7 @@ public class BaseService {
     @Autowired
     private OrphanIntroducerRepository orphanIntroducerRepository;
     @Autowired
-    private OrphanNuturerRepository orphanNuturerRepository;
+    private OrphanNurturerRepository orphanNuturerRepository;
     @Autowired
     private JwtUtils jwtProvider;
 
