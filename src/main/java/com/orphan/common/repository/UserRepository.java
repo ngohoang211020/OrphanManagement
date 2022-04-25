@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +40,23 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query("select u from User u inner join u.roles roles where roles.name = ?1 order by u.fullName")
     Page<User> findByRoles_NameOrderByFullNameAsc(String name, Pageable pageable);
+
+    @Transactional
+    @Modifying
+    @Query("update User u set u.UserStatus = ?1, u.recoveryExpirationDate = ?2 where u.loginId = ?3")
+    void updateUserStatusAndRecoveryExpirationDateByLoginId(String UserStatus, Date recoveryExpirationDate, Integer loginId);
+
+    @Transactional
+    @Modifying
+    @Query("delete from User u where u.recoveryExpirationDate = ?1 and u.UserStatus = ?2")
+    void deleteByRecoveryExpirationDateAndUserStatus(Date recoveryExpirationDate, String UserStatus);
+
+    @Query("select u from User u where u.UserStatus = ?1 order by u.fullName")
+    Page<User> findByUserStatusOrderByFullNameAsc(String UserStatus, Pageable pageable);
+
+    @Query("select u from User u where u.UserStatus = ?1")
+    List<User> findByUserStatus(String UserStatus);
+
 
 
 
