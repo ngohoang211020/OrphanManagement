@@ -13,6 +13,7 @@ import com.orphan.common.repository.UserRepository;
 import com.orphan.common.vo.PageInfo;
 import com.orphan.config.EmailSenderService;
 import com.orphan.enums.ERole;
+import com.orphan.enums.UserStatus;
 import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
@@ -22,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -129,6 +131,8 @@ public class UserService extends BaseService {
 
         user.setCreatedId(String.valueOf(getCurrentUserId()));
 
+        user.setUserStatus(UserStatus.ACTIVED.getCode());
+
         this.userRepository.save(user);
 
         registerRequestDto.setLoginId(user.getLoginId());
@@ -219,9 +223,9 @@ public class UserService extends BaseService {
     }
 
     //View By Page
-    public PageInfo<UserDto> viewUsersByPage(Integer page, Integer limit) throws NotFoundException {
+    public PageInfo<UserDto> viewUsersByPage(Integer page, Integer limit,String status) throws NotFoundException {
         PageRequest pageRequest = buildPageRequest(page, limit);
-        Page<User> userPage = userRepository.findByOrderByFullNameAsc(pageRequest);
+        Page<User> userPage = userRepository.findByUserStatusOrderByFullNameAsc(status,pageRequest);
         if (userPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
@@ -244,8 +248,8 @@ public class UserService extends BaseService {
     }
 
     //View All
-    public List<UserDto> viewAllUsers() throws NotFoundException {
-        List<User> userList = userRepository.findAll();
+    public List<UserDto> viewAllUsersByStatus(String status) throws NotFoundException {
+        List<User> userList = userRepository.findByUserStatus(status);
         if (userList.isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
@@ -333,7 +337,26 @@ public class UserService extends BaseService {
         userRepository.save(user.get());
     }
 
-    //-------------------------Employee Service---------------------
+    //delete auto
+    public void updateStatusUser(Integer userId) throws NotFoundException {
+        if (userRepository.existsByLoginId(userId)) {
+            if (userRepository.findById(userId).get().getUserStatus().equals(UserStatus.ACTIVED.getCode())) {
+                long now = (new Date()).getTime();
+                long dateToMilliseconds = 60 * 60 * 1000;
+                userRepository.updateUserStatusAndRecoveryExpirationDateByLoginId(UserStatus.DELETED.getCode(), new Date(now + 7 * 24 * dateToMilliseconds), userId);
+
+            } else {
+                userRepository.updateUserStatusAndRecoveryExpirationDateByLoginId(UserStatus.ACTIVED.getCode(), null, userId);
+            }
+        } else {
+            throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
+                    APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
+        }
+    }
+
+    public void deleteAtExpirateDate(Date date,UserStatus userStatus){
+        userRepository.deleteByRecoveryExpirationDateAndUserStatus(new Date(new Date().getTime()),UserStatus.DELETED.getCode());
+    }
 
     //mapper
 
@@ -354,13 +377,14 @@ public class UserService extends BaseService {
         return oRole.get();
     }
 
-    public RoleDto RoleToRoleDto(Role role){
-        RoleDto roleDto=new RoleDto();
+    public RoleDto RoleToRoleDto(Role role) {
+        RoleDto roleDto = new RoleDto();
         roleDto.setRoleName(role.getName());
         roleDto.setRoleId(role.getId());
         roleDto.setDescription(role.getDescription());
         return roleDto;
     }
+
     public UserDto UserToUserDto(User user) throws IOException {
 
         UserDto userDto = new UserDto();
@@ -391,9 +415,12 @@ public class UserService extends BaseService {
         userDetailDto.setDate_of_birth(OrphanUtils.DateToString(user.getDateOfBirth()));
         userDetailDto.setIdentification(user.getIdentification());
         userDetailDto.setPhone(user.getPhone());
+        if(user.getRecoveryExpirationDate()!=null){
+            userDetailDto.setRecoveryExpirationDate(OrphanUtils.DateToString(user.getRecoveryExpirationDate()));
+        }
+        userDetailDto.setUserStatus(user.getUserStatus());
         return userDetailDto;
     }
-
 
     public void validatePassword(String password, String confirmPassword) throws BadRequestException {
         if (!OrphanUtils.isPassword(password)) {

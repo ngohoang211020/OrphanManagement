@@ -7,6 +7,7 @@ import com.orphan.api.controller.common.dto.RegisterRequestDto;
 import com.orphan.common.response.APIResponse;
 import com.orphan.common.service.UserService;
 import com.orphan.common.vo.PageInfo;
+import com.orphan.enums.UserStatus;
 import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
@@ -34,7 +35,7 @@ public class AdminController {
     @ApiOperation("View All Users")
     @GetMapping("/all")
     public APIResponse<?> viewAllUsers() throws NotFoundException, IOException {
-        return APIResponse.okStatus(userService.viewAllUsers());
+        return APIResponse.okStatus(userService.viewAllUsersByStatus(UserStatus.ACTIVED.getCode()));
     }
 
     @ApiOperation("Get Users By Page")
@@ -43,9 +44,9 @@ public class AdminController {
     ) throws NotFoundException {
         PageInfo<UserDto> userDtoPageInfo;
         if (page != null) {
-            userDtoPageInfo = userService.viewUsersByPage(page, PageableConstants.limit);
+            userDtoPageInfo = userService.viewUsersByPage(page, PageableConstants.limit,UserStatus.ACTIVED.getCode());
         } else {
-            userDtoPageInfo = userService.viewUsersByPage(1, PageableConstants.limit);
+            userDtoPageInfo = userService.viewUsersByPage(1, PageableConstants.limit,UserStatus.ACTIVED.getCode());
 
         }
         return APIResponse.okStatus(userDtoPageInfo);
@@ -85,12 +86,39 @@ public class AdminController {
         return APIResponse.okStatus(newUserDetailDto);
     }
 
-    @ApiOperation("Delete User")
+    @ApiOperation("Delete User Forever")
     @DeleteMapping("/{userId}")
     public ResponseEntity<?> deleteUser(@PathVariable("userId") Integer userId) throws NotFoundException, BadRequestException {
         userService.deleteUserById(userId);
         return APIResponse.okStatus();
     }
 
+    @ApiOperation("View All Users Deleted")
+    @GetMapping("/all/deleted")
+    public APIResponse<?> viewAllUsersDeleted() throws NotFoundException, IOException {
+        return APIResponse.okStatus(userService.viewAllUsersByStatus(UserStatus.DELETED.getCode()));
+    }
+
+    @ApiOperation("Update Status deleted/active")
+    @PutMapping("/{userId}/updateStatus")
+    public APIResponse<?> updateStatus(@PathVariable("userId") Integer userId) throws NotFoundException, IOException {
+        userService.updateStatusUser(userId);
+        return APIResponse.okStatus();
+    }
+
+
+    @ApiOperation("Get Users Deleted By Page")
+    @GetMapping("/deleted")
+    public APIResponse<?> viewUsersDeletedByPage(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
+    ) throws NotFoundException {
+        PageInfo<UserDto> userDtoPageInfo;
+        if (page != null) {
+            userDtoPageInfo = userService.viewUsersByPage(page, PageableConstants.limit,UserStatus.DELETED.getCode());
+        } else {
+            userDtoPageInfo = userService.viewUsersByPage(1, PageableConstants.limit,UserStatus.DELETED.getCode());
+
+        }
+        return APIResponse.okStatus(userDtoPageInfo);
+    }
 
 }
