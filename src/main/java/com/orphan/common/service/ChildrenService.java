@@ -54,7 +54,6 @@ public class ChildrenService extends BaseService {
 
     public ChildrenRequest updateChildrenDetail(ChildrenRequest childrenRequest, Integer childrenId) throws NotFoundException {
         Children children = findById(childrenId);
-        children.setStatus(childrenRequest.getStatus());
         children.setGender(childrenRequest.getGender());
         children.setDateOfBirth(OrphanUtils.StringToDate(childrenRequest.getDateOfBirth()));
         children.setFullName(childrenRequest.getFullName());
@@ -161,7 +160,6 @@ public class ChildrenService extends BaseService {
 
     private Children ChildrenRequestToChidren(ChildrenRequest childrenRequest) {
         Children children = new Children();
-        children.setStatus(childrenRequest.getStatus());
         children.setGender(childrenRequest.getGender());
         children.setDateOfBirth(OrphanUtils.StringToDate(childrenRequest.getDateOfBirth()));
         children.setFullName(childrenRequest.getFullName());
@@ -176,7 +174,6 @@ public class ChildrenService extends BaseService {
         else{
             children.setStatus(ChildrenStatus.WAIT_TO_RECEIVE.getCode());
         }
-
         if(childrenRequest.getIntroducerId()!=0 && childrenRequest.getIntroducerId()!=null){
             OrphanIntroducer orphanIntroducer=orphanIntroducerRepository.findById(childrenRequest.getIntroducerId()).get();
             children.setOrphanIntroducer(orphanIntroducer);

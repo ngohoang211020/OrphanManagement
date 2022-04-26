@@ -14,8 +14,6 @@ public class ChildrenRequest {
     @NotEmpty(message="{error.msg.name-is-required}")
     private String fullName;
 
-    private String status;
-
     @NotEmpty(message="{error.msg.date-of-birth-is-required}")
     @Date
     private String dateOfBirth;
