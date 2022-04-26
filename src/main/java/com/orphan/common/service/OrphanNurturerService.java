@@ -9,7 +9,6 @@ import com.orphan.common.entity.OrphanNurturer;
 import com.orphan.common.repository.ChildrenRepository;
 import com.orphan.common.repository.OrphanNurturerRepository;
 import com.orphan.common.vo.PageInfo;
-import com.orphan.enums.ChildrenStatus;
 import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
@@ -63,7 +62,9 @@ public class OrphanNurturerService extends BaseService {
 
         orphanNurturer.setGender(nurturerRequest.getGender());
 
-        orphanNurturer.setImage(nurturerRequest.getImage());
+        if (nurturerRequest.getImage() != "" && nurturerRequest.getImage() != null) {
+            orphanNurturer.setImage(nurturerRequest.getImage());
+        }
 
 
         orphanNurturer.setAddress(nurturerRequest.getAddress());

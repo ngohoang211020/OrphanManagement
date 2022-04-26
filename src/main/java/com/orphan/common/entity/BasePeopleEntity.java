@@ -36,7 +36,7 @@ public class BasePeopleEntity {
 
     public String identification;
 
-    @Column(length = 256)
+    @Column(length = 256, columnDefinition = "default null")
     private String image;
 
     @Column(name = "created_at")

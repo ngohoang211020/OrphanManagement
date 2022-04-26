@@ -23,7 +23,7 @@ public class Furniture extends BaseEntity {
 
     private Integer quantity;
 
-    @Column(length = 256)
+    @Column(length = 256, columnDefinition = "default null")
     private String image;
 
 }

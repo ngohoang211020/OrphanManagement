@@ -29,7 +29,7 @@ public class Children extends BaseEntity{
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
 
-    @Column(length = 256)
+    @Column(length = 256,columnDefinition = "default null")
     private String image;
 
     @Temporal(TemporalType.DATE)

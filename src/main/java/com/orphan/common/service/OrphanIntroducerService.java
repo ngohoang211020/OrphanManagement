@@ -62,8 +62,9 @@ public class OrphanIntroducerService extends BaseService {
 
         orphanIntroducer.setGender(introducerRequest.getGender());
 
-        orphanIntroducer.setImage(introducerRequest.getImage());
-
+        if(introducerRequest.getImage()!=null && introducerRequest.getImage()!="") {
+            orphanIntroducer.setImage(introducerRequest.getImage());
+        }
 
         orphanIntroducer.setAddress(introducerRequest.getAddress());
 

@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class EmployeeService extends BaseService{
+public class EmployeeService extends BaseService {
     private final MessageService messageService;
 
     private final UserRepository userRepository;
@@ -37,7 +37,7 @@ public class EmployeeService extends BaseService{
 
     private static final Logger logger = LoggerFactory.getLogger(EmployeeService.class);
 
-    public List<UserDto> viewAllEmployee(){
+    public List<UserDto> viewAllEmployee() {
         List<User> employeeList = userRepository.findByRoles_Name(ERole.ROLE_EMPLOYEE.getCode());
         if (employeeList.isEmpty()) {
             return null;
@@ -56,7 +56,7 @@ public class EmployeeService extends BaseService{
     //View By Page
     public PageInfo<UserDto> viewUsersByPage(Integer page, Integer limit) throws NotFoundException {
         PageRequest pageRequest = buildPageRequest(page, limit);
-        Page<User> userPage = userRepository.findByRoles_NameOrderByFullNameAsc(ERole.ROLE_EMPLOYEE.getCode(),pageRequest);
+        Page<User> userPage = userRepository.findByRoles_NameOrderByFullNameAsc(ERole.ROLE_EMPLOYEE.getCode(), pageRequest);
         if (userPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
@@ -110,8 +110,9 @@ public class EmployeeService extends BaseService{
 
         user.setIdentification(employeeRequest.getIdentification());
 
-        user.setImage(employeeRequest.getImage());
-
+        if (employeeRequest.getImage() != null && employeeRequest.getImage() != "") {
+            user.setImage(employeeRequest.getImage());
+        }
         user.setDateOfBirth(OrphanUtils.StringToDate(employeeRequest.getDate_of_birth()));
 
         user.setAddress(employeeRequest.getAddress());
@@ -145,42 +146,42 @@ public class EmployeeService extends BaseService{
             user.setIdentification(employeeRequest.getIdentification());
         }
 
-        if (employeeRequest.getImage() != "") {
+        if (employeeRequest.getImage() != ""&&employeeRequest.getImage()!=null) {
             user.setImage(employeeRequest.getImage());
         }
 
 
-            List<Role> roleList = new ArrayList<>();
+        List<Role> roleList = new ArrayList<>();
 
-            Role employee = roleRepository.findByName(ERole.ROLE_EMPLOYEE.getCode()).get();
-            roleList.add(employee);
+        Role employee = roleRepository.findByName(ERole.ROLE_EMPLOYEE.getCode()).get();
+        roleList.add(employee);
 
 
-            user.setFullName(employeeRequest.getFullName());
+        user.setFullName(employeeRequest.getFullName());
 
-            user.setEmail(employeeRequest.getEmail());
+        user.setEmail(employeeRequest.getEmail());
 
-            user.setRoles(roleList);
+        user.setRoles(roleList);
 
-            user.setPhone(employeeRequest.getPhone());
+        user.setPhone(employeeRequest.getPhone());
 
-            user.setGender(employeeRequest.getGender());
+        user.setGender(employeeRequest.getGender());
 
-            user.setIdentification(employeeRequest.getIdentification());
+        user.setIdentification(employeeRequest.getIdentification());
 
-            user.setImage(employeeRequest.getImage());
+        user.setImage(employeeRequest.getImage());
 
-            user.setDateOfBirth(OrphanUtils.StringToDate(employeeRequest.getDate_of_birth()));
+        user.setDateOfBirth(OrphanUtils.StringToDate(employeeRequest.getDate_of_birth()));
 
-            user.setAddress(employeeRequest.getAddress());
+        user.setAddress(employeeRequest.getAddress());
 
-            user.setModifiedId(String.valueOf(getCurrentUserId()));
+        user.setModifiedId(String.valueOf(getCurrentUserId()));
 
-            this.userRepository.save(user);
+        this.userRepository.save(user);
 
-            employeeRequest.setEmployeeId(userId);
+        employeeRequest.setEmployeeId(userId);
 
-            return employeeRequest;
+        return employeeRequest;
     }
 
 }

@@ -59,20 +59,19 @@ public class ChildrenService extends BaseService {
         children.setFullName(childrenRequest.getFullName());
         children.setAdoptiveDate(OrphanUtils.StringToDate(childrenRequest.getAdoptiveDate()));
 
-        if(childrenRequest.getDateReceivedOfNurturer()!=""){
+        if (childrenRequest.getDateReceivedOfNurturer() != "") {
             children.setDateReceivedOfNurturer(OrphanUtils.StringToDate(childrenRequest.getDateReceivedOfNurturer()));
-            OrphanNurturer orphanNurturer=orphanNuturerRepository.findById(childrenRequest.getNurturerId()).get();
+            OrphanNurturer orphanNurturer = orphanNuturerRepository.findById(childrenRequest.getNurturerId()).get();
             children.setStatus(ChildrenStatus.RECEIVED.getCode());
             children.setOrphanNurturer(orphanNurturer);
-        }
-        else{
+        } else {
             children.setStatus(ChildrenStatus.WAIT_TO_RECEIVE.getCode());
         }
-        if(childrenRequest.getIntroducerId()!=0){
-            OrphanIntroducer orphanIntroducer=orphanIntroducerRepository.findById(childrenRequest.getIntroducerId()).get();
+        if (childrenRequest.getIntroducerId() > 0 &&childrenRequest.getIntroducerId()!=null) {
+            OrphanIntroducer orphanIntroducer = orphanIntroducerRepository.findById(childrenRequest.getIntroducerId()).get();
             children.setOrphanIntroducer(orphanIntroducer);
         }
-        if(childrenRequest.getImage()!=""){
+        if (childrenRequest.getImage() != "" && childrenRequest.getImage() != null) {
             children.setImage(childrenRequest.getImage());
         }
         children.setModifiedId(String.valueOf(getCurrentUserId()));
@@ -148,10 +147,10 @@ public class ChildrenService extends BaseService {
         childrenDetailDto.setGender(children.getGender());
         childrenDetailDto.setAdoptiveDate(OrphanUtils.DateToString(children.getAdoptiveDate()));
 
-        if(children.getOrphanIntroducer()!=null){
+        if (children.getOrphanIntroducer() != null) {
             childrenDetailDto.setNameOfIntroducer(children.getOrphanIntroducer().getFullName());
         }
-        if(children.getOrphanNurturer()!=null){
+        if (children.getOrphanNurturer() != null) {
             childrenDetailDto.setDateReceived(OrphanUtils.DateToString(children.getDateReceivedOfNurturer()));
             childrenDetailDto.setNameOfNurturer(children.getOrphanNurturer().getFullName());
         }
@@ -164,18 +163,19 @@ public class ChildrenService extends BaseService {
         children.setDateOfBirth(OrphanUtils.StringToDate(childrenRequest.getDateOfBirth()));
         children.setFullName(childrenRequest.getFullName());
         children.setAdoptiveDate(OrphanUtils.StringToDate(childrenRequest.getAdoptiveDate()));
-        children.setImage(childrenRequest.getImage());
-        if(childrenRequest.getDateReceivedOfNurturer()!="" && childrenRequest.getNurturerId()!=null){
+        if (childrenRequest.getImage() != "" && childrenRequest.getImage() != null) {
+            children.setImage(childrenRequest.getImage());
+        }
+        if (childrenRequest.getDateReceivedOfNurturer() != "" && childrenRequest.getNurturerId() > 0 && !childrenRequest.getNurturerId().equals(null)) {
             children.setDateReceivedOfNurturer(OrphanUtils.StringToDate(childrenRequest.getDateReceivedOfNurturer()));
-            OrphanNurturer orphanNurturer=orphanNuturerRepository.findById(childrenRequest.getNurturerId()).get();
+            OrphanNurturer orphanNurturer = orphanNuturerRepository.findById(childrenRequest.getNurturerId()).get();
             children.setStatus(ChildrenStatus.RECEIVED.getCode());
             children.setOrphanNurturer(orphanNurturer);
-        }
-        else{
+        } else {
             children.setStatus(ChildrenStatus.WAIT_TO_RECEIVE.getCode());
         }
-        if(childrenRequest.getIntroducerId()!=0 && childrenRequest.getIntroducerId()!=null){
-            OrphanIntroducer orphanIntroducer=orphanIntroducerRepository.findById(childrenRequest.getIntroducerId()).get();
+        if (childrenRequest.getIntroducerId() > 0 && !childrenRequest.getIntroducerId().equals(null)) {
+            OrphanIntroducer orphanIntroducer = orphanIntroducerRepository.findById(childrenRequest.getIntroducerId()).get();
             children.setOrphanIntroducer(orphanIntroducer);
         }
         children.setId(childrenRequest.getId());
