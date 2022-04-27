@@ -22,7 +22,7 @@ public class ChildrenRequest {
 
     @NotEmpty(message="{error.msg.adoptive-Date-is-required}")
     @Date
-    private String adoptiveDate;
+    private String introductoryDate;
 
     private Integer introducerId;
 
@@ -30,6 +30,6 @@ public class ChildrenRequest {
 
     private Integer nurturerId;
 
-    private String dateReceivedOfNurturer;
+    private String adoptiveDate;
 
 }

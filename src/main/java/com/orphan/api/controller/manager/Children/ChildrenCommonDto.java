@@ -14,8 +14,8 @@ public class ChildrenCommonDto {
 
     private Boolean gender;
 
-    private String adoptiveDate;
+    private String introductoryDate;
 
-    private String dateReceivedOfNurturer;
+    private String adoptiveDate;
 
 }

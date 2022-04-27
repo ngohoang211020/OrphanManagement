@@ -8,7 +8,7 @@ public class CommonChildrenService {
     public static ChildrenCommonDto childrenToChildrenCommonDto(Children children){
         ChildrenCommonDto childrenCommonDto=new ChildrenCommonDto();
         childrenCommonDto.setChildrenId(children.getId());
-        childrenCommonDto.setAdoptiveDate(OrphanUtils.DateToString(children.getAdoptiveDate()));
+        childrenCommonDto.setIntroductoryDate(OrphanUtils.DateToString(children.getIntroductoryDate()));
         childrenCommonDto.setGender(children.getGender());
         childrenCommonDto.setDateOfBirth(OrphanUtils.DateToString(children.getDateOfBirth()));
         children.setStatus(children.getStatus());
