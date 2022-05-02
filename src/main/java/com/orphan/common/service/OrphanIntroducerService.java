@@ -68,14 +68,14 @@ public class OrphanIntroducerService extends BaseService {
 
         orphanIntroducer.setAddress(introducerRequest.getAddress());
 
-        orphanIntroducer.setFullName(introducerRequest.getIntroducerName());
+        orphanIntroducer.setFullName(introducerRequest.getFullName());
 
         orphanIntroducer.setDateOfBirth(OrphanUtils.StringToDate(introducerRequest.getDateOfBirth()));
 
         orphanIntroducer.setCreatedId(String.valueOf(getCurrentUserId()));
         this.orphanIntroducerRepository.save(orphanIntroducer);
 
-        introducerRequest.setIntroducerId(orphanIntroducer.getIntroducerId());
+        introducerRequest.setId(orphanIntroducer.getIntroducerId());
 
         return introducerRequest;
     }
@@ -109,7 +109,7 @@ public class OrphanIntroducerService extends BaseService {
 
         orphanIntroducer.setAddress(introducerRequest.getAddress());
 
-        orphanIntroducer.setFullName(introducerRequest.getIntroducerName());
+        orphanIntroducer.setFullName(introducerRequest.getFullName());
 
         orphanIntroducer.setDateOfBirth(OrphanUtils.StringToDate(introducerRequest.getDateOfBirth()));
 
@@ -117,7 +117,7 @@ public class OrphanIntroducerService extends BaseService {
 
         this.orphanIntroducerRepository.save(orphanIntroducer);
 
-        introducerRequest.setIntroducerId(introducerId);
+        introducerRequest.setId(introducerId);
 
         return introducerRequest;
     }
@@ -170,14 +170,14 @@ public class OrphanIntroducerService extends BaseService {
     //mapper
     private IntroducerDetailDto OrphanIntroducerToIntroducerDetailDto(OrphanIntroducer orphanIntroducer) {
         IntroducerDetailDto introducerDetailDto = new IntroducerDetailDto();
-        introducerDetailDto.setIntroducerId(orphanIntroducer.getIntroducerId());
+        introducerDetailDto.setId(orphanIntroducer.getIntroducerId());
         introducerDetailDto.setEmail(orphanIntroducer.getEmail());
         introducerDetailDto.setAddress(orphanIntroducer.getAddress());
         introducerDetailDto.setImage(orphanIntroducer.getImage());
         introducerDetailDto.setIdentification(orphanIntroducer.getIdentification());
         introducerDetailDto.setGender(orphanIntroducer.getGender());
         introducerDetailDto.setDateOfBirth(OrphanUtils.DateToString(orphanIntroducer.getDateOfBirth()));
-        introducerDetailDto.setIntroducerName(orphanIntroducer.getFullName());
+        introducerDetailDto.setFullName(orphanIntroducer.getFullName());
         introducerDetailDto.setPhone(orphanIntroducer.getPhone());
         List<ChildrenCommonDto> childrenCommonDtoList = new ArrayList<ChildrenCommonDto>();
         introducerDetailDto.setChildrens(orphanIntroducer.getChildrens().stream()
@@ -188,7 +188,7 @@ public class OrphanIntroducerService extends BaseService {
 
     private IntroducerDto OrphanIntroducerToIntroducerDto(OrphanIntroducer orphanIntroducer) {
         IntroducerDto introducerDto = new IntroducerDto();
-        introducerDto.setIntroducerId(orphanIntroducer.getIntroducerId());
+        introducerDto.setId(orphanIntroducer.getIntroducerId());
         introducerDto.setAddress(orphanIntroducer.getAddress());
         introducerDto.setImage(orphanIntroducer.getImage());
         introducerDto.setPhone(orphanIntroducer.getPhone());
@@ -196,7 +196,7 @@ public class OrphanIntroducerService extends BaseService {
         introducerDto.setChildrens(orphanIntroducer.getChildrens().stream()
                 .map(children -> CommonChildrenService.childrenToChildrenCommonDto(children))
                 .collect(Collectors.toList()));
-        introducerDto.setIntroducerName(orphanIntroducer.getFullName());
+        introducerDto.setFullName(orphanIntroducer.getFullName());
         return introducerDto;
     }
 

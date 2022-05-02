@@ -69,14 +69,14 @@ public class OrphanNurturerService extends BaseService {
 
         orphanNurturer.setAddress(nurturerRequest.getAddress());
 
-        orphanNurturer.setFullName(nurturerRequest.getNurturerName());
+        orphanNurturer.setFullName(nurturerRequest.getFullName());
 
         orphanNurturer.setDateOfBirth(OrphanUtils.StringToDate(nurturerRequest.getDateOfBirth()));
 
         orphanNurturer.setCreatedId(String.valueOf(getCurrentUserId()));
         this.orphanNurturerRepository.save(orphanNurturer);
 
-        nurturerRequest.setNurturerId(orphanNurturer.getNurturerId());
+        nurturerRequest.setId(orphanNurturer.getNurturerId());
 
         return nurturerRequest;
     }
@@ -110,7 +110,7 @@ public class OrphanNurturerService extends BaseService {
 
         orphanNurturer.setAddress(nurturerRequest.getAddress());
 
-        orphanNurturer.setFullName(nurturerRequest.getNurturerName());
+        orphanNurturer.setFullName(nurturerRequest.getFullName());
 
         orphanNurturer.setDateOfBirth(OrphanUtils.StringToDate(nurturerRequest.getDateOfBirth()));
 
@@ -118,7 +118,7 @@ public class OrphanNurturerService extends BaseService {
 
         this.orphanNurturerRepository.save(orphanNurturer);
 
-        nurturerRequest.setNurturerId(nurturerId);
+        nurturerRequest.setId(nurturerId);
 
         return nurturerRequest;
     }
@@ -171,14 +171,14 @@ public class OrphanNurturerService extends BaseService {
     //mapper
     private NurturerDetailDto OrphanNurturerToNurturerDetailDto(OrphanNurturer orphanNurturer) {
         NurturerDetailDto nurturerDetailDto = new NurturerDetailDto();
-        nurturerDetailDto.setNurturerId(orphanNurturer.getNurturerId());
+        nurturerDetailDto.setId(orphanNurturer.getNurturerId());
         nurturerDetailDto.setEmail(orphanNurturer.getEmail());
         nurturerDetailDto.setAddress(orphanNurturer.getAddress());
         nurturerDetailDto.setImage(orphanNurturer.getImage());
         nurturerDetailDto.setIdentification(orphanNurturer.getIdentification());
         nurturerDetailDto.setGender(orphanNurturer.getGender());
         nurturerDetailDto.setDateOfBirth(OrphanUtils.DateToString(orphanNurturer.getDateOfBirth()));
-        nurturerDetailDto.setNurturerName(orphanNurturer.getFullName());
+        nurturerDetailDto.setFullName(orphanNurturer.getFullName());
         nurturerDetailDto.setPhone(orphanNurturer.getPhone());
         List<ChildrenCommonDto> childrenCommonDtoList = new ArrayList<ChildrenCommonDto>();
         nurturerDetailDto.setChildrens(orphanNurturer.getChildrens().stream()
@@ -189,7 +189,7 @@ public class OrphanNurturerService extends BaseService {
 
     private NurturerDto OrphanNurturerToNurturerDto(OrphanNurturer orphanNurturer) {
         NurturerDto nurturerDto = new NurturerDto();
-        nurturerDto.setNurturerId(orphanNurturer.getNurturerId());
+        nurturerDto.setId(orphanNurturer.getNurturerId());
         nurturerDto.setAddress(orphanNurturer.getAddress());
         nurturerDto.setImage(orphanNurturer.getImage());
         nurturerDto.setPhone(orphanNurturer.getPhone());
@@ -197,7 +197,7 @@ public class OrphanNurturerService extends BaseService {
         nurturerDto.setChildrens(orphanNurturer.getChildrens().stream()
                 .map(children -> CommonChildrenService.childrenToChildrenCommonDto(children))
                 .collect(Collectors.toList()));
-        nurturerDto.setNurturerName(orphanNurturer.getFullName());
+        nurturerDto.setFullName(orphanNurturer.getFullName());
         return nurturerDto;
     }
 

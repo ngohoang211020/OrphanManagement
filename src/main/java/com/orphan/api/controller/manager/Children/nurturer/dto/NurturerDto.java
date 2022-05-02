@@ -9,9 +9,9 @@ import java.util.List;
 @Getter
 @Setter
 public class NurturerDto {
-    private Integer nurturerId;
+    private Integer id;
 
-    private String nurturerName;
+    private String fullName;
 
     private String phone;
 

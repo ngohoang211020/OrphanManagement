@@ -12,9 +12,10 @@ import javax.validation.constraints.NotEmpty;
 @Getter
 @Setter
 public class IntroducerRequest {
-    private Integer introducerId;
+    private Integer id;
 
-    private String introducerName;
+    @NotEmpty(message="{error.msg.name-is-required}")
+    private String fullName;
 
     @NotEmpty(message="{error.msg.date-of-birth-is-required}")
     @Date

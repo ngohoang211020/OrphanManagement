@@ -12,9 +12,9 @@ import javax.validation.constraints.NotEmpty;
 @Getter
 @Setter
 public class NurturerRequest {
-    private Integer nurturerId;
+    private Integer id;
 
-    private String nurturerName;
+    private String fullName;
 
     @NotEmpty(message="{error.msg.date-of-birth-is-required}")
     @Date

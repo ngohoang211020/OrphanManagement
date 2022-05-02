@@ -9,9 +9,9 @@ import java.util.List;
 @Getter
 @Setter
 public class IntroducerDto {
-    private Integer introducerId;
+    private Integer id;
 
-    private String introducerName;
+    private String fullName;
 
     private String phone;
 
