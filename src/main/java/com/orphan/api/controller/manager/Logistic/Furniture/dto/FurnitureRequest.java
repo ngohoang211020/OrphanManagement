@@ -20,4 +20,6 @@ public class FurnitureRequest {
     private Integer quantity;
 
     private String image;
+
+    private Integer furnitureCategoryId;
 }

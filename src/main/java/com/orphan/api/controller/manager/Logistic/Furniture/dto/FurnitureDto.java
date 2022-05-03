@@ -14,4 +14,8 @@ public class FurnitureDto {
     private Integer quantity;
 
     private String image;
+
+    private Integer furnitureCategoryId;
+
+    private String categoryName;
 }

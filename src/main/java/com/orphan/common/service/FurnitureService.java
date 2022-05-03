@@ -3,6 +3,7 @@ package com.orphan.common.service;
 import com.orphan.api.controller.manager.Logistic.Furniture.dto.FurnitureDto;
 import com.orphan.api.controller.manager.Logistic.Furniture.dto.FurnitureRequest;
 import com.orphan.common.entity.Furniture;
+import com.orphan.common.repository.FurnitureCategoryRepository;
 import com.orphan.common.repository.FurnitureRepository;
 import com.orphan.common.vo.PageInfo;
 import com.orphan.enums.FurnitureStatus;
@@ -27,7 +28,7 @@ public class FurnitureService extends BaseService {
 
     private static final Logger logger = LoggerFactory.getLogger(FurnitureService.class);
 
-
+    private final FurnitureCategoryRepository furnitureCategoryRepository;
     private final FurnitureRepository furnitureRepository;
 
     public Furniture findById(Integer furnitureId) throws NotFoundException {
@@ -42,6 +43,7 @@ public class FurnitureService extends BaseService {
     public FurnitureRequest createFurniture(FurnitureRequest furnitureRequest) {
         Furniture furniture = furnitureRequestToFurniture(furnitureRequest);
         furniture.setCreatedId(String.valueOf(getCurrentUserId()));
+        furniture.setFurnitureCategory(furnitureCategoryRepository.findById(furnitureRequest.getFurnitureCategoryId()).get());
 
         furniture = this.furnitureRepository.save(furniture);
 
@@ -59,6 +61,7 @@ public class FurnitureService extends BaseService {
         furniture.setStatus(furnitureStatusToString(furnitureRequest.getStatus()));
         furniture.setModifiedId(String.valueOf(getCurrentUserId()));
 
+        furniture.setFurnitureCategory(furnitureCategoryRepository.findById(furnitureRequest.getFurnitureCategoryId()).get());
         if (furnitureRequest.getImage() != "" && furnitureRequest.getImage() != null) {
             furniture.setFurnitureName(furnitureRequest.getImage());
             furnitureRequest.setImage(furniture.getImage());
@@ -118,6 +121,8 @@ public class FurnitureService extends BaseService {
         furnitureDto.setNameFurniture(furniture.getFurnitureName());
         furnitureDto.setQuantity(furniture.getQuantity());
         furnitureDto.setStatus(furnitureStatusToString(furniture.getStatus()));
+        furnitureDto.setFurnitureCategoryId(furniture.getFurnitureCategory().getFurnitureCategoryId());
+        furnitureDto.setCategoryName(furniture.getFurnitureCategory().getCategoryName());
         return furnitureDto;
     }
 
@@ -130,6 +135,8 @@ public class FurnitureService extends BaseService {
         furniture.setFurnitureName(furnitureRequest.getNameFurniture());
         furniture.setQuantity(furnitureRequest.getQuantity());
         furniture.setStatus(furnitureStatusToString(furnitureRequest.getStatus()));
+
+        furniture.setFurnitureCategory(furnitureCategoryRepository.findById(furnitureRequest.getFurnitureCategoryId()).get());
         return furniture;
     }
 
