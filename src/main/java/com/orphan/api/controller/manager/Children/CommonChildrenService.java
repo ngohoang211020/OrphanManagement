@@ -11,6 +11,7 @@ public class CommonChildrenService {
         childrenCommonDto.setIntroductoryDate(OrphanUtils.DateToString(children.getIntroductoryDate()));
         childrenCommonDto.setGender(children.getGender());
         childrenCommonDto.setDateOfBirth(OrphanUtils.DateToString(children.getDateOfBirth()));
+        childrenCommonDto.setFullName(children.getFullName());
         children.setStatus(children.getStatus());
         return  childrenCommonDto;
     }

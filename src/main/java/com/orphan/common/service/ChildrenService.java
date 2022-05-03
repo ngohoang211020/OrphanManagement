@@ -149,10 +149,12 @@ public class ChildrenService extends BaseService {
 
         if (children.getOrphanIntroducer() != null) {
             childrenDetailDto.setNameOfIntroducer(children.getOrphanIntroducer().getFullName());
+            childrenDetailDto.setIntroducerId(children.getOrphanIntroducer().getIntroducerId());
         }
         if (children.getOrphanNurturer() != null) {
             childrenDetailDto.setAdoptiveDate(OrphanUtils.DateToString(children.getAdoptiveDate()));
             childrenDetailDto.setNameOfNurturer(children.getOrphanNurturer().getFullName());
+            childrenDetailDto.setNurturerId(children.getOrphanNurturer().getNurturerId());
         }
         return childrenDetailDto;
     }
