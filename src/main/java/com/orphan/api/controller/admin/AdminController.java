@@ -32,13 +32,13 @@ public class AdminController {
 
     private final UserService userService;
 
-    @ApiOperation("View All Users")
+    @ApiOperation("View All Users ACTIVED")
     @GetMapping("/all")
     public APIResponse<?> viewAllUsers() throws NotFoundException, IOException {
         return APIResponse.okStatus(userService.viewAllUsersByStatus(UserStatus.ACTIVED.getCode()));
     }
 
-    @ApiOperation("Get Users By Page")
+    @ApiOperation("Get Users ACTIVED By Page")
     @GetMapping
     public APIResponse<?> viewUsersByPage(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
     ) throws NotFoundException {
