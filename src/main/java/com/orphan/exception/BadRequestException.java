@@ -30,6 +30,8 @@ public class BadRequestException extends Exception {
     public static final String ERROR_SOCIAL_LOGIN_REQUEST = "ERROR_SOCIAL_LOGIN_REQUEST";
     public static final String ERROR_SAVE_FILE = "ERROR_SAVE_FILE";
 
+    public static final String ERROR_ACCOUNT_WAS_DELETED = "ERROR_ACCOUNT_WAS_DELETED";
+
     private String error;
     private String message;
     private String error_code;

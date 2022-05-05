@@ -8,6 +8,7 @@ import com.orphan.common.repository.RoleRepository;
 import com.orphan.common.repository.UserRepository;
 import com.orphan.common.vo.PageInfo;
 import com.orphan.enums.ERole;
+import com.orphan.enums.UserStatus;
 import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
@@ -118,6 +119,8 @@ public class EmployeeService extends BaseService {
         user.setAddress(employeeRequest.getAddress());
 
         user.setCreatedId(String.valueOf(getCurrentUserId()));
+
+        user.setUserStatus(UserStatus.ACTIVED.getCode());
 
         this.userRepository.save(user);
 

@@ -50,7 +50,7 @@ public class UserController {
      */
     @PostMapping(LOGIN_ENDPOINT)
     @ApiOperation("Login")
-    public APIResponse<AccessToken> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) throws NotFoundException {
+    public APIResponse<AccessToken> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) throws NotFoundException, BadRequestException {
         return APIResponse.okStatus(authService.login(loginRequest));
     }
 
