@@ -22,6 +22,7 @@ public class APIConstants {
     public static final String STAFF = "Staff";
     public static final String FURNITURE_CATEGORY = "Furniture Category";
 
+    public static final String FURNITURE_REQUEST_FORM = "Furniture Request Form";
 
 
     public static final String ERROR_EMAIL_EXISTED = "Email register is Existed";

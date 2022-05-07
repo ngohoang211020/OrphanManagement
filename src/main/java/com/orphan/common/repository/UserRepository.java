@@ -33,13 +33,13 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     boolean existsByLoginId(Integer loginId);
 
-    Page<User> findByOrderByFullNameAsc(Pageable pageable);
+//    Page<User> findByOrderByFullNameAsc(Pageable pageable);
 
     @Query("select u from User u inner join u.roles roles where roles.name = ?1")
     List<User> findByRoles_Name(String name);
 
-    @Query("select u from User u inner join u.roles roles where roles.name = ?1 order by u.fullName")
-    Page<User> findByRoles_NameOrderByFullNameAsc(String name, Pageable pageable);
+    @Query("select u from User u inner join u.roles roles where roles.name = ?1 order by u.createdAt")
+    Page<User> findByRoles_NameOrderByCreatedAtAsc(String name, Pageable pageable);
 
     @Transactional
     @Modifying
@@ -51,14 +51,11 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("delete from User u where u.recoveryExpirationDate=?1 and u.UserStatus = ?2")
     void deleteByRecoveryExpirationDateAndUserStatus(Date recoveryExpirationDate, String UserStatus);
 
-    @Query("select u from User u where u.UserStatus = ?1 order by u.fullName")
-    Page<User> findByUserStatusOrderByFullNameAsc(String UserStatus, Pageable pageable);
+    @Query("select u from User u where u.UserStatus = ?1 order by u.createdAt")
+    Page<User> findByUserStatusOrderByCreatedAtAsc(String UserStatus, Pageable pageable);
 
     @Query("select u from User u where u.UserStatus = ?1")
     List<User> findByUserStatus(String UserStatus);
-
-
-
 
 
 }

@@ -15,7 +15,9 @@ import java.util.List;
 
 @Repository
 public interface ChildrenRepository extends JpaRepository<Children, Integer> {
-    Page<Children> findByOrderByFullNameAsc(Pageable pageable);
+
+    @Query("select c from Children c order by c.createdAt")
+    Page<Children> findByOrderByCreatedAtAsc(Pageable pageable);
 
     @Query("select c from Children c where c.orphanIntroducer.introducerId = ?1")
     List<Children> findByOrphanIntroducer_IntroducerId(Integer introducerId);

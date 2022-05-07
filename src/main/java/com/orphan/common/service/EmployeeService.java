@@ -57,7 +57,7 @@ public class EmployeeService extends BaseService {
     //View By Page
     public PageInfo<UserDto> viewUsersByPage(Integer page, Integer limit) throws NotFoundException {
         PageRequest pageRequest = buildPageRequest(page, limit);
-        Page<User> userPage = userRepository.findByRoles_NameOrderByFullNameAsc(ERole.ROLE_EMPLOYEE.getCode(), pageRequest);
+        Page<User> userPage = userRepository.findByRoles_NameOrderByCreatedAtAsc(ERole.ROLE_EMPLOYEE.getCode(), pageRequest);
         if (userPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));

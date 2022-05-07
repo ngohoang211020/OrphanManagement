@@ -130,7 +130,7 @@ public class OrphanIntroducerService extends BaseService {
     //View By Page
     public PageInfo<IntroducerDto> viewIntroducersByPage(Integer page, Integer limit) throws NotFoundException {
         PageRequest pageRequest = buildPageRequest(page, limit);
-        Page<OrphanIntroducer> introducerPage = orphanIntroducerRepository.findByOrderByFullNameAsc(pageRequest);
+        Page<OrphanIntroducer> introducerPage = orphanIntroducerRepository.findByOrderByCreatedAtAsc(pageRequest);
         if (introducerPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_ORPHAN_INTRODUCER_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.INTRODUCER));

@@ -225,7 +225,7 @@ public class UserService extends BaseService {
     //View By Page
     public PageInfo<UserDto> viewUsersByPage(Integer page, Integer limit,String status) throws NotFoundException {
         PageRequest pageRequest = buildPageRequest(page, limit);
-        Page<User> userPage = userRepository.findByUserStatusOrderByFullNameAsc(status,pageRequest);
+        Page<User> userPage = userRepository.findByUserStatusOrderByCreatedAtAsc(status,pageRequest);
         if (userPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
