@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -19,23 +20,15 @@ public class Furniture extends BaseEntity {
     @Column(nullable = false)
     private String furnitureName;
 
-    @Column(nullable = false)
-    private String status;
+    private Integer goodQuantity;
 
-    private Integer quantity;
+    private Integer brokenQuantity;
 
     @Column(columnDefinition = "text default null")
     private String image;
 
-    @Temporal(TemporalType.DATE)
-    private Date importDate;
-
     private Long unitPrice;
 
-    @Column(columnDefinition = "text default null")
-    private String note;
-
-    @ManyToOne
-    @JoinColumn(name = "categoryId")
-    private FurnitureCategory furnitureCategory;
+    @OneToMany(mappedBy = "furniture", cascade = CascadeType.ALL)
+    private List<SpecifyFurnitureRequest> specifyFurnitureRequestList;
 }

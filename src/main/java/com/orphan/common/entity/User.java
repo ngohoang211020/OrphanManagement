@@ -2,7 +2,6 @@ package com.orphan.common.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -33,4 +32,9 @@ public class User extends BasePeopleEntity{
 
     @Temporal(TemporalType.DATE)
     public Date recoveryExpirationDate;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<FurnitureRequestForm> furnitureRequestForms;
+
+
 }

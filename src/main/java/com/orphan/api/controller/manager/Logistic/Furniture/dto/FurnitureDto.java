@@ -11,11 +11,12 @@ public class FurnitureDto {
 
     private String status;
 
-    private Integer quantity;
+    private Integer goodQuantity;
+
+    private Integer brokenQuantity;
 
     private String image;
 
-    private Integer furnitureCategoryId;
+    private Long unitPrice;
 
-    private String categoryName;
 }

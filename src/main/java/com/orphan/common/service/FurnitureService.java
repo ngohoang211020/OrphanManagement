@@ -3,7 +3,6 @@ package com.orphan.common.service;
 import com.orphan.api.controller.manager.Logistic.Furniture.dto.FurnitureDto;
 import com.orphan.api.controller.manager.Logistic.Furniture.dto.FurnitureRequest;
 import com.orphan.common.entity.Furniture;
-import com.orphan.common.repository.FurnitureCategoryRepository;
 import com.orphan.common.repository.FurnitureRepository;
 import com.orphan.common.vo.PageInfo;
 import com.orphan.enums.FurnitureStatus;
@@ -28,7 +27,6 @@ public class FurnitureService extends BaseService {
 
     private static final Logger logger = LoggerFactory.getLogger(FurnitureService.class);
 
-    private final FurnitureCategoryRepository furnitureCategoryRepository;
     private final FurnitureRepository furnitureRepository;
 
     public Furniture findById(Integer furnitureId) throws NotFoundException {
@@ -43,11 +41,11 @@ public class FurnitureService extends BaseService {
     public FurnitureRequest createFurniture(FurnitureRequest furnitureRequest) {
         Furniture furniture = furnitureRequestToFurniture(furnitureRequest);
         furniture.setCreatedId(String.valueOf(getCurrentUserId()));
-        furniture.setFurnitureCategory(furnitureCategoryRepository.findById(furnitureRequest.getFurnitureCategoryId()).get());
 
         furniture = this.furnitureRepository.save(furniture);
 
         furnitureRequest.setFurnitureId(furniture.getFurnitureId());
+
 
         return furnitureRequest;
     }
@@ -57,11 +55,10 @@ public class FurnitureService extends BaseService {
         Furniture furniture = findById(furnitureId);
 
         furniture.setFurnitureName(furnitureRequest.getNameFurniture());
-        furniture.setQuantity(furnitureRequest.getQuantity());
-        furniture.setStatus(furnitureStatusToString(furnitureRequest.getStatus()));
+        furniture.setGoodQuantity(furnitureRequest.getGoodQuantity());
         furniture.setModifiedId(String.valueOf(getCurrentUserId()));
-
-        furniture.setFurnitureCategory(furnitureCategoryRepository.findById(furnitureRequest.getFurnitureCategoryId()).get());
+        furniture.setUnitPrice(furnitureRequest.getUnitPrice());
+        furniture.setBrokenQuantity(furnitureRequest.getBrokenQuantity());
         if (furnitureRequest.getImage() != "" && furnitureRequest.getImage() != null) {
             furniture.setFurnitureName(furnitureRequest.getImage());
             furnitureRequest.setImage(furniture.getImage());
@@ -83,7 +80,7 @@ public class FurnitureService extends BaseService {
 
     public PageInfo<FurnitureDto> viewFurnituresByPage(Integer page, Integer limit) throws NotFoundException {
         PageRequest pageRequest = buildPageRequest(page, limit);
-        Page<Furniture> furniturePage = furnitureRepository.findByOrderByFurnitureNameAsc(pageRequest);
+        Page<Furniture> furniturePage = furnitureRepository.findByOrderByCreatedAtAsc(pageRequest);
         if (furniturePage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_FURNITURE_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.FURNITURE));
@@ -119,10 +116,9 @@ public class FurnitureService extends BaseService {
         furnitureDto.setFurnitureId(furniture.getFurnitureId());
         furnitureDto.setImage(furniture.getImage());
         furnitureDto.setNameFurniture(furniture.getFurnitureName());
-        furnitureDto.setQuantity(furniture.getQuantity());
-        furnitureDto.setStatus(furnitureStatusToString(furniture.getStatus()));
-        furnitureDto.setFurnitureCategoryId(furniture.getFurnitureCategory().getFurnitureCategoryId());
-        furnitureDto.setCategoryName(furniture.getFurnitureCategory().getCategoryName());
+        furnitureDto.setGoodQuantity(furniture.getGoodQuantity());
+        furnitureDto.setUnitPrice(furniture.getUnitPrice());
+        furnitureDto.setBrokenQuantity(furniture.getBrokenQuantity());
         return furnitureDto;
     }
 
@@ -132,16 +128,16 @@ public class FurnitureService extends BaseService {
         if (furnitureRequest.getImage() != null && furnitureRequest.getImage() != "") {
             furniture.setImage(furnitureRequest.getImage());
         }
+        furniture.setUnitPrice(furnitureRequest.getUnitPrice());
+        furniture.setBrokenQuantity(furnitureRequest.getBrokenQuantity());
         furniture.setFurnitureName(furnitureRequest.getNameFurniture());
-        furniture.setQuantity(furnitureRequest.getQuantity());
-        furniture.setStatus(furnitureStatusToString(furnitureRequest.getStatus()));
+        furniture.setGoodQuantity(furnitureRequest.getGoodQuantity());
 
-        furniture.setFurnitureCategory(furnitureCategoryRepository.findById(furnitureRequest.getFurnitureCategoryId()).get());
         return furniture;
     }
 
-    private String furnitureStatusToString(String furnitureStatus) {
-        return furnitureStatus.equals(FurnitureStatus.GOOD.toString()) ? FurnitureStatus.GOOD.toString() : FurnitureStatus.NEED_FIX.getCode();
-    }
+//    private String furnitureStatusToString(String furnitureStatus) {
+//        return furnitureStatus.equals(FurnitureStatus.GOOD.toString()) ? FurnitureStatus.GOOD.toString() : FurnitureStatus.NEED_FIX.getCode();
+//    }
 
 }

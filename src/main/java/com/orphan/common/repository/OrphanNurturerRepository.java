@@ -18,6 +18,8 @@ public interface OrphanNurturerRepository extends JpaRepository<OrphanNurturer, 
 
     boolean existsByIdentification(String identification);
 
-    @Query("select o from OrphanNurturer o order by o.fullName")
-    Page<OrphanNurturer> findByOrderByFullNameAsc(Pageable pageable);
+    @Query("select o from OrphanNurturer o order by o.createdAt")
+    Page<OrphanNurturer> findByOrderByCreatedAtAsc(Pageable pageable);
+
+
 }

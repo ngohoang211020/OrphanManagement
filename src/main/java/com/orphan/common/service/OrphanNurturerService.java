@@ -131,7 +131,7 @@ public class OrphanNurturerService extends BaseService {
     //View By Page
     public PageInfo<NurturerDto> viewNurturersByPage(Integer page, Integer limit) throws NotFoundException {
         PageRequest pageRequest = buildPageRequest(page, limit);
-        Page<OrphanNurturer> nurturerPage = orphanNurturerRepository.findByOrderByFullNameAsc(pageRequest);
+        Page<OrphanNurturer> nurturerPage = orphanNurturerRepository.findByOrderByCreatedAtAsc(pageRequest);
         if (nurturerPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_ORPHAN_NURTURER_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.NURTURER));

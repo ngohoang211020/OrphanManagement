@@ -99,7 +99,7 @@ public class ChildrenService extends BaseService {
 
     public PageInfo<ChildrenDto> viewChildrensByPage(Integer page, Integer limit) throws NotFoundException {
         PageRequest pageRequest = buildPageRequest(page, limit);
-        Page<Children> childrenPage = childrenRepository.findByOrderByFullNameAsc(pageRequest);
+        Page<Children> childrenPage = childrenRepository.findByOrderByCreatedAtAsc(pageRequest);
         if (childrenPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_CHILDREN_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.CHILDREN));
