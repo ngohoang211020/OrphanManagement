@@ -16,30 +16,33 @@ import org.springframework.web.bind.annotation.*;
 public class StatisticsChildrenController {
     private final ChildrenService childrenService;
 
-    @ApiOperation("count the number of children introduced")
-    @GetMapping("/introduce")
-    public APIResponse<?> countChildrenIntroduceByDate(@RequestBody DateRequest dateRequest)  {
-        if(dateRequest.getMonth()>0&&dateRequest.getMonth()!=null) {
-            return APIResponse.okStatus(childrenService.countChildrenIntroduceByMonth(dateRequest));
-        }
-        else {
-            return APIResponse.okStatus(childrenService.countChildrenIntroduceByYear(dateRequest));
-        }
-    }
-    @ApiOperation("count the number of children adoptive")
-    @GetMapping("/nurturer")
-    public APIResponse<?> countChildrenNurturerByDate(@RequestBody DateRequest dateRequest)  {
-        if(dateRequest.getMonth()>0&&dateRequest.getMonth()!=null) {
-            return APIResponse.okStatus(childrenService.countChildrenAdoptiveByMonth(dateRequest));
-        }
-        else {
-            return APIResponse.okStatus(childrenService.countChildrenAdoptiveByYear(dateRequest));
-        }
-    }
-    @ApiOperation("Count children By Gender")
-    @GetMapping("/gender")
-    public APIResponse<?> countChildrenByGender(@RequestBody GenderRequest gender)  {
-        return APIResponse.okStatus(childrenService.countChildrenByGender(gender));
+    @ApiOperation("Count children Introduce By Month")
+    @GetMapping("/introduce/month")
+    public APIResponse<?> countChildrenIntroduceByMonth()  {
+        return APIResponse.okStatus(childrenService.countChildrenIntroductiveByMonth());
     }
 
+    @ApiOperation("Count children Introduce By Year")
+    @GetMapping("/introduce/year")
+    public APIResponse<?> countChildrenIntroduceByYear()  {
+        return APIResponse.okStatus(childrenService.countChildrenIntroductiveByYear());
+    }
+
+    @ApiOperation("Count children Nurturer By Month")
+    @GetMapping("/nurturer/month")
+    public APIResponse<?> countChildrenNurturerByMonth()  {
+        return APIResponse.okStatus(childrenService.countChildrenNurturerByMonth());
+    }
+
+    @ApiOperation("Count children Nurturer By Year")
+    @GetMapping("/nurturer/year")
+    public APIResponse<?> countChildrenNurturerByYear()  {
+        return APIResponse.okStatus(childrenService.countChildrenNurturerByYear());
+    }
+
+    @ApiOperation("Count children By Gender")
+    @GetMapping("/gender")
+    public APIResponse<?> countChildrenByGender()  {
+        return APIResponse.okStatus(childrenService.countChildrenByGender());
+    }
 }

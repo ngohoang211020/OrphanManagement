@@ -11,6 +11,8 @@ import com.orphan.common.repository.OrphanIntroducerRepository;
 import com.orphan.common.repository.OrphanNurturerRepository;
 import com.orphan.common.request.DateRequest;
 import com.orphan.common.request.GenderRequest;
+import com.orphan.common.response.ChildrenStatisticsByDateResponse;
+import com.orphan.common.response.StatisticsResponse;
 import com.orphan.common.vo.PageInfo;
 import com.orphan.enums.ChildrenStatus;
 import com.orphan.exception.NotFoundException;
@@ -106,9 +108,7 @@ public class ChildrenService extends BaseService {
             throw new NotFoundException(NotFoundException.ERROR_CHILDREN_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.CHILDREN));
         }
-        List<ChildrenDto> childrenDtoList = childrenPage.getContent().stream().map(children -> {
-            return ChildrenToChildrenDto(children);
-        }).collect(Collectors.toList());
+        List<ChildrenDto> childrenDtoList = childrenPage.getContent().stream().map(this::ChildrenToChildrenDto).collect(Collectors.toList());
         PageInfo<ChildrenDto> childrenDtoPageInfo = new PageInfo<>();
         childrenDtoPageInfo.setPage(page);
         childrenDtoPageInfo.setLimit(limit);
@@ -126,30 +126,29 @@ public class ChildrenService extends BaseService {
         childrenRepository.deleteById(childrenId);
     }
 
-
-    public Integer countChildrenIntroduceByMonth(DateRequest dateRequest) {
-        Integer count = childrenRepository.countChildrenIntroduceByMonth(dateRequest.getMonth(), dateRequest.getYear());
-        return count != 0 ? count : 0;
+    public List<ChildrenStatisticsByDateResponse> countChildrenIntroductiveByMonth() {
+        List<ChildrenStatisticsByDateResponse> childrenStatisticsByDateResponses = childrenRepository.countChildrenByIntroduceDate();
+        return childrenStatisticsByDateResponses;
     }
-    public Integer countChildrenIntroduceByYear(DateRequest dateRequest) {
-        Integer count = childrenRepository.countChildrenIntroduceByYear(dateRequest.getYear());
-        return count != 0 ? count : 0;
+    public List<ChildrenStatisticsByDateResponse> countChildrenIntroductiveByYear() {
+        List<ChildrenStatisticsByDateResponse> childrenStatisticsByDateResponses = childrenRepository.countChildrenByIntroduceDateYear();
+        return childrenStatisticsByDateResponses;
     }
-
-    public Integer countChildrenAdoptiveByMonth(DateRequest dateRequest) {
-        Integer count = childrenRepository.countChildrenAdoptiveByMonth(dateRequest.getMonth(), dateRequest.getYear());
-        return count != 0 ? count : 0;
+    public List<ChildrenStatisticsByDateResponse> countChildrenNurturerByMonth() {
+        List<ChildrenStatisticsByDateResponse> childrenStatisticsByDateResponses = childrenRepository.countChildrenByAdoptiveDate();
+        return childrenStatisticsByDateResponses;
     }
-    public Integer countChildrenAdoptiveByYear(DateRequest dateRequest) {
-        Integer count = childrenRepository.countChildrenAdoptiveByYear(dateRequest.getYear());
-        return count != 0 ? count : 0;
+    public List<ChildrenStatisticsByDateResponse> countChildrenNurturerByYear() {
+        List<ChildrenStatisticsByDateResponse> childrenStatisticsByDateResponses = childrenRepository.countChildrenByAdoptiveDateYear();
+        return childrenStatisticsByDateResponses;
     }
 
-    public Integer countChildrenByGender(GenderRequest gender){
-        Integer count = childrenRepository.countChildrenByGender(gender.getGender());
-        return count != 0 ? count : 0;
+    public List<StatisticsResponse> countChildrenByGender() {
+        List<StatisticsResponse> statisticsResponses = childrenRepository.countChildrenByGender();
+        return statisticsResponses;
     }
     //mapper
+
 
     private ChildrenDto ChildrenToChildrenDto(Children children) {
         ChildrenDto childrenDto = new ChildrenDto();

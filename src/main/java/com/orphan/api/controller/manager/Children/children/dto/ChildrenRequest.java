@@ -20,7 +20,7 @@ public class ChildrenRequest {
     @Date
     private String dateOfBirth;
 
-    private Boolean gender;
+    private Boolean gender=true;
 
     @NotEmpty(message="{error.msg.adoptive-Date-is-required}")
     @Date
@@ -28,7 +28,7 @@ public class ChildrenRequest {
 
     private Integer introducerId;
 
-    private String image;
+    private String image=null;
 
     private Integer nurturerId;
 

@@ -33,7 +33,7 @@ public class RegisterRequestDto {
     @Date
     private String date_of_birth;
 
-    private Boolean gender;
+    private Boolean gender=true;
 
     @NotEmpty(message="{error.msg.address-1-is-required}")
     private String address;
@@ -45,7 +45,7 @@ public class RegisterRequestDto {
     @NotEmpty(message="{error.msg.name-is-required}")
     private String fullName;
 
-    private String image;
+    private String image=null;
 
     private List<String> roles;
 
