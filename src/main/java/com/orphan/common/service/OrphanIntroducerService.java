@@ -5,6 +5,7 @@ import com.orphan.api.controller.manager.Children.CommonChildrenService;
 import com.orphan.api.controller.manager.Children.introducer.dto.IntroducerDetailDto;
 import com.orphan.api.controller.manager.Children.introducer.dto.IntroducerDto;
 import com.orphan.api.controller.manager.Children.introducer.dto.IntroducerRequest;
+import com.orphan.api.controller.manager.Children.nurturer.dto.NurturerDto;
 import com.orphan.common.entity.OrphanIntroducer;
 import com.orphan.common.repository.ChildrenRepository;
 import com.orphan.common.repository.OrphanIntroducerRepository;
@@ -135,7 +136,7 @@ public class OrphanIntroducerService extends BaseService {
             throw new NotFoundException(NotFoundException.ERROR_ORPHAN_INTRODUCER_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.INTRODUCER));
         }
-        List<IntroducerDto> introducerDtoList = introducerPage.getContent().stream().map(this::OrphanIntroducerToIntroducerDto).collect(Collectors.toList());
+        List<IntroducerDto> introducerDtoList = introducerPage.getContent().stream().map(introducer -> OrphanIntroducerToIntroducerDto(introducer)).collect(Collectors.toList());
         PageInfo<IntroducerDto> introducerDtoPageInfo = new PageInfo<>();
         introducerDtoPageInfo.setPage(page);
         introducerDtoPageInfo.setLimit(limit);
