@@ -24,7 +24,7 @@ public class FurnitureRequest {
 
     private Integer brokenQuantity;
 
-    private String image;
+    private String image=null;
 
     private Long unitPrice;
 

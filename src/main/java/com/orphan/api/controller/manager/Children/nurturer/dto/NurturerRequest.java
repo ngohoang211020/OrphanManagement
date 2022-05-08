@@ -29,9 +29,9 @@ public class NurturerRequest {
     @Phone
     private String phone;
 
-    private Boolean gender;
+    private Boolean gender=true;
 
-    private String image;
+    private String image=null;
 
     @NotEmpty(message="{error.msg.email-is-required}")
     @Email(message="{error.msg.email-is-invalid}")

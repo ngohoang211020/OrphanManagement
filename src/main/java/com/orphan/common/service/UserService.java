@@ -10,6 +10,10 @@ import com.orphan.common.entity.Role;
 import com.orphan.common.entity.User;
 import com.orphan.common.repository.RoleRepository;
 import com.orphan.common.repository.UserRepository;
+import com.orphan.common.request.GenderRequest;
+import com.orphan.common.request.RoleRequest;
+import com.orphan.common.response.ChildrenStatisticsByDateResponse;
+import com.orphan.common.response.StatisticsResponse;
 import com.orphan.common.vo.PageInfo;
 import com.orphan.config.EmailSenderService;
 import com.orphan.enums.ERole;
@@ -23,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -223,9 +226,9 @@ public class UserService extends BaseService {
     }
 
     //View By Page
-    public PageInfo<UserDto> viewUsersByPage(Integer page, Integer limit,String status) throws NotFoundException {
+    public PageInfo<UserDto> viewUsersByPage(Integer page, Integer limit, String status) throws NotFoundException {
         PageRequest pageRequest = buildPageRequest(page, limit);
-        Page<User> userPage = userRepository.findByUserStatusOrderByCreatedAtAsc(status,pageRequest);
+        Page<User> userPage = userRepository.findByUserStatusOrderByCreatedAtAsc(status, pageRequest);
         if (userPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
@@ -279,6 +282,16 @@ public class UserService extends BaseService {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
         }
+    }
+
+    public List<StatisticsResponse> countUsersByRole() {
+        List<StatisticsResponse> statisticsResponses = userRepository.countUserByRole();
+        return statisticsResponses;
+    }
+
+    public List<StatisticsResponse> countUsersByGender() {
+        List<StatisticsResponse> statisticsResponses = userRepository.countUserByGender();
+        return statisticsResponses;
     }
 
     //send api to email need change password
@@ -354,8 +367,8 @@ public class UserService extends BaseService {
         }
     }
 
-    public void deleteAtExpirateDate(Date date,UserStatus userStatus){
-        userRepository.deleteByRecoveryExpirationDateAndUserStatus(new Date(new Date().getTime()),UserStatus.DELETED.getCode());
+    public void deleteAtExpirateDate(Date date, UserStatus userStatus) {
+        userRepository.deleteByRecoveryExpirationDateAndUserStatus(new Date(new Date().getTime()), UserStatus.DELETED.getCode());
     }
 
     //mapper
@@ -415,7 +428,7 @@ public class UserService extends BaseService {
         userDetailDto.setDate_of_birth(OrphanUtils.DateToString(user.getDateOfBirth()));
         userDetailDto.setIdentification(user.getIdentification());
         userDetailDto.setPhone(user.getPhone());
-        if(user.getRecoveryExpirationDate()!=null){
+        if (user.getRecoveryExpirationDate() != null) {
             userDetailDto.setRecoveryExpirationDate(OrphanUtils.DateToString(user.getRecoveryExpirationDate()));
         }
         userDetailDto.setUserStatus(user.getUserStatus());

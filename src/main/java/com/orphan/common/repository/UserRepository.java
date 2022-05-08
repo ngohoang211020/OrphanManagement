@@ -1,12 +1,13 @@
 package com.orphan.common.repository;
 
 import com.orphan.common.entity.User;
+import com.orphan.common.response.ChildrenStatisticsByDateResponse;
+import com.orphan.common.response.StatisticsResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,6 +57,13 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query("select u from User u where u.UserStatus = ?1")
     List<User> findByUserStatus(String UserStatus);
+
+    @Query(value = "select roles.name as keyword,count(distinct u) as value from User u inner join u.roles roles group by roles.name")
+    List<StatisticsResponse> countUserByRole();
+
+
+    @Query(value = "select u.gender as keyword , count(distinct u) as value from User u group by u.gender ")
+    List<StatisticsResponse> countUserByGender();
 
 
 }
