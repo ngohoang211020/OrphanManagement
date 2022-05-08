@@ -9,6 +9,8 @@ import com.orphan.common.entity.OrphanNurturer;
 import com.orphan.common.repository.ChildrenRepository;
 import com.orphan.common.repository.OrphanIntroducerRepository;
 import com.orphan.common.repository.OrphanNurturerRepository;
+import com.orphan.common.request.DateRequest;
+import com.orphan.common.request.GenderRequest;
 import com.orphan.common.vo.PageInfo;
 import com.orphan.enums.ChildrenStatus;
 import com.orphan.exception.NotFoundException;
@@ -67,7 +69,7 @@ public class ChildrenService extends BaseService {
         } else {
             children.setStatus(ChildrenStatus.WAIT_TO_RECEIVE.getCode());
         }
-        if (childrenRequest.getIntroducerId() > 0 &&childrenRequest.getIntroducerId()!=null) {
+        if (childrenRequest.getIntroducerId() > 0 && childrenRequest.getIntroducerId() != null) {
             OrphanIntroducer orphanIntroducer = orphanIntroducerRepository.findById(childrenRequest.getIntroducerId()).get();
             children.setOrphanIntroducer(orphanIntroducer);
         }
@@ -125,6 +127,28 @@ public class ChildrenService extends BaseService {
     }
 
 
+    public Integer countChildrenIntroduceByMonth(DateRequest dateRequest) {
+        Integer count = childrenRepository.countChildrenIntroduceByMonth(dateRequest.getMonth(), dateRequest.getYear());
+        return count != 0 ? count : 0;
+    }
+    public Integer countChildrenIntroduceByYear(DateRequest dateRequest) {
+        Integer count = childrenRepository.countChildrenIntroduceByYear(dateRequest.getYear());
+        return count != 0 ? count : 0;
+    }
+
+    public Integer countChildrenAdoptiveByMonth(DateRequest dateRequest) {
+        Integer count = childrenRepository.countChildrenAdoptiveByMonth(dateRequest.getMonth(), dateRequest.getYear());
+        return count != 0 ? count : 0;
+    }
+    public Integer countChildrenAdoptiveByYear(DateRequest dateRequest) {
+        Integer count = childrenRepository.countChildrenAdoptiveByYear(dateRequest.getYear());
+        return count != 0 ? count : 0;
+    }
+
+    public Integer countChildrenByGender(GenderRequest gender){
+        Integer count = childrenRepository.countChildrenByGender(gender.getGender());
+        return count != 0 ? count : 0;
+    }
     //mapper
 
     private ChildrenDto ChildrenToChildrenDto(Children children) {
