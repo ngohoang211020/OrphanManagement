@@ -9,8 +9,6 @@ public class FurnitureDto {
 
     private String nameFurniture;
 
-    private String status;
-
     private Integer goodQuantity;
 
     private Integer brokenQuantity;

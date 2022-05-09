@@ -60,9 +60,9 @@ public class FurnitureService extends BaseService {
         furniture.setUnitPrice(furnitureRequest.getUnitPrice());
         furniture.setBrokenQuantity(furnitureRequest.getBrokenQuantity());
         if (furnitureRequest.getImage() != "" && furnitureRequest.getImage() != null) {
-            furniture.setFurnitureName(furnitureRequest.getImage());
-            furnitureRequest.setImage(furniture.getImage());
+            furniture.setImage(furnitureRequest.getImage());
         }
+
         this.furnitureRepository.save(furniture);
 
         furnitureRequest.setFurnitureId(furnitureId);

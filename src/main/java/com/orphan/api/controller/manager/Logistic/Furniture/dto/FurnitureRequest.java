@@ -17,14 +17,11 @@ public class FurnitureRequest {
     @NotEmpty(message="{error.msg.furniture-is-required}")
     private String nameFurniture;
 
-    @NotEmpty
-    private String status;
-
     private Integer goodQuantity;
 
     private Integer brokenQuantity;
 
-    private String image=null;
+    private String image;
 
     private Long unitPrice;
 
