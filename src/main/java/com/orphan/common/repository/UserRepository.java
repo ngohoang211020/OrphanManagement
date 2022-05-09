@@ -52,11 +52,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
             "order by u.recoveryExpirationDate")
     Page<User> findByRoles_NameAndUserStatusOrderByRecoveryExpirationDateAsc(String name, String UserStatus, Pageable pageable);
 
-
-
-
-
-
     @Transactional
     @Modifying
     @Query("update User u set u.UserStatus = ?1, u.recoveryExpirationDate = ?2 where u.loginId = ?3")
@@ -67,11 +62,14 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("delete from User u where u.recoveryExpirationDate=?1 and u.UserStatus = ?2")
     void deleteByRecoveryExpirationDateAndUserStatus(Date recoveryExpirationDate, String UserStatus);
 
-    @Query("select u from User u where u.UserStatus = ?1 order by u.createdAt")
-    Page<User> findByUserStatusOrderByCreatedAtAsc(String UserStatus, Pageable pageable);
+    @Query("select u from User u where u.UserStatus = ?1 order by u.recoveryExpirationDate")
+    Page<User> findByUserStatusPage(String UserStatus, Pageable pageable);
 
-    @Query("select u from User u where u.UserStatus = ?1")
+
+    @Query("select u from User u where u.UserStatus = ?1 order by u.recoveryExpirationDate")
     List<User> findByUserStatus(String UserStatus);
+
+
 
     @Query(value = "select roles.name as keyword,count(distinct u) as value from User u inner join u.roles roles group by roles.name")
     List<StatisticsResponse> countUserByRole();
