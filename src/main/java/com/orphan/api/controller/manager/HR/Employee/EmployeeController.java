@@ -73,7 +73,7 @@ public class EmployeeController {
 
     @ApiOperation("Update employee detail")
     @PutMapping("/{employeeId}")
-    public APIResponse<?> updateStaff(@PathVariable("employeeId") Integer employeeId, @Valid @RequestBody EmployeeRequest employeeRequest, Errors errors) throws NotFoundException, BadRequestException {
+    public APIResponse<?> updateEmployee(@PathVariable("employeeId") Integer employeeId, @Valid @RequestBody EmployeeRequest employeeRequest, Errors errors) throws NotFoundException, BadRequestException {
         if (errors.hasErrors()) {
             JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
             throw new BadRequestException(BadRequestException.ERROR_REGISTER_USER_INVALID, messages.toString(), true);
@@ -100,7 +100,7 @@ public class EmployeeController {
         return APIResponse.okStatus(employeeService.viewAllEmployeeByStatus(ERole.ROLE_EMPLOYEE.getCode(), UserStatus.DELETED.getCode()));
     }
     @ApiOperation("Get Employee ACTIVED By Pages")
-    @GetMapping
+    @GetMapping()
     public APIResponse<?> viewEmployeesActivedByPage(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
     ) throws NotFoundException {
         PageInfo<UserDto> employeePageInfo;
@@ -114,7 +114,7 @@ public class EmployeeController {
     }
 
     @ApiOperation("Get Employee DELETED By Pages")
-    @GetMapping
+    @GetMapping("/deleted")
     public APIResponse<?> viewEmployeeDeletedsByPage(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
     ) throws NotFoundException {
         PageInfo<UserDto> employeePageInfo;
