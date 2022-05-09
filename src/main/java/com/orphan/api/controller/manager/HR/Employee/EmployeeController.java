@@ -8,6 +8,8 @@ import com.orphan.common.response.APIResponse;
 import com.orphan.common.service.EmployeeService;
 import com.orphan.common.service.UserService;
 import com.orphan.common.vo.PageInfo;
+import com.orphan.enums.ERole;
+import com.orphan.enums.UserStatus;
 import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
@@ -23,7 +25,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/v1/manager/staff")
+@RequestMapping("/api/v1/manager/employee")
 @PreAuthorize("hasAnyRole('ADMIN','MANAGER_HR')")
 @RequiredArgsConstructor
 public class EmployeeController {
@@ -31,25 +33,25 @@ public class EmployeeController {
 
     private final EmployeeService employeeService;
 
-    @ApiOperation("Get All Employees")
-    @GetMapping("/all")
-    public APIResponse<?> viewAllEmployees() throws NotFoundException {
-        return APIResponse.okStatus(employeeService.viewAllEmployee());
-    }
-
-    @ApiOperation("Get Employee By Pages")
-    @GetMapping
-    public APIResponse<?> viewStaffsByPage(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
-    ) throws NotFoundException {
-        PageInfo<UserDto> employeePageInfo;
-        if (page != null) {
-            employeePageInfo = employeeService.viewUsersByPage(page, PageableConstants.limit);
-        } else {
-            employeePageInfo = employeeService.viewUsersByPage(1, PageableConstants.limit);
-
-        }
-        return APIResponse.okStatus(employeePageInfo);
-    }
+//    @ApiOperation("Get All Employees")
+//    @GetMapping("/all")
+//    public APIResponse<?> viewAllEmployees() throws NotFoundException {
+//        return APIResponse.okStatus(employeeService.viewAllEmployee());
+//    }
+//
+//    @ApiOperation("Get Employee By Pages")
+//    @GetMapping
+//    public APIResponse<?> viewStaffsByPage(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
+//    ) throws NotFoundException {
+//        PageInfo<UserDto> employeePageInfo;
+//        if (page != null) {
+//            employeePageInfo = employeeService.viewUsersByPage(page, PageableConstants.limit);
+//        } else {
+//            employeePageInfo = employeeService.viewUsersByPage(1, PageableConstants.limit);
+//
+//        }
+//        return APIResponse.okStatus(employeePageInfo);
+//    }
 
     @ApiOperation("View Employee Detail")
     @GetMapping("/{emplyeeId}")
@@ -85,5 +87,43 @@ public class EmployeeController {
     public APIResponse<?> deleteEmployee(@PathVariable("employeeId") Integer employeeId) throws NotFoundException {
         userService.deleteUserById(employeeId);
         return APIResponse.okStatus();
+    }
+
+    @ApiOperation("Get All Employees Actived")
+    @GetMapping("/all")
+    public APIResponse<?> viewAllEmployeesActived() throws NotFoundException {
+        return APIResponse.okStatus(employeeService.viewAllEmployeeByStatus(ERole.ROLE_EMPLOYEE.getCode(), UserStatus.ACTIVED.getCode()));
+    }
+    @ApiOperation("Get All Employees Deleted")
+    @GetMapping("/all/deleted")
+    public APIResponse<?> viewAllEmployeesDeleted() throws NotFoundException {
+        return APIResponse.okStatus(employeeService.viewAllEmployeeByStatus(ERole.ROLE_EMPLOYEE.getCode(), UserStatus.DELETED.getCode()));
+    }
+    @ApiOperation("Get Employee ACTIVED By Pages")
+    @GetMapping
+    public APIResponse<?> viewEmployeesActivedByPage(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
+    ) throws NotFoundException {
+        PageInfo<UserDto> employeePageInfo;
+        if (page != null) {
+            employeePageInfo = employeeService.viewUsersByPageByStatus(page, PageableConstants.limit,ERole.ROLE_EMPLOYEE.getCode(), UserStatus.ACTIVED.getCode());
+        } else {
+            employeePageInfo = employeeService.viewUsersByPageByStatus(1, PageableConstants.limit,ERole.ROLE_EMPLOYEE.getCode(), UserStatus.ACTIVED.getCode());
+
+        }
+        return APIResponse.okStatus(employeePageInfo);
+    }
+
+    @ApiOperation("Get Employee DELETED By Pages")
+    @GetMapping
+    public APIResponse<?> viewEmployeeDeletedsByPage(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
+    ) throws NotFoundException {
+        PageInfo<UserDto> employeePageInfo;
+        if (page != null) {
+            employeePageInfo = employeeService.viewUsersByPageByStatus(page, PageableConstants.limit,ERole.ROLE_EMPLOYEE.getCode(), UserStatus.DELETED.getCode());
+        } else {
+            employeePageInfo = employeeService.viewUsersByPageByStatus(1, PageableConstants.limit,ERole.ROLE_EMPLOYEE.getCode(), UserStatus.DELETED.getCode());
+
+        }
+        return APIResponse.okStatus(employeePageInfo);
     }
 }

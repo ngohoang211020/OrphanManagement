@@ -38,6 +38,45 @@ public class EmployeeService extends BaseService {
 
     private static final Logger logger = LoggerFactory.getLogger(EmployeeService.class);
 
+    public List<UserDto> viewAllEmployeeByStatus(String role,String status) {
+        List<User> employeeList = userRepository.findByRoles_NameAndUserStatusOrderByRecoveryExpirationDateAsc1(role,status);
+        if (employeeList.isEmpty()) {
+            return null;
+        }
+        List<UserDto> employeeDtoList = employeeList.stream().map(employee -> {
+            try {
+                return userService.UserToUserDto(employee);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }).collect(Collectors.toList());
+        return employeeDtoList;
+    }
+    public PageInfo<UserDto> viewUsersByPageByStatus(Integer page, Integer limit,String role,String status) throws NotFoundException {
+        PageRequest pageRequest = buildPageRequest(page, limit);
+        Page<User> userPage = userRepository.findByRoles_NameAndUserStatusOrderByRecoveryExpirationDateAsc(role,status, pageRequest);
+        if (userPage.getContent().isEmpty()) {
+            throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
+                    APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
+        }
+        List<UserDto> userDtoList = userPage.getContent().stream().map(user -> {
+            try {
+                return userService.UserToUserDto(user);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }).collect(Collectors.toList());
+        PageInfo<UserDto> userDtoPageInfo = new PageInfo<>();
+        userDtoPageInfo.setPage(page);
+        userDtoPageInfo.setLimit(limit);
+        userDtoPageInfo.setResult(userDtoList);
+        userDtoPageInfo.setTotal(userPage.getTotalElements());
+        userDtoPageInfo.setPages(userPage.getTotalPages());
+        return userDtoPageInfo;
+    }
+
     public List<UserDto> viewAllEmployee() {
         List<User> employeeList = userRepository.findByRoles_Name(ERole.ROLE_EMPLOYEE.getCode());
         if (employeeList.isEmpty()) {
@@ -114,7 +153,7 @@ public class EmployeeService extends BaseService {
         if (employeeRequest.getImage() != null && employeeRequest.getImage() != "") {
             user.setImage(employeeRequest.getImage());
         }
-        user.setDateOfBirth(OrphanUtils.StringToDate(employeeRequest.getDate_of_birth()));
+        user.setDateOfBirth(OrphanUtils.StringToDate(employeeRequest.getDateOfBirth()));
 
         user.setAddress(employeeRequest.getAddress());
 
@@ -124,7 +163,7 @@ public class EmployeeService extends BaseService {
 
         this.userRepository.save(user);
 
-        employeeRequest.setEmployeeId(user.getLoginId());
+        employeeRequest.setId(user.getLoginId());
 
         return employeeRequest;
     }
@@ -174,7 +213,7 @@ public class EmployeeService extends BaseService {
 
         user.setImage(employeeRequest.getImage());
 
-        user.setDateOfBirth(OrphanUtils.StringToDate(employeeRequest.getDate_of_birth()));
+        user.setDateOfBirth(OrphanUtils.StringToDate(employeeRequest.getDateOfBirth()));
 
         user.setAddress(employeeRequest.getAddress());
 
@@ -182,7 +221,7 @@ public class EmployeeService extends BaseService {
 
         this.userRepository.save(user);
 
-        employeeRequest.setEmployeeId(userId);
+        employeeRequest.setId(userId);
 
         return employeeRequest;
     }

@@ -14,7 +14,7 @@ import javax.validation.constraints.NotEmpty;
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class EmployeeRequest {
-    private Integer employeeId;
+    private Integer id;
 
     @NotEmpty(message="{error.msg.email-is-required}")
     @Email(message="{error.msg.email-is-invalid}")
@@ -26,9 +26,9 @@ public class EmployeeRequest {
 
     @NotEmpty(message="{error.msg.date-of-birth-is-required}")
     @Date
-    private String date_of_birth;
+    private String dateOfBirth;
 
-    private Boolean gender=true;
+    private Boolean gender;
 
     @NotEmpty(message="{error.msg.address-1-is-required}")
     private String address;

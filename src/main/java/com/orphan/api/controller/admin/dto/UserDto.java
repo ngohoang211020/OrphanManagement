@@ -16,4 +16,6 @@ public class UserDto {
     private String image;
 
     private List<RoleDto> roles;
+
+    private String phone;
 }
