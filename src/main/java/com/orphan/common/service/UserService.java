@@ -226,9 +226,9 @@ public class UserService extends BaseService {
     }
 
     //View By Page
-    public PageInfo<UserDto> viewUsersByPage(Integer page, Integer limit, String status) throws NotFoundException {
+    public PageInfo<UserDto> viewUsersDeletedByPage(Integer page, Integer limit, String status) throws NotFoundException {
         PageRequest pageRequest = buildPageRequest(page, limit);
-        Page<User> userPage = userRepository.findByUserStatusPage(status, pageRequest);
+        Page<User> userPage = userRepository.findByUserDeleted(status, pageRequest);
         if (userPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
@@ -251,8 +251,8 @@ public class UserService extends BaseService {
     }
 
     //View All
-    public List<UserDto> viewAllUsersByStatus(String status) throws NotFoundException {
-        List<User> userList = userRepository.findByUserStatus(status);
+    public List<UserDto> viewAllUsersDeleted(String status) throws NotFoundException {
+        List<User> userList = userRepository.findByUserDeleted(status);
         if (userList.isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
@@ -267,7 +267,47 @@ public class UserService extends BaseService {
         }).collect(Collectors.toList());
         return userDtoList;
     }
+    public PageInfo<UserDto> viewUsersActivedByPage(Integer page, Integer limit, String status) throws NotFoundException {
+        PageRequest pageRequest = buildPageRequest(page, limit);
+        Page<User> userPage = userRepository.findByUserActived(status, pageRequest);
+        if (userPage.getContent().isEmpty()) {
+            throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
+                    APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
+        }
+        List<UserDto> userDtoList = userPage.getContent().stream().map(user -> {
+            try {
+                return UserToUserDto(user);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }).collect(Collectors.toList());
+        PageInfo<UserDto> userDtoPageInfo = new PageInfo<>();
+        userDtoPageInfo.setPage(page);
+        userDtoPageInfo.setLimit(limit);
+        userDtoPageInfo.setResult(userDtoList);
+        userDtoPageInfo.setTotal(userPage.getTotalElements());
+        userDtoPageInfo.setPages(userPage.getTotalPages());
+        return userDtoPageInfo;
+    }
 
+    //View All
+    public List<UserDto> viewAllUsersActived(String status) throws NotFoundException {
+        List<User> userList = userRepository.findByUserActived(status);
+        if (userList.isEmpty()) {
+            throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
+                    APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
+        }
+        List<UserDto> userDtoList = userList.stream().map(user -> {
+            try {
+                return UserToUserDto(user);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }).collect(Collectors.toList());
+        return userDtoList;
+    }
     //View detail by id
     public UserDetailDto viewUserDetail(Integer userId) throws NotFoundException, IOException {
         UserDetailDto userDetailDto = UserToUserDetailDto(findById(userId));

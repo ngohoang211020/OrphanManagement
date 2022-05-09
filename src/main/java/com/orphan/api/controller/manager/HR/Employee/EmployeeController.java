@@ -92,12 +92,12 @@ public class EmployeeController {
     @ApiOperation("Get All Employees Actived")
     @GetMapping("/all")
     public APIResponse<?> viewAllEmployeesActived() throws NotFoundException {
-        return APIResponse.okStatus(employeeService.viewAllEmployeeByStatus(ERole.ROLE_EMPLOYEE.getCode(), UserStatus.ACTIVED.getCode()));
+        return APIResponse.okStatus(employeeService.viewAllEmployeeByStatusACTIVED(ERole.ROLE_EMPLOYEE.getCode(), UserStatus.ACTIVED.getCode()));
     }
     @ApiOperation("Get All Employees Deleted")
     @GetMapping("/all/deleted")
     public APIResponse<?> viewAllEmployeesDeleted() throws NotFoundException {
-        return APIResponse.okStatus(employeeService.viewAllEmployeeByStatus(ERole.ROLE_EMPLOYEE.getCode(), UserStatus.DELETED.getCode()));
+        return APIResponse.okStatus(employeeService.viewAllEmployeeByStatusDELETED(ERole.ROLE_EMPLOYEE.getCode(), UserStatus.DELETED.getCode()));
     }
     @ApiOperation("Get Employee ACTIVED By Pages")
     @GetMapping()
@@ -105,9 +105,9 @@ public class EmployeeController {
     ) throws NotFoundException {
         PageInfo<UserDto> employeePageInfo;
         if (page != null) {
-            employeePageInfo = employeeService.viewUsersByPageByStatus(page, PageableConstants.limit,ERole.ROLE_EMPLOYEE.getCode(), UserStatus.ACTIVED.getCode());
+            employeePageInfo = employeeService.viewUsersByPageByStatusACTIVED(page, PageableConstants.limit,ERole.ROLE_EMPLOYEE.getCode(), UserStatus.ACTIVED.getCode());
         } else {
-            employeePageInfo = employeeService.viewUsersByPageByStatus(1, PageableConstants.limit,ERole.ROLE_EMPLOYEE.getCode(), UserStatus.ACTIVED.getCode());
+            employeePageInfo = employeeService.viewUsersByPageByStatusACTIVED(1, PageableConstants.limit,ERole.ROLE_EMPLOYEE.getCode(), UserStatus.ACTIVED.getCode());
 
         }
         return APIResponse.okStatus(employeePageInfo);
@@ -119,9 +119,9 @@ public class EmployeeController {
     ) throws NotFoundException {
         PageInfo<UserDto> employeePageInfo;
         if (page != null) {
-            employeePageInfo = employeeService.viewUsersByPageByStatus(page, PageableConstants.limit,ERole.ROLE_EMPLOYEE.getCode(), UserStatus.DELETED.getCode());
+            employeePageInfo = employeeService.viewUsersByPageByStatusDELETED(page, PageableConstants.limit,ERole.ROLE_EMPLOYEE.getCode(), UserStatus.DELETED.getCode());
         } else {
-            employeePageInfo = employeeService.viewUsersByPageByStatus(1, PageableConstants.limit,ERole.ROLE_EMPLOYEE.getCode(), UserStatus.DELETED.getCode());
+            employeePageInfo = employeeService.viewUsersByPageByStatusDELETED(1, PageableConstants.limit,ERole.ROLE_EMPLOYEE.getCode(), UserStatus.DELETED.getCode());
 
         }
         return APIResponse.okStatus(employeePageInfo);

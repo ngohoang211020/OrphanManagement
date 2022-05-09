@@ -62,12 +62,33 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("delete from User u where u.recoveryExpirationDate=?1 and u.UserStatus = ?2")
     void deleteByRecoveryExpirationDateAndUserStatus(Date recoveryExpirationDate, String UserStatus);
 
+
+    //view 
     @Query("select u from User u where u.UserStatus = ?1 order by u.recoveryExpirationDate")
-    Page<User> findByUserStatusPage(String UserStatus, Pageable pageable);
+    Page<User> findByUserDeleted(String UserStatus, Pageable pageable);
 
 
     @Query("select u from User u where u.UserStatus = ?1 order by u.recoveryExpirationDate")
-    List<User> findByUserStatus(String UserStatus);
+    List<User> findByUserDeleted(String UserStatus);
+
+
+    @Query("select u from User u inner join u.roles roles " +
+            "where roles.name = ?1 and u.UserStatus = ?2 " +
+            "order by u.createdAt")
+    List<User> findByRoleAndStatus(String name, String UserStatus);
+
+    @Query("select u from User u inner join u.roles roles " +
+            "where roles.name = ?1 and u.UserStatus = ?2 " +
+            "order by u.createdAt")
+    Page<User> findByRoleAndStatus(String name, String UserStatus, Pageable pageable);
+
+
+    //thong ke
+    @Query("select u from User u where u.UserStatus = ?1 order by u.createdAt")
+    List<User> findByUserActived(String UserStatus);
+
+    @Query("select u from User u where u.UserStatus = ?1 order by u.createdAt")
+    Page<User> findByUserActived(String UserStatus, Pageable pageable);
 
 
 

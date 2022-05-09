@@ -34,8 +34,8 @@ public class AdminController {
 
     @ApiOperation("View All Users ACTIVED")
     @GetMapping("/all")
-    public APIResponse<?> viewAllUsers() throws NotFoundException, IOException {
-        return APIResponse.okStatus(userService.viewAllUsersByStatus(UserStatus.ACTIVED.getCode()));
+    public APIResponse<?> viewAllActivedUsers() throws NotFoundException, IOException {
+        return APIResponse.okStatus(userService.viewAllUsersActived(UserStatus.ACTIVED.getCode()));
     }
 
     @ApiOperation("Get Users ACTIVED By Page")
@@ -44,9 +44,9 @@ public class AdminController {
     ) throws NotFoundException {
         PageInfo<UserDto> userDtoPageInfo;
         if (page != null) {
-            userDtoPageInfo = userService.viewUsersByPage(page, PageableConstants.limit,UserStatus.ACTIVED.getCode());
+            userDtoPageInfo = userService.viewUsersActivedByPage(page, PageableConstants.limit,UserStatus.ACTIVED.getCode());
         } else {
-            userDtoPageInfo = userService.viewUsersByPage(1, PageableConstants.limit,UserStatus.ACTIVED.getCode());
+            userDtoPageInfo = userService.viewUsersActivedByPage(1, PageableConstants.limit,UserStatus.ACTIVED.getCode());
 
         }
         return APIResponse.okStatus(userDtoPageInfo);
@@ -96,7 +96,7 @@ public class AdminController {
     @ApiOperation("View All Users Deleted")
     @GetMapping("/all/deleted")
     public APIResponse<?> viewAllUsersDeleted() throws NotFoundException, IOException {
-        return APIResponse.okStatus(userService.viewAllUsersByStatus(UserStatus.DELETED.getCode()));
+        return APIResponse.okStatus(userService.viewAllUsersDeleted(UserStatus.DELETED.getCode()));
     }
 
     @ApiOperation("Update Status deleted/active")
@@ -113,9 +113,9 @@ public class AdminController {
     ) throws NotFoundException {
         PageInfo<UserDto> userDtoPageInfo;
         if (page != null) {
-            userDtoPageInfo = userService.viewUsersByPage(page, PageableConstants.limit,UserStatus.DELETED.getCode());
+            userDtoPageInfo = userService.viewUsersDeletedByPage(page, PageableConstants.limit,UserStatus.DELETED.getCode());
         } else {
-            userDtoPageInfo = userService.viewUsersByPage(1, PageableConstants.limit,UserStatus.DELETED.getCode());
+            userDtoPageInfo = userService.viewUsersDeletedByPage(1, PageableConstants.limit,UserStatus.DELETED.getCode());
 
         }
         return APIResponse.okStatus(userDtoPageInfo);
