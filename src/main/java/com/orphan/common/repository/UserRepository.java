@@ -42,6 +42,21 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("select u from User u inner join u.roles roles where roles.name = ?1 order by u.createdAt")
     Page<User> findByRoles_NameOrderByCreatedAtAsc(String name, Pageable pageable);
 
+    @Query("select u from User u inner join u.roles roles " +
+            "where roles.name = ?1 and u.UserStatus = ?2 " +
+            "order by u.recoveryExpirationDate")
+    List<User> findByRoles_NameAndUserStatusOrderByRecoveryExpirationDateAsc1(String name, String UserStatus);
+
+    @Query("select u from User u inner join u.roles roles " +
+            "where roles.name = ?1 and u.UserStatus = ?2 " +
+            "order by u.recoveryExpirationDate")
+    Page<User> findByRoles_NameAndUserStatusOrderByRecoveryExpirationDateAsc(String name, String UserStatus, Pageable pageable);
+
+
+
+
+
+
     @Transactional
     @Modifying
     @Query("update User u set u.UserStatus = ?1, u.recoveryExpirationDate = ?2 where u.loginId = ?3")

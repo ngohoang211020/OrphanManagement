@@ -410,6 +410,7 @@ public class UserService extends BaseService {
         userDto.setRoles(user.getRoles().stream()
                 .map(role -> RoleToRoleDto(role))
                 .collect(Collectors.toList()));
+        userDto.setPhone(user.getPhone());
         return userDto;
     }
 

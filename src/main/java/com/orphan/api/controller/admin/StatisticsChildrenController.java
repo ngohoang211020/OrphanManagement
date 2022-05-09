@@ -17,13 +17,13 @@ public class StatisticsChildrenController {
     private final ChildrenService childrenService;
 
     @ApiOperation("Count children Introduce By Month")
-    @GetMapping("/introduce/month")
+    @GetMapping("/introducer/month")
     public APIResponse<?> countChildrenIntroduceByMonth()  {
         return APIResponse.okStatus(childrenService.countChildrenIntroductiveByMonth());
     }
 
     @ApiOperation("Count children Introduce By Year")
-    @GetMapping("/introduce/year")
+    @GetMapping("/introducer/year")
     public APIResponse<?> countChildrenIntroduceByYear()  {
         return APIResponse.okStatus(childrenService.countChildrenIntroductiveByYear());
     }
