@@ -40,7 +40,7 @@ public class EmployeeRequest {
     @NotEmpty(message="{error.msg.name-is-required}")
     private String fullName;
 
-    private String image=null;
+    private String image;
 
     public EmployeeRequest() {
     }
