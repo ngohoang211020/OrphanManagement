@@ -19,6 +19,7 @@ public class APIConstants {
     public static final String NURTURER = "Orphan Nurturer";
     public static final String INTRODUCER = "Orphan Introducer";
     public static final String FURNITURE = "Furniture";
+    public static final String EVENT = "Event";
     public static final String STAFF = "Staff";
     public static final String FURNITURE_CATEGORY = "Furniture Category";
 
