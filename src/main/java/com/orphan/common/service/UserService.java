@@ -10,9 +10,14 @@ import com.orphan.common.entity.Role;
 import com.orphan.common.entity.User;
 import com.orphan.common.repository.RoleRepository;
 import com.orphan.common.repository.UserRepository;
+import com.orphan.common.request.GenderRequest;
+import com.orphan.common.request.RoleRequest;
+import com.orphan.common.response.ChildrenStatisticsByDateResponse;
+import com.orphan.common.response.StatisticsResponse;
 import com.orphan.common.vo.PageInfo;
 import com.orphan.config.EmailSenderService;
 import com.orphan.enums.ERole;
+import com.orphan.enums.UserStatus;
 import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
@@ -129,6 +134,8 @@ public class UserService extends BaseService {
 
         user.setCreatedId(String.valueOf(getCurrentUserId()));
 
+        user.setUserStatus(UserStatus.ACTIVED.getCode());
+
         this.userRepository.save(user);
 
         registerRequestDto.setLoginId(user.getLoginId());
@@ -219,9 +226,9 @@ public class UserService extends BaseService {
     }
 
     //View By Page
-    public PageInfo<UserDto> viewUsersByPage(Integer page, Integer limit) throws NotFoundException {
+    public PageInfo<UserDto> viewUsersDeletedByPage(Integer page, Integer limit, String status) throws NotFoundException {
         PageRequest pageRequest = buildPageRequest(page, limit);
-        Page<User> userPage = userRepository.findByOrderByFullNameAsc(pageRequest);
+        Page<User> userPage = userRepository.findByUserDeleted(status, pageRequest);
         if (userPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
@@ -244,8 +251,8 @@ public class UserService extends BaseService {
     }
 
     //View All
-    public List<UserDto> viewAllUsers() throws NotFoundException {
-        List<User> userList = userRepository.findAll();
+    public List<UserDto> viewAllUsersDeleted(String status) throws NotFoundException {
+        List<User> userList = userRepository.findByUserDeleted(status);
         if (userList.isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
@@ -260,7 +267,47 @@ public class UserService extends BaseService {
         }).collect(Collectors.toList());
         return userDtoList;
     }
+    public PageInfo<UserDto> viewUsersActivedByPage(Integer page, Integer limit, String status) throws NotFoundException {
+        PageRequest pageRequest = buildPageRequest(page, limit);
+        Page<User> userPage = userRepository.findByUserActived(status, pageRequest);
+        if (userPage.getContent().isEmpty()) {
+            throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
+                    APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
+        }
+        List<UserDto> userDtoList = userPage.getContent().stream().map(user -> {
+            try {
+                return UserToUserDto(user);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }).collect(Collectors.toList());
+        PageInfo<UserDto> userDtoPageInfo = new PageInfo<>();
+        userDtoPageInfo.setPage(page);
+        userDtoPageInfo.setLimit(limit);
+        userDtoPageInfo.setResult(userDtoList);
+        userDtoPageInfo.setTotal(userPage.getTotalElements());
+        userDtoPageInfo.setPages(userPage.getTotalPages());
+        return userDtoPageInfo;
+    }
 
+    //View All
+    public List<UserDto> viewAllUsersActived(String status) throws NotFoundException {
+        List<User> userList = userRepository.findByUserActived(status);
+        if (userList.isEmpty()) {
+            throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
+                    APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
+        }
+        List<UserDto> userDtoList = userList.stream().map(user -> {
+            try {
+                return UserToUserDto(user);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }).collect(Collectors.toList());
+        return userDtoList;
+    }
     //View detail by id
     public UserDetailDto viewUserDetail(Integer userId) throws NotFoundException, IOException {
         UserDetailDto userDetailDto = UserToUserDetailDto(findById(userId));
@@ -275,6 +322,16 @@ public class UserService extends BaseService {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
         }
+    }
+
+    public List<StatisticsResponse> countUsersByRole() {
+        List<StatisticsResponse> statisticsResponses = userRepository.countUserByRole();
+        return statisticsResponses;
+    }
+
+    public List<StatisticsResponse> countUsersByGender() {
+        List<StatisticsResponse> statisticsResponses = userRepository.countUserByGender();
+        return statisticsResponses;
     }
 
     //send api to email need change password
@@ -333,7 +390,26 @@ public class UserService extends BaseService {
         userRepository.save(user.get());
     }
 
-    //-------------------------Employee Service---------------------
+    //delete auto
+    public void updateStatusUser(Integer userId) throws NotFoundException {
+        if (userRepository.existsByLoginId(userId)) {
+            if (userRepository.findById(userId).get().getUserStatus().equals(UserStatus.ACTIVED.getCode())) {
+                long now = (new Date()).getTime();
+                long dateToMilliseconds = 60 * 60 * 1000;
+                userRepository.updateUserStatusAndRecoveryExpirationDateByLoginId(UserStatus.DELETED.getCode(), new Date(now + 7 * 24 * dateToMilliseconds), userId);
+
+            } else {
+                userRepository.updateUserStatusAndRecoveryExpirationDateByLoginId(UserStatus.ACTIVED.getCode(), null, userId);
+            }
+        } else {
+            throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
+                    APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
+        }
+    }
+
+    public void deleteAtExpirateDate(Date date, UserStatus userStatus) {
+        userRepository.deleteByRecoveryExpirationDateAndUserStatus(new Date(new Date().getTime()), UserStatus.DELETED.getCode());
+    }
 
     //mapper
 
@@ -354,13 +430,14 @@ public class UserService extends BaseService {
         return oRole.get();
     }
 
-    public RoleDto RoleToRoleDto(Role role){
-        RoleDto roleDto=new RoleDto();
+    public RoleDto RoleToRoleDto(Role role) {
+        RoleDto roleDto = new RoleDto();
         roleDto.setRoleName(role.getName());
         roleDto.setRoleId(role.getId());
         roleDto.setDescription(role.getDescription());
         return roleDto;
     }
+
     public UserDto UserToUserDto(User user) throws IOException {
 
         UserDto userDto = new UserDto();
@@ -373,6 +450,7 @@ public class UserService extends BaseService {
         userDto.setRoles(user.getRoles().stream()
                 .map(role -> RoleToRoleDto(role))
                 .collect(Collectors.toList()));
+        userDto.setPhone(user.getPhone());
         return userDto;
     }
 
@@ -391,9 +469,12 @@ public class UserService extends BaseService {
         userDetailDto.setDate_of_birth(OrphanUtils.DateToString(user.getDateOfBirth()));
         userDetailDto.setIdentification(user.getIdentification());
         userDetailDto.setPhone(user.getPhone());
+        if (user.getRecoveryExpirationDate() != null) {
+            userDetailDto.setRecoveryExpirationDate(OrphanUtils.DateToString(user.getRecoveryExpirationDate()));
+        }
+        userDetailDto.setUserStatus(user.getUserStatus());
         return userDetailDto;
     }
-
 
     public void validatePassword(String password, String confirmPassword) throws BadRequestException {
         if (!OrphanUtils.isPassword(password)) {

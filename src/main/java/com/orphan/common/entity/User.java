@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -24,5 +26,15 @@ public class User extends BasePeopleEntity{
             @JoinColumn(name = "user_id", referencedColumnName = "id") }, inverseJoinColumns = {
             @JoinColumn(name = "role_id", referencedColumnName = "id") })
     private List<Role> roles;
+
+    @NotEmpty
+    private String UserStatus;
+
+    @Temporal(TemporalType.DATE)
+    public Date recoveryExpirationDate;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<FurnitureRequestForm> furnitureRequestForms;
+
 
 }

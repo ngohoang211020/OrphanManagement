@@ -1,5 +1,6 @@
 package com.orphan.api.controller.manager.Children.nurturer.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.orphan.common.annotation.Date;
 import com.orphan.common.annotation.Identification;
 import com.orphan.common.annotation.Phone;
@@ -11,10 +12,12 @@ import javax.validation.constraints.NotEmpty;
 
 @Getter
 @Setter
-public class NurturerRequest {
-    private Integer nurturerId;
+@JsonInclude(JsonInclude.Include.NON_NULL)
 
-    private String nurturerName;
+public class NurturerRequest {
+    private Integer id;
+
+    private String fullName;
 
     @NotEmpty(message="{error.msg.date-of-birth-is-required}")
     @Date

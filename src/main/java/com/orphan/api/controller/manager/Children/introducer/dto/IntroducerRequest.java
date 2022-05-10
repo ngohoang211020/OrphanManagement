@@ -1,5 +1,6 @@
 package com.orphan.api.controller.manager.Children.introducer.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.orphan.common.annotation.Date;
 import com.orphan.common.annotation.Identification;
 import com.orphan.common.annotation.Phone;
@@ -11,10 +12,12 @@ import javax.validation.constraints.NotEmpty;
 
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class IntroducerRequest {
-    private Integer introducerId;
+    private Integer id;
 
-    private String introducerName;
+    @NotEmpty(message="{error.msg.name-is-required}")
+    private String fullName;
 
     @NotEmpty(message="{error.msg.date-of-birth-is-required}")
     @Date

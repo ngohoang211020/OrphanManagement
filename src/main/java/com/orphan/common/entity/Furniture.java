@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -18,12 +20,18 @@ public class Furniture extends BaseEntity {
     @Column(nullable = false)
     private String furnitureName;
 
-    @Column(nullable = false)
-    private String status;
+    private Integer goodQuantity;
 
-    private Integer quantity;
+    private Integer brokenQuantity;
 
-    @Column(length = 256)
+    @Column(columnDefinition = "text default null")
     private String image;
 
+    private Long unitPrice;
+
+    @Column(columnDefinition = "text")
+    private String status;
+
+    @OneToMany(mappedBy = "furniture", cascade = CascadeType.ALL)
+    private List<SpecifyFurnitureRequest> specifyFurnitureRequestList;
 }

@@ -4,6 +4,8 @@ import com.orphan.api.controller.common.dto.LoginRequest;
 import com.orphan.common.entity.User;
 import com.orphan.config.jwt.AccessToken;
 import com.orphan.config.jwt.JwtUtils;
+import com.orphan.enums.UserStatus;
+import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -35,10 +37,13 @@ public class AuthService extends BaseService{
      * @return Identity
      * @throws NotFoundException
      */
-    public AccessToken login(LoginRequest loginRequest) throws NotFoundException {
+    public AccessToken login(LoginRequest loginRequest) throws NotFoundException, BadRequestException {
         Optional<User> user = this.getUserByEmail(loginRequest.getEmail());
         if(!user.isPresent()) {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND, this.messageService.buildMessages("error.msg.login-invalid"));
+        }
+        if(user.get().getUserStatus().equals(UserStatus.DELETED.getCode())){
+            throw new BadRequestException(BadRequestException.ERROR_ACCOUNT_WAS_DELETED, this.messageService.buildMessages("error.msg.account-deleted"));
         }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.get().getLoginId(), loginRequest.getPassword()));

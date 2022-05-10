@@ -17,8 +17,9 @@ public interface OrphanIntroducerRepository extends JpaRepository<OrphanIntroduc
 
     boolean existsByIdentification(String identification);
 
-    @Query("select o from OrphanIntroducer o order by o.fullName")
-    Page<OrphanIntroducer> findByOrderByFullNameAsc(Pageable pageable);
+    @Query("select o from OrphanIntroducer o order by o.createdAt")
+    Page<OrphanIntroducer> findByOrderByCreatedAtAsc(Pageable pageable);
+
 
 
 }

@@ -26,9 +26,12 @@ public class NotFoundException extends Exception {
     public static final String ERROR_FURNITURE_NOT_FOUND = "ERROR_FURNITURE_NOT_FOUND";
 
     public static final String ERROR_STAFF_NOT_FOUND = "ERROR_STAFF_NOT_FOUND";
+  
 
     public static final String ERROR_EVENT_NOT_FOUND = "ERROR_EVENT_NOT_FOUND";
 
+    public static final String ERROR_FURNITURE_REQUEST_FORM_NOT_FOUND = "ERROR_FURNITURE_REQUEST_FORM_NOT_FOUND";
+    public static final String ERROR_FURNITURE_CATEGORY_NOT_FOUND = "ERROR_FURNITURE_CATEGORY_NOT_FOUND";
 
     private static final long serialVersionUID = 1L;
     private String error;

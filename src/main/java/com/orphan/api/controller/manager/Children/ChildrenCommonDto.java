@@ -8,14 +8,14 @@ import lombok.Setter;
 public class ChildrenCommonDto {
     private Integer childrenId;
 
-    private String name;
+    private String fullName;
 
     private String dateOfBirth;
 
     private Boolean gender;
 
-    private String adoptiveDate;
+    private String introductoryDate;
 
-    private String dateReceivedOfNurturer;
+    private String adoptiveDate;
 
 }

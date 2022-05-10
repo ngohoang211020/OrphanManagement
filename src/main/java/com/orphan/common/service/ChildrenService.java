@@ -9,6 +9,10 @@ import com.orphan.common.entity.OrphanNurturer;
 import com.orphan.common.repository.ChildrenRepository;
 import com.orphan.common.repository.OrphanIntroducerRepository;
 import com.orphan.common.repository.OrphanNurturerRepository;
+import com.orphan.common.request.DateRequest;
+import com.orphan.common.request.GenderRequest;
+import com.orphan.common.response.ChildrenStatisticsByDateResponse;
+import com.orphan.common.response.StatisticsResponse;
 import com.orphan.common.vo.PageInfo;
 import com.orphan.enums.ChildrenStatus;
 import com.orphan.exception.NotFoundException;
@@ -54,26 +58,24 @@ public class ChildrenService extends BaseService {
 
     public ChildrenRequest updateChildrenDetail(ChildrenRequest childrenRequest, Integer childrenId) throws NotFoundException {
         Children children = findById(childrenId);
-        children.setStatus(childrenRequest.getStatus());
         children.setGender(childrenRequest.getGender());
         children.setDateOfBirth(OrphanUtils.StringToDate(childrenRequest.getDateOfBirth()));
         children.setFullName(childrenRequest.getFullName());
-        children.setAdoptiveDate(OrphanUtils.StringToDate(childrenRequest.getAdoptiveDate()));
+        children.setIntroductoryDate(OrphanUtils.StringToDate(childrenRequest.getIntroductoryDate()));
 
-        if(childrenRequest.getDateReceivedOfNurturer()!=""){
-            children.setDateReceivedOfNurturer(OrphanUtils.StringToDate(childrenRequest.getDateReceivedOfNurturer()));
-            OrphanNurturer orphanNurturer=orphanNuturerRepository.findById(childrenRequest.getNurturerId()).get();
+        if (childrenRequest.getAdoptiveDate() != "") {
+            children.setAdoptiveDate(OrphanUtils.StringToDate(childrenRequest.getAdoptiveDate()));
+            OrphanNurturer orphanNurturer = orphanNuturerRepository.findById(childrenRequest.getNurturerId()).get();
             children.setStatus(ChildrenStatus.RECEIVED.getCode());
             children.setOrphanNurturer(orphanNurturer);
-        }
-        else{
+        } else {
             children.setStatus(ChildrenStatus.WAIT_TO_RECEIVE.getCode());
         }
-        if(childrenRequest.getIntroducerId()!=0){
-            OrphanIntroducer orphanIntroducer=orphanIntroducerRepository.findById(childrenRequest.getIntroducerId()).get();
+        if (childrenRequest.getIntroducerId() > 0 && childrenRequest.getIntroducerId() != null) {
+            OrphanIntroducer orphanIntroducer = orphanIntroducerRepository.findById(childrenRequest.getIntroducerId()).get();
             children.setOrphanIntroducer(orphanIntroducer);
         }
-        if(childrenRequest.getImage()!=""){
+        if (childrenRequest.getImage() != "" && childrenRequest.getImage() != null) {
             children.setImage(childrenRequest.getImage());
         }
         children.setModifiedId(String.valueOf(getCurrentUserId()));
@@ -101,14 +103,12 @@ public class ChildrenService extends BaseService {
 
     public PageInfo<ChildrenDto> viewChildrensByPage(Integer page, Integer limit) throws NotFoundException {
         PageRequest pageRequest = buildPageRequest(page, limit);
-        Page<Children> childrenPage = childrenRepository.findByOrderByFullNameAsc(pageRequest);
+        Page<Children> childrenPage = childrenRepository.findByOrderByCreatedAtAsc(pageRequest);
         if (childrenPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_CHILDREN_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.CHILDREN));
         }
-        List<ChildrenDto> childrenDtoList = childrenPage.getContent().stream().map(children -> {
-            return ChildrenToChildrenDto(children);
-        }).collect(Collectors.toList());
+        List<ChildrenDto> childrenDtoList = childrenPage.getContent().stream().map(this::ChildrenToChildrenDto).collect(Collectors.toList());
         PageInfo<ChildrenDto> childrenDtoPageInfo = new PageInfo<>();
         childrenDtoPageInfo.setPage(page);
         childrenDtoPageInfo.setLimit(limit);
@@ -126,8 +126,29 @@ public class ChildrenService extends BaseService {
         childrenRepository.deleteById(childrenId);
     }
 
+    public List<ChildrenStatisticsByDateResponse> countChildrenIntroductiveByMonth() {
+        List<ChildrenStatisticsByDateResponse> childrenStatisticsByDateResponses = childrenRepository.countChildrenByIntroduceDate();
+        return childrenStatisticsByDateResponses;
+    }
+    public List<ChildrenStatisticsByDateResponse> countChildrenIntroductiveByYear() {
+        List<ChildrenStatisticsByDateResponse> childrenStatisticsByDateResponses = childrenRepository.countChildrenByIntroduceDateYear();
+        return childrenStatisticsByDateResponses;
+    }
+    public List<ChildrenStatisticsByDateResponse> countChildrenNurturerByMonth() {
+        List<ChildrenStatisticsByDateResponse> childrenStatisticsByDateResponses = childrenRepository.countChildrenByAdoptiveDate();
+        return childrenStatisticsByDateResponses;
+    }
+    public List<ChildrenStatisticsByDateResponse> countChildrenNurturerByYear() {
+        List<ChildrenStatisticsByDateResponse> childrenStatisticsByDateResponses = childrenRepository.countChildrenByAdoptiveDateYear();
+        return childrenStatisticsByDateResponses;
+    }
 
+    public List<StatisticsResponse> countChildrenByGender() {
+        List<StatisticsResponse> statisticsResponses = childrenRepository.countChildrenByGender();
+        return statisticsResponses;
+    }
     //mapper
+
 
     private ChildrenDto ChildrenToChildrenDto(Children children) {
         ChildrenDto childrenDto = new ChildrenDto();
@@ -147,40 +168,39 @@ public class ChildrenService extends BaseService {
         childrenDetailDto.setDateOfBirth(OrphanUtils.DateToString(children.getDateOfBirth()));
         childrenDetailDto.setStatus(children.getStatus());
         childrenDetailDto.setGender(children.getGender());
-        childrenDetailDto.setAdoptiveDate(OrphanUtils.DateToString(children.getAdoptiveDate()));
+        childrenDetailDto.setIntroductoryDate(OrphanUtils.DateToString(children.getIntroductoryDate()));
 
-        if(children.getOrphanIntroducer()!=null){
+        if (children.getOrphanIntroducer() != null) {
             childrenDetailDto.setNameOfIntroducer(children.getOrphanIntroducer().getFullName());
+            childrenDetailDto.setIntroducerId(children.getOrphanIntroducer().getIntroducerId());
         }
-        if(children.getOrphanNurturer()!=null){
-            childrenDetailDto.setDateReceived(OrphanUtils.DateToString(children.getDateReceivedOfNurturer()));
+        if (children.getOrphanNurturer() != null) {
+            childrenDetailDto.setAdoptiveDate(OrphanUtils.DateToString(children.getAdoptiveDate()));
             childrenDetailDto.setNameOfNurturer(children.getOrphanNurturer().getFullName());
+            childrenDetailDto.setNurturerId(children.getOrphanNurturer().getNurturerId());
         }
         return childrenDetailDto;
     }
 
     private Children ChildrenRequestToChidren(ChildrenRequest childrenRequest) {
         Children children = new Children();
-        children.setStatus(childrenRequest.getStatus());
         children.setGender(childrenRequest.getGender());
         children.setDateOfBirth(OrphanUtils.StringToDate(childrenRequest.getDateOfBirth()));
         children.setFullName(childrenRequest.getFullName());
-        children.setAdoptiveDate(OrphanUtils.StringToDate(childrenRequest.getAdoptiveDate()));
-        children.setImage(childrenRequest.getImage());
-        if(childrenRequest.getDateReceivedOfNurturer()!="" && childrenRequest.getNurturerId()!=null){
-            children.setDateReceivedOfNurturer(OrphanUtils.StringToDate(childrenRequest.getDateReceivedOfNurturer()));
-            OrphanNurturer orphanNurturer=orphanNuturerRepository.findById(childrenRequest.getNurturerId()).get();
+        children.setIntroductoryDate(OrphanUtils.StringToDate(childrenRequest.getIntroductoryDate()));
+        if (childrenRequest.getImage() != "" && childrenRequest.getImage() != null) {
+            children.setImage(childrenRequest.getImage());
+        }
+        if (childrenRequest.getAdoptiveDate() != "" && childrenRequest.getNurturerId() > 0 && !childrenRequest.getNurturerId().equals(null)) {
+            children.setAdoptiveDate(OrphanUtils.StringToDate(childrenRequest.getAdoptiveDate()));
+            OrphanNurturer orphanNurturer = orphanNuturerRepository.findById(childrenRequest.getNurturerId()).get();
             children.setStatus(ChildrenStatus.RECEIVED.getCode());
             children.setOrphanNurturer(orphanNurturer);
-        }
-        else{
+        } else {
             children.setStatus(ChildrenStatus.WAIT_TO_RECEIVE.getCode());
         }
-
-        children.setStatus(ChildrenStatus.WAIT_TO_RECEIVE.getCode());
-
-        if(childrenRequest.getIntroducerId()!=0 && childrenRequest.getIntroducerId()!=null){
-            OrphanIntroducer orphanIntroducer=orphanIntroducerRepository.findById(childrenRequest.getIntroducerId()).get();
+        if (childrenRequest.getIntroducerId() > 0 && !childrenRequest.getIntroducerId().equals(null)) {
+            OrphanIntroducer orphanIntroducer = orphanIntroducerRepository.findById(childrenRequest.getIntroducerId()).get();
             children.setOrphanIntroducer(orphanIntroducer);
         }
         children.setId(childrenRequest.getId());

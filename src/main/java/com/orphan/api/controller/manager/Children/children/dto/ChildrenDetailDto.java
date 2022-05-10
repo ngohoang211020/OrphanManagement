@@ -6,11 +6,15 @@ import lombok.Data;
 public class ChildrenDetailDto extends ChildrenDto{
     private Boolean gender;
 
-    private String dateReceived;
+    private String adoptiveDate;
 
     private String nameOfIntroducer;
 
-    private String adoptiveDate;
+    private String introductoryDate;
 
     private String nameOfNurturer;
+
+    private Integer introducerId;
+
+    private Integer nurturerId;
 }

@@ -15,4 +15,7 @@ public class UserDetailDto extends UserDto {
 
     private String date_of_birth;
 
+    private String recoveryExpirationDate;
+
+    private String userStatus;
 }

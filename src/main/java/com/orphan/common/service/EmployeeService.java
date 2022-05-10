@@ -8,6 +8,7 @@ import com.orphan.common.repository.RoleRepository;
 import com.orphan.common.repository.UserRepository;
 import com.orphan.common.vo.PageInfo;
 import com.orphan.enums.ERole;
+import com.orphan.enums.UserStatus;
 import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class EmployeeService extends BaseService{
+public class EmployeeService extends BaseService {
     private final MessageService messageService;
 
     private final UserRepository userRepository;
@@ -37,7 +38,84 @@ public class EmployeeService extends BaseService{
 
     private static final Logger logger = LoggerFactory.getLogger(EmployeeService.class);
 
-    public List<UserDto> viewAllEmployee(){
+    public List<UserDto> viewAllEmployeeByStatusDELETED(String role,String status) {
+        List<User> employeeList = userRepository.findByRoleAndStatusDELETED(role,status);
+        if (employeeList.isEmpty()) {
+            return null;
+        }
+        List<UserDto> employeeDtoList = employeeList.stream().map(employee -> {
+            try {
+                return userService.UserToUserDto(employee);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }).collect(Collectors.toList());
+        return employeeDtoList;
+    }
+    public PageInfo<UserDto> viewUsersByPageByStatusDELETED(Integer page, Integer limit,String role,String status) throws NotFoundException {
+        PageRequest pageRequest = buildPageRequest(page, limit);
+        Page<User> userPage = userRepository.findByRoleAndStatusDELETED(role,status, pageRequest);
+        if (userPage.getContent().isEmpty()) {
+            throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
+                    APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
+        }
+        List<UserDto> userDtoList = userPage.getContent().stream().map(user -> {
+            try {
+                return userService.UserToUserDto(user);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }).collect(Collectors.toList());
+        PageInfo<UserDto> userDtoPageInfo = new PageInfo<>();
+        userDtoPageInfo.setPage(page);
+        userDtoPageInfo.setLimit(limit);
+        userDtoPageInfo.setResult(userDtoList);
+        userDtoPageInfo.setTotal(userPage.getTotalElements());
+        userDtoPageInfo.setPages(userPage.getTotalPages());
+        return userDtoPageInfo;
+    }
+
+    public List<UserDto> viewAllEmployeeByStatusACTIVED(String role,String status) {
+        List<User> employeeList = userRepository.findByRoleAndStatus(role,status);
+        if (employeeList.isEmpty()) {
+            return null;
+        }
+        List<UserDto> employeeDtoList = employeeList.stream().map(employee -> {
+            try {
+                return userService.UserToUserDto(employee);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }).collect(Collectors.toList());
+        return employeeDtoList;
+    }
+    public PageInfo<UserDto> viewUsersByPageByStatusACTIVED(Integer page, Integer limit,String role,String status) throws NotFoundException {
+        PageRequest pageRequest = buildPageRequest(page, limit);
+        Page<User> userPage = userRepository.findByRoleAndStatus(role,status, pageRequest);
+        if (userPage.getContent().isEmpty()) {
+            throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
+                    APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
+        }
+        List<UserDto> userDtoList = userPage.getContent().stream().map(user -> {
+            try {
+                return userService.UserToUserDto(user);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }).collect(Collectors.toList());
+        PageInfo<UserDto> userDtoPageInfo = new PageInfo<>();
+        userDtoPageInfo.setPage(page);
+        userDtoPageInfo.setLimit(limit);
+        userDtoPageInfo.setResult(userDtoList);
+        userDtoPageInfo.setTotal(userPage.getTotalElements());
+        userDtoPageInfo.setPages(userPage.getTotalPages());
+        return userDtoPageInfo;
+    }
+    public List<UserDto> viewAllEmployee() {
         List<User> employeeList = userRepository.findByRoles_Name(ERole.ROLE_EMPLOYEE.getCode());
         if (employeeList.isEmpty()) {
             return null;
@@ -56,7 +134,7 @@ public class EmployeeService extends BaseService{
     //View By Page
     public PageInfo<UserDto> viewUsersByPage(Integer page, Integer limit) throws NotFoundException {
         PageRequest pageRequest = buildPageRequest(page, limit);
-        Page<User> userPage = userRepository.findByRoles_NameOrderByFullNameAsc(ERole.ROLE_EMPLOYEE.getCode(),pageRequest);
+        Page<User> userPage = userRepository.findByRoles_NameOrderByCreatedAtAsc(ERole.ROLE_EMPLOYEE.getCode(), pageRequest);
         if (userPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
@@ -110,17 +188,20 @@ public class EmployeeService extends BaseService{
 
         user.setIdentification(employeeRequest.getIdentification());
 
-        user.setImage(employeeRequest.getImage());
-
-        user.setDateOfBirth(OrphanUtils.StringToDate(employeeRequest.getDate_of_birth()));
+        if (employeeRequest.getImage() != null && employeeRequest.getImage() != "") {
+            user.setImage(employeeRequest.getImage());
+        }
+        user.setDateOfBirth(OrphanUtils.StringToDate(employeeRequest.getDateOfBirth()));
 
         user.setAddress(employeeRequest.getAddress());
 
         user.setCreatedId(String.valueOf(getCurrentUserId()));
 
+        user.setUserStatus(UserStatus.ACTIVED.getCode());
+
         this.userRepository.save(user);
 
-        employeeRequest.setEmployeeId(user.getLoginId());
+        employeeRequest.setId(user.getLoginId());
 
         return employeeRequest;
     }
@@ -145,42 +226,42 @@ public class EmployeeService extends BaseService{
             user.setIdentification(employeeRequest.getIdentification());
         }
 
-        if (employeeRequest.getImage() != "") {
+        if (employeeRequest.getImage() != ""&&employeeRequest.getImage()!=null) {
             user.setImage(employeeRequest.getImage());
         }
 
 
-            List<Role> roleList = new ArrayList<>();
+        List<Role> roleList = new ArrayList<>();
 
-            Role employee = roleRepository.findByName(ERole.ROLE_EMPLOYEE.getCode()).get();
-            roleList.add(employee);
+        Role employee = roleRepository.findByName(ERole.ROLE_EMPLOYEE.getCode()).get();
+        roleList.add(employee);
 
 
-            user.setFullName(employeeRequest.getFullName());
+        user.setFullName(employeeRequest.getFullName());
 
-            user.setEmail(employeeRequest.getEmail());
+        user.setEmail(employeeRequest.getEmail());
 
-            user.setRoles(roleList);
+        user.setRoles(roleList);
 
-            user.setPhone(employeeRequest.getPhone());
+        user.setPhone(employeeRequest.getPhone());
 
-            user.setGender(employeeRequest.getGender());
+        user.setGender(employeeRequest.getGender());
 
-            user.setIdentification(employeeRequest.getIdentification());
+        user.setIdentification(employeeRequest.getIdentification());
 
-            user.setImage(employeeRequest.getImage());
+        user.setImage(employeeRequest.getImage());
 
-            user.setDateOfBirth(OrphanUtils.StringToDate(employeeRequest.getDate_of_birth()));
+        user.setDateOfBirth(OrphanUtils.StringToDate(employeeRequest.getDateOfBirth()));
 
-            user.setAddress(employeeRequest.getAddress());
+        user.setAddress(employeeRequest.getAddress());
 
-            user.setModifiedId(String.valueOf(getCurrentUserId()));
+        user.setModifiedId(String.valueOf(getCurrentUserId()));
 
-            this.userRepository.save(user);
+        this.userRepository.save(user);
 
-            employeeRequest.setEmployeeId(userId);
+        employeeRequest.setId(userId);
 
-            return employeeRequest;
+        return employeeRequest;
     }
 
 }

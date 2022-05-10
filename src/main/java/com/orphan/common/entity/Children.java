@@ -28,14 +28,14 @@ public class Children extends BaseEntity{
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
 
-    @Column(length = 256)
+    @Column(columnDefinition = "text default null")
     private String image;
 
     @Temporal(TemporalType.DATE)
-    private Date adoptiveDate;
+    private Date introductoryDate;
 
     @Temporal(TemporalType.DATE)
-    private Date dateReceivedOfNurturer;
+    private Date adoptiveDate;
 
     @ManyToOne
     @JoinColumn(name = "introducer_id")
