@@ -15,6 +15,8 @@ public class FurnitureDto {
 
     private String image;
 
+    private String status;
+
     private Long unitPrice;
 
 }

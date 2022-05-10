@@ -23,6 +23,8 @@ public class FurnitureRequest {
 
     private String image;
 
+    private String status;
+
     private Long unitPrice;
 
 }

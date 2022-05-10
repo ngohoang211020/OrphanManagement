@@ -29,6 +29,9 @@ public class Furniture extends BaseEntity {
 
     private Long unitPrice;
 
+    @Column(columnDefinition = "text")
+    private String status;
+
     @OneToMany(mappedBy = "furniture", cascade = CascadeType.ALL)
     private List<SpecifyFurnitureRequest> specifyFurnitureRequestList;
 }

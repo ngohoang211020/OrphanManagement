@@ -62,6 +62,7 @@ public class FurnitureService extends BaseService {
         if (furnitureRequest.getImage() != "" && furnitureRequest.getImage() != null) {
             furniture.setImage(furnitureRequest.getImage());
         }
+        furniture.setStatus(furnitureRequest.getStatus());
 
         this.furnitureRepository.save(furniture);
 
@@ -119,6 +120,7 @@ public class FurnitureService extends BaseService {
         furnitureDto.setGoodQuantity(furniture.getGoodQuantity());
         furnitureDto.setUnitPrice(furniture.getUnitPrice());
         furnitureDto.setBrokenQuantity(furniture.getBrokenQuantity());
+        furnitureDto.setStatus(furniture.getStatus());
         return furnitureDto;
     }
 
@@ -132,12 +134,9 @@ public class FurnitureService extends BaseService {
         furniture.setBrokenQuantity(furnitureRequest.getBrokenQuantity());
         furniture.setFurnitureName(furnitureRequest.getNameFurniture());
         furniture.setGoodQuantity(furnitureRequest.getGoodQuantity());
-
+        furniture.setStatus(furnitureRequest.getStatus());
         return furniture;
     }
 
-//    private String furnitureStatusToString(String furnitureStatus) {
-//        return furnitureStatus.equals(FurnitureStatus.GOOD.toString()) ? FurnitureStatus.GOOD.toString() : FurnitureStatus.NEED_FIX.getCode();
-//    }
 
 }
