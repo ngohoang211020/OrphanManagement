@@ -39,7 +39,7 @@ public class EmployeeService extends BaseService {
     private static final Logger logger = LoggerFactory.getLogger(EmployeeService.class);
 
     public List<UserDto> viewAllEmployeeByStatusDELETED(String role,String status) {
-        List<User> employeeList = userRepository.findByRoles_NameAndUserStatusOrderByRecoveryExpirationDateAsc1(role,status);
+        List<User> employeeList = userRepository.findByRoleAndStatusDELETED(role,status);
         if (employeeList.isEmpty()) {
             return null;
         }
@@ -55,7 +55,7 @@ public class EmployeeService extends BaseService {
     }
     public PageInfo<UserDto> viewUsersByPageByStatusDELETED(Integer page, Integer limit,String role,String status) throws NotFoundException {
         PageRequest pageRequest = buildPageRequest(page, limit);
-        Page<User> userPage = userRepository.findByRoles_NameAndUserStatusOrderByRecoveryExpirationDateAsc(role,status, pageRequest);
+        Page<User> userPage = userRepository.findByRoleAndStatusDELETED(role,status, pageRequest);
         if (userPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));

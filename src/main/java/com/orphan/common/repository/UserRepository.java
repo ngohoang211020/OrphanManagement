@@ -44,13 +44,13 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query("select u from User u inner join u.roles roles " +
             "where roles.name = ?1 and u.UserStatus = ?2 " +
-            "order by u.recoveryExpirationDate")
-    List<User> findByRoles_NameAndUserStatusOrderByRecoveryExpirationDateAsc1(String name, String UserStatus);
+            "order by u.recoveryExpirationDate ASC ")
+    List<User> findByRoleAndStatusDELETED(String name, String UserStatus);
 
     @Query("select u from User u inner join u.roles roles " +
             "where roles.name = ?1 and u.UserStatus = ?2 " +
-            "order by u.recoveryExpirationDate")
-    Page<User> findByRoles_NameAndUserStatusOrderByRecoveryExpirationDateAsc(String name, String UserStatus, Pageable pageable);
+            "order by u.recoveryExpirationDate asc ")
+    Page<User> findByRoleAndStatusDELETED(String name, String UserStatus, Pageable pageable);
 
     @Transactional
     @Modifying
@@ -63,34 +63,32 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     void deleteByRecoveryExpirationDateAndUserStatus(Date recoveryExpirationDate, String UserStatus);
 
 
-    //view 
-    @Query("select u from User u where u.UserStatus = ?1 order by u.recoveryExpirationDate")
+    //view
+    @Query("select u from User u where u.UserStatus = ?1 order by u.recoveryExpirationDate asc ")
     Page<User> findByUserDeleted(String UserStatus, Pageable pageable);
 
 
-    @Query("select u from User u where u.UserStatus = ?1 order by u.recoveryExpirationDate")
+    @Query("select u from User u where u.UserStatus = ?1 order by u.recoveryExpirationDate asc ")
     List<User> findByUserDeleted(String UserStatus);
 
 
     @Query("select u from User u inner join u.roles roles " +
             "where roles.name = ?1 and u.UserStatus = ?2 " +
-            "order by u.createdAt")
+            "order by u.loginId asc ")
     List<User> findByRoleAndStatus(String name, String UserStatus);
 
     @Query("select u from User u inner join u.roles roles " +
             "where roles.name = ?1 and u.UserStatus = ?2 " +
-            "order by u.createdAt")
+            "order by u.loginId asc")
     Page<User> findByRoleAndStatus(String name, String UserStatus, Pageable pageable);
 
 
     //thong ke
-    @Query("select u from User u where u.UserStatus = ?1 order by u.createdAt")
+    @Query("select u from User u where u.UserStatus = ?1 order by u.loginId asc ")
     List<User> findByUserActived(String UserStatus);
 
-    @Query("select u from User u where u.UserStatus = ?1 order by u.createdAt")
+    @Query("select u from User u where u.UserStatus = ?1 order by u.loginId asc ")
     Page<User> findByUserActived(String UserStatus, Pageable pageable);
-
-
 
     @Query(value = "select roles.name as keyword,count(distinct u) as value from User u inner join u.roles roles group by roles.name")
     List<StatisticsResponse> countUserByRole();
