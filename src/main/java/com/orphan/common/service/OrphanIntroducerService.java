@@ -1,5 +1,6 @@
 package com.orphan.common.service;
 
+import com.orphan.api.controller.admin.dto.UserDto;
 import com.orphan.api.controller.manager.Children.ChildrenCommonDto;
 import com.orphan.api.controller.manager.Children.CommonChildrenService;
 import com.orphan.api.controller.manager.Children.introducer.dto.IntroducerDetailDto;
@@ -7,9 +8,12 @@ import com.orphan.api.controller.manager.Children.introducer.dto.IntroducerDto;
 import com.orphan.api.controller.manager.Children.introducer.dto.IntroducerRequest;
 import com.orphan.api.controller.manager.Children.nurturer.dto.NurturerDto;
 import com.orphan.common.entity.OrphanIntroducer;
+import com.orphan.common.entity.OrphanNurturer;
+import com.orphan.common.entity.User;
 import com.orphan.common.repository.ChildrenRepository;
 import com.orphan.common.repository.OrphanIntroducerRepository;
 import com.orphan.common.vo.PageInfo;
+import com.orphan.enums.UserStatus;
 import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
@@ -22,6 +26,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -166,6 +171,25 @@ public class OrphanIntroducerService extends BaseService {
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.INTRODUCER));
         }
 
+    }
+
+    public PageInfo<IntroducerDto> searchIntroducer(String keyword, Integer page, Integer limit) throws NotFoundException {
+        PageRequest pageRequest = buildPageRequest(page, limit);
+        Page<OrphanIntroducer> introducerPage=null;
+
+        introducerPage = orphanIntroducerRepository.searchIntroducer(keyword, pageRequest);
+        if (introducerPage.getContent().isEmpty()) {
+            throw new NotFoundException(NotFoundException.ERROR_ORPHAN_INTRODUCER_NOT_FOUND,
+                    APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.INTRODUCER));
+        }
+        List<IntroducerDto> introducerDtoList = introducerPage.getContent().stream().map(introducer -> OrphanIntroducerToIntroducerDto(introducer)).collect(Collectors.toList());
+        PageInfo<IntroducerDto> introducerDtoPageInfo = new PageInfo<>();
+        introducerDtoPageInfo.setPage(page);
+        introducerDtoPageInfo.setLimit(limit);
+        introducerDtoPageInfo.setResult(introducerDtoList);
+        introducerDtoPageInfo.setTotal(introducerPage.getTotalElements());
+        introducerDtoPageInfo.setPages(introducerPage.getTotalPages());
+        return introducerDtoPageInfo;
     }
 
     //mapper

@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.orphan.api.controller.admin.dto.UserDetailDto;
 import com.orphan.api.controller.admin.dto.UserDto;
 import com.orphan.api.controller.manager.HR.Employee.dto.EmployeeRequest;
+import com.orphan.common.request.SearchRequest;
 import com.orphan.common.response.APIResponse;
 import com.orphan.common.service.EmployeeService;
 import com.orphan.common.service.UserService;
@@ -32,26 +33,6 @@ public class EmployeeController {
     private final UserService userService;
 
     private final EmployeeService employeeService;
-
-//    @ApiOperation("Get All Employees")
-//    @GetMapping("/all")
-//    public APIResponse<?> viewAllEmployees() throws NotFoundException {
-//        return APIResponse.okStatus(employeeService.viewAllEmployee());
-//    }
-//
-//    @ApiOperation("Get Employee By Pages")
-//    @GetMapping
-//    public APIResponse<?> viewStaffsByPage(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
-//    ) throws NotFoundException {
-//        PageInfo<UserDto> employeePageInfo;
-//        if (page != null) {
-//            employeePageInfo = employeeService.viewUsersByPage(page, PageableConstants.limit);
-//        } else {
-//            employeePageInfo = employeeService.viewUsersByPage(1, PageableConstants.limit);
-//
-//        }
-//        return APIResponse.okStatus(employeePageInfo);
-//    }
 
     @ApiOperation("View Employee Detail")
     @GetMapping("/{emplyeeId}")
@@ -125,5 +106,33 @@ public class EmployeeController {
 
         }
         return APIResponse.okStatus(employeePageInfo);
+    }
+
+    @ApiOperation("Search Employee ACTIVED")
+    @PostMapping("/search")
+    public APIResponse<?> searchEmployeesActived(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
+            , @RequestBody SearchRequest searchRequest) throws NotFoundException {
+        PageInfo<UserDto> userDtoPageInfo;
+        if (page != null) {
+            userDtoPageInfo = userService.searchEmployee(searchRequest.getKeyword(),UserStatus.ACTIVED.getCode(), page, PageableConstants.limit);
+        } else {
+            userDtoPageInfo = userService.searchEmployee(searchRequest.getKeyword(),UserStatus.ACTIVED.getCode(),1, PageableConstants.limit);
+
+        }
+        return APIResponse.okStatus(userDtoPageInfo);
+    }
+
+    @ApiOperation("Search Employee DELETED")
+    @PostMapping("/search/deleted")
+    public APIResponse<?> searchEmployeesDeleted(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
+            , @RequestBody SearchRequest searchRequest) throws NotFoundException {
+        PageInfo<UserDto> userDtoPageInfo;
+        if (page != null) {
+            userDtoPageInfo = userService.searchEmployee(searchRequest.getKeyword(),UserStatus.DELETED.getCode(), page, PageableConstants.limit);
+        } else {
+            userDtoPageInfo = userService.searchEmployee(searchRequest.getKeyword(),UserStatus.DELETED.getCode(),1, PageableConstants.limit);
+
+        }
+        return APIResponse.okStatus(userDtoPageInfo);
     }
 }

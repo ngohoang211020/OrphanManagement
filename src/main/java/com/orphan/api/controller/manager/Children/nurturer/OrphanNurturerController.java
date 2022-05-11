@@ -2,12 +2,14 @@ package com.orphan.api.controller.manager.Children.nurturer;
 
 
 import com.google.gson.JsonObject;
+import com.orphan.api.controller.manager.Children.children.dto.ChildrenDto;
 import com.orphan.api.controller.manager.Children.introducer.dto.IntroducerDetailDto;
 import com.orphan.api.controller.manager.Children.introducer.dto.IntroducerDto;
 import com.orphan.api.controller.manager.Children.introducer.dto.IntroducerRequest;
 import com.orphan.api.controller.manager.Children.nurturer.dto.NurturerDetailDto;
 import com.orphan.api.controller.manager.Children.nurturer.dto.NurturerDto;
 import com.orphan.api.controller.manager.Children.nurturer.dto.NurturerRequest;
+import com.orphan.common.request.SearchRequest;
 import com.orphan.common.response.APIResponse;
 import com.orphan.common.service.OrphanNurturerService;
 import com.orphan.common.vo.PageInfo;
@@ -86,5 +88,19 @@ public class OrphanNurturerController {
     public APIResponse<?> deleteFurniture(@PathVariable("nurturerId") Integer nurturerId) throws NotFoundException {
         orphanNurturerService.deleteNurturer(nurturerId);
         return APIResponse.okStatus();
+    }
+
+    @ApiOperation("Search Nurturers By Pages")
+    @PostMapping("/search")
+    public APIResponse<?> searchNurturerByPage(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
+            ,@RequestBody SearchRequest searchRequest) throws NotFoundException {
+        PageInfo<NurturerDto> nurturerDtoPageInfo;
+        if (page != null) {
+            nurturerDtoPageInfo = orphanNurturerService.searchNurturer(searchRequest.getKeyword(),page, PageableConstants.limit);
+        } else {
+            nurturerDtoPageInfo = orphanNurturerService.searchNurturer(searchRequest.getKeyword(),1, PageableConstants.limit);
+
+        }
+        return APIResponse.okStatus(nurturerDtoPageInfo);
     }
 }

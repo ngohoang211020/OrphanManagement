@@ -1,14 +1,11 @@
 package com.orphan.api.controller.manager.Children.introducer;
 
 import com.google.gson.JsonObject;
-import com.orphan.api.controller.manager.Children.children.dto.ChildrenDetailDto;
-import com.orphan.api.controller.manager.Children.children.dto.ChildrenDto;
-import com.orphan.api.controller.manager.Children.children.dto.ChildrenRequest;
 import com.orphan.api.controller.manager.Children.introducer.dto.IntroducerDetailDto;
 import com.orphan.api.controller.manager.Children.introducer.dto.IntroducerDto;
 import com.orphan.api.controller.manager.Children.introducer.dto.IntroducerRequest;
+import com.orphan.common.request.SearchRequest;
 import com.orphan.common.response.APIResponse;
-import com.orphan.common.service.ChildrenService;
 import com.orphan.common.service.OrphanIntroducerService;
 import com.orphan.common.vo.PageInfo;
 import com.orphan.exception.BadRequestException;
@@ -86,5 +83,19 @@ public class OrphanIntroducerController {
     public APIResponse<?> deleteFurniture(@PathVariable("introducerId") Integer introducerId) throws NotFoundException {
         orphanIntroducerService.deleteIntroducer(introducerId);
         return APIResponse.okStatus();
+    }
+
+    @ApiOperation("Search Introducers By Pages")
+    @PostMapping("/search")
+    public APIResponse<?> searchIntroducerByPages(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
+            , @RequestBody SearchRequest searchRequest) throws NotFoundException {
+        PageInfo<IntroducerDto> introducerDtoPageInfo;
+        if (page != null) {
+            introducerDtoPageInfo = orphanIntroducerService.searchIntroducer(searchRequest.getKeyword(), page, PageableConstants.limit);
+        } else {
+            introducerDtoPageInfo = orphanIntroducerService.searchIntroducer(searchRequest.getKeyword(), 1, PageableConstants.limit);
+
+        }
+        return APIResponse.okStatus(introducerDtoPageInfo);
     }
 }

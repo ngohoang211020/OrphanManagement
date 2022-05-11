@@ -2,9 +2,11 @@ package com.orphan.common.service;
 
 import com.orphan.api.controller.manager.Children.ChildrenCommonDto;
 import com.orphan.api.controller.manager.Children.CommonChildrenService;
+import com.orphan.api.controller.manager.Children.introducer.dto.IntroducerDto;
 import com.orphan.api.controller.manager.Children.nurturer.dto.NurturerDetailDto;
 import com.orphan.api.controller.manager.Children.nurturer.dto.NurturerDto;
 import com.orphan.api.controller.manager.Children.nurturer.dto.NurturerRequest;
+import com.orphan.common.entity.OrphanIntroducer;
 import com.orphan.common.entity.OrphanNurturer;
 import com.orphan.common.repository.ChildrenRepository;
 import com.orphan.common.repository.OrphanNurturerRepository;
@@ -166,6 +168,25 @@ public class OrphanNurturerService extends BaseService {
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.NURTURER));
         }
 
+    }
+
+    public PageInfo<NurturerDto> searchNurturer(String keyword, Integer page, Integer limit) throws NotFoundException {
+        PageRequest pageRequest = buildPageRequest(page, limit);
+        Page<OrphanNurturer> nurturerPage=null;
+
+        nurturerPage = orphanNurturerRepository.searchNurturer(keyword, pageRequest);
+        if (nurturerPage.getContent().isEmpty()) {
+            throw new NotFoundException(NotFoundException.ERROR_ORPHAN_NURTURER_NOT_FOUND,
+                    APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.NURTURER));
+        }
+        List<NurturerDto> introducerDtoList = nurturerPage.getContent().stream().map(introducer -> OrphanNurturerToNurturerDto(introducer)).collect(Collectors.toList());
+        PageInfo<NurturerDto> introducerDtoPageInfo = new PageInfo<>();
+        introducerDtoPageInfo.setPage(page);
+        introducerDtoPageInfo.setLimit(limit);
+        introducerDtoPageInfo.setResult(introducerDtoList);
+        introducerDtoPageInfo.setTotal(nurturerPage.getTotalElements());
+        introducerDtoPageInfo.setPages(nurturerPage.getTotalPages());
+        return introducerDtoPageInfo;
     }
 
     //mapper
