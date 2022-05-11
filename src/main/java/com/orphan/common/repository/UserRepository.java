@@ -97,5 +97,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query(value = "select u.gender as keyword , count(distinct u) as value from User u group by u.gender ")
     List<StatisticsResponse> countUserByGender();
 
-
+    @Query(value = "select u from User u inner join u.roles roles where concat(u.fullName,' ',u.address,' ',u.phone,' ',u.email,' ',roles.name,' ',roles.description) like %?1% and u.UserStatus=?2")
+    Page<User> searchUser(String keyword,String status,Pageable pageable);
 }

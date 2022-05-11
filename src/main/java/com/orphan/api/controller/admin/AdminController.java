@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.orphan.api.controller.admin.dto.UserDetailDto;
 import com.orphan.api.controller.admin.dto.UserDto;
 import com.orphan.api.controller.common.dto.RegisterRequestDto;
+import com.orphan.common.request.SearchRequest;
 import com.orphan.common.response.APIResponse;
 import com.orphan.common.service.UserService;
 import com.orphan.common.vo.PageInfo;
@@ -116,6 +117,34 @@ public class AdminController {
             userDtoPageInfo = userService.viewUsersDeletedByPage(page, PageableConstants.limit,UserStatus.DELETED.getCode());
         } else {
             userDtoPageInfo = userService.viewUsersDeletedByPage(1, PageableConstants.limit,UserStatus.DELETED.getCode());
+
+        }
+        return APIResponse.okStatus(userDtoPageInfo);
+    }
+
+    @ApiOperation("Search Users ACTIVED")
+    @GetMapping("/search")
+    public APIResponse<?> searchUsersActived(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
+    , @RequestBody SearchRequest searchRequest) throws NotFoundException {
+        PageInfo<UserDto> userDtoPageInfo;
+        if (page != null) {
+            userDtoPageInfo = userService.searchUser(searchRequest.getKeyword(),UserStatus.ACTIVED.getCode(), page, PageableConstants.limit);
+        } else {
+            userDtoPageInfo = userService.searchUser(searchRequest.getKeyword(),UserStatus.ACTIVED.getCode(),1, PageableConstants.limit);
+
+        }
+        return APIResponse.okStatus(userDtoPageInfo);
+    }
+
+    @ApiOperation("Search Users Deleted")
+    @GetMapping("/search/deleted")
+    public APIResponse<?> searchUsersDeleted(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
+            , @RequestBody SearchRequest searchRequest) throws NotFoundException {
+        PageInfo<UserDto> userDtoPageInfo;
+        if (page != null) {
+            userDtoPageInfo = userService.searchUser(searchRequest.getKeyword(),UserStatus.DELETED.getCode(), page, PageableConstants.limit);
+        } else {
+            userDtoPageInfo = userService.searchUser(searchRequest.getKeyword(),UserStatus.DELETED.getCode(),1, PageableConstants.limit);
 
         }
         return APIResponse.okStatus(userDtoPageInfo);

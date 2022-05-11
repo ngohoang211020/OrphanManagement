@@ -411,6 +411,36 @@ public class UserService extends BaseService {
         userRepository.deleteByRecoveryExpirationDateAndUserStatus(new Date(new Date().getTime()), UserStatus.DELETED.getCode());
     }
 
+
+    public PageInfo<UserDto> searchUser(String keyword,String status,Integer page, Integer limit) throws NotFoundException {
+        PageRequest pageRequest = buildPageRequest(page, limit);
+        Page<User> userPage=null;
+       if(status.equals(UserStatus.ACTIVED.getCode())) {
+           userPage = userRepository.searchUser(keyword,UserStatus.ACTIVED.getCode(), pageRequest);
+       }
+       else {
+           userPage = userRepository.searchUser(keyword,UserStatus.DELETED.getCode(), pageRequest);
+       }
+       if (userPage.getContent().isEmpty()) {
+            throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
+                    APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
+        }
+        List<UserDto> userDtoList = userPage.getContent().stream().map(user -> {
+            try {
+                return UserToUserDto(user);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }).collect(Collectors.toList());
+        PageInfo<UserDto> userDtoPageInfo = new PageInfo<>();
+        userDtoPageInfo.setPage(page);
+        userDtoPageInfo.setLimit(limit);
+        userDtoPageInfo.setResult(userDtoList);
+        userDtoPageInfo.setTotal(userPage.getTotalElements());
+        userDtoPageInfo.setPages(userPage.getTotalPages());
+        return userDtoPageInfo;
+    }
     //mapper
 
     public Role StringToRole(String role) {
