@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,4 +48,9 @@ public interface ChildrenRepository extends JpaRepository<Children, Integer> {
 
     @Query(value = "select c.gender as keyword , count(distinct c) as value from Children c group by c.gender ")
     List<StatisticsResponse> countChildrenByGender();
+
+    @Query(value = "select c from Children c where c.fullName like %?1%")
+    Page<Children> searchChildren(String keyword,Pageable pageable);
+
 }
+

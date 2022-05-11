@@ -147,6 +147,25 @@ public class ChildrenService extends BaseService {
         List<StatisticsResponse> statisticsResponses = childrenRepository.countChildrenByGender();
         return statisticsResponses;
     }
+
+    //search
+
+    public PageInfo<ChildrenDto> searchChildrensByPage(String keyword,Integer page, Integer limit) throws NotFoundException {
+        PageRequest pageRequest = buildPageRequest(page, limit);
+        Page<Children> childrenPage = childrenRepository.searchChildren(keyword,pageRequest);
+        if (childrenPage.getContent().isEmpty()) {
+            throw new NotFoundException(NotFoundException.ERROR_CHILDREN_NOT_FOUND,
+                    APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.CHILDREN));
+        }
+        List<ChildrenDto> childrenDtoList = childrenPage.getContent().stream().map(this::ChildrenToChildrenDto).collect(Collectors.toList());
+        PageInfo<ChildrenDto> childrenDtoPageInfo = new PageInfo<>();
+        childrenDtoPageInfo.setPage(page);
+        childrenDtoPageInfo.setLimit(limit);
+        childrenDtoPageInfo.setResult(childrenDtoList);
+        childrenDtoPageInfo.setTotal(childrenPage.getTotalElements());
+        childrenDtoPageInfo.setPages(childrenPage.getTotalPages());
+        return childrenDtoPageInfo;
+    }
     //mapper
 
 

@@ -4,6 +4,8 @@ import com.google.gson.JsonObject;
 import com.orphan.api.controller.manager.Children.children.dto.ChildrenDetailDto;
 import com.orphan.api.controller.manager.Children.children.dto.ChildrenDto;
 import com.orphan.api.controller.manager.Children.children.dto.ChildrenRequest;
+import com.orphan.common.repository.ChildrenRepository;
+import com.orphan.common.request.SearchRequest;
 import com.orphan.common.response.APIResponse;
 import com.orphan.common.service.ChildrenService;
 import com.orphan.common.vo.PageInfo;
@@ -14,6 +16,7 @@ import com.orphan.utils.constants.PageableConstants;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +36,6 @@ public class ChildrenController {
     public APIResponse<?> viewAllChildrens() throws NotFoundException {
         return APIResponse.okStatus(childrenService.viewAllChildrens());
     }
-
     @ApiOperation("Get Childrens By Pages")
     @GetMapping
     public APIResponse<?> viewChildrensByPages(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
@@ -83,4 +85,19 @@ public class ChildrenController {
         childrenService.deleteById(childrenId);
         return APIResponse.okStatus();
     }
+
+    @ApiOperation("Search Childrens By Pages")
+    @PostMapping("/search")
+    public APIResponse<?> searchChildrensByPages(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
+            ,@RequestBody SearchRequest searchRequest) throws NotFoundException {
+        PageInfo<ChildrenDto> childrenDtoPageInfo;
+        if (page != null) {
+            childrenDtoPageInfo = childrenService.searchChildrensByPage(searchRequest.getKeyword(),page, PageableConstants.limit);
+        } else {
+            childrenDtoPageInfo = childrenService.searchChildrensByPage(searchRequest.getKeyword(),1, PageableConstants.limit);
+
+        }
+        return APIResponse.okStatus(childrenDtoPageInfo);
+    }
+
 }
