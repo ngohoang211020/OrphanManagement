@@ -9,9 +9,7 @@ import com.orphan.common.entity.OrphanNurturer;
 import com.orphan.common.repository.ChildrenRepository;
 import com.orphan.common.repository.OrphanIntroducerRepository;
 import com.orphan.common.repository.OrphanNurturerRepository;
-import com.orphan.common.request.DateRequest;
-import com.orphan.common.request.GenderRequest;
-import com.orphan.common.response.ChildrenStatisticsByDateResponse;
+import com.orphan.common.response.StatisticsByDateResponse;
 import com.orphan.common.response.StatisticsResponse;
 import com.orphan.common.vo.PageInfo;
 import com.orphan.enums.ChildrenStatus;
@@ -126,21 +124,21 @@ public class ChildrenService extends BaseService {
         childrenRepository.deleteById(childrenId);
     }
 
-    public List<ChildrenStatisticsByDateResponse> countChildrenIntroductiveByMonth() {
-        List<ChildrenStatisticsByDateResponse> childrenStatisticsByDateResponses = childrenRepository.countChildrenByIntroduceDate();
-        return childrenStatisticsByDateResponses;
+    public List<StatisticsByDateResponse> countChildrenIntroductiveByMonth() {
+        List<StatisticsByDateResponse> statisticsByDateRespons = childrenRepository.countChildrenByIntroduceDate();
+        return statisticsByDateRespons;
     }
-    public List<ChildrenStatisticsByDateResponse> countChildrenIntroductiveByYear() {
-        List<ChildrenStatisticsByDateResponse> childrenStatisticsByDateResponses = childrenRepository.countChildrenByIntroduceDateYear();
-        return childrenStatisticsByDateResponses;
+    public List<StatisticsByDateResponse> countChildrenIntroductiveByYear() {
+        List<StatisticsByDateResponse> statisticsByDateRespons = childrenRepository.countChildrenByIntroduceDateYear();
+        return statisticsByDateRespons;
     }
-    public List<ChildrenStatisticsByDateResponse> countChildrenNurturerByMonth() {
-        List<ChildrenStatisticsByDateResponse> childrenStatisticsByDateResponses = childrenRepository.countChildrenByAdoptiveDate();
-        return childrenStatisticsByDateResponses;
+    public List<StatisticsByDateResponse> countChildrenNurturerByMonth() {
+        List<StatisticsByDateResponse> statisticsByDateRespons = childrenRepository.countChildrenByAdoptiveDate();
+        return statisticsByDateRespons;
     }
-    public List<ChildrenStatisticsByDateResponse> countChildrenNurturerByYear() {
-        List<ChildrenStatisticsByDateResponse> childrenStatisticsByDateResponses = childrenRepository.countChildrenByAdoptiveDateYear();
-        return childrenStatisticsByDateResponses;
+    public List<StatisticsByDateResponse> countChildrenNurturerByYear() {
+        List<StatisticsByDateResponse> statisticsByDateRespons = childrenRepository.countChildrenByAdoptiveDateYear();
+        return statisticsByDateRespons;
     }
 
     public List<StatisticsResponse> countChildrenByGender() {

@@ -3,14 +3,13 @@ package com.orphan.common.repository;
 import com.orphan.common.entity.Children;
 import com.orphan.common.entity.OrphanIntroducer;
 import com.orphan.common.entity.OrphanNurturer;
-import com.orphan.common.response.ChildrenStatisticsByDateResponse;
+import com.orphan.common.response.StatisticsByDateResponse;
 import com.orphan.common.response.StatisticsResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,15 +35,15 @@ public interface ChildrenRepository extends JpaRepository<Children, Integer> {
     void updateStatusAndOrphanNurturerByOrphanNurturer_NurturerId(String status, OrphanNurturer orphanNurturer, Integer nurturerId);
 
     @Query(value = "select month(c.introductoryDate) as month,year(c.introductoryDate) as year, count(distinct c) as amount from Children c group by month(c.introductoryDate),year(c.introductoryDate) ")
-    List<ChildrenStatisticsByDateResponse> countChildrenByIntroduceDate();
+    List<StatisticsByDateResponse> countChildrenByIntroduceDate();
 
     @Query(value = "select year(c.introductoryDate) as year, count(distinct c) as amount from Children c group by year(c.introductoryDate) ")
-    List<ChildrenStatisticsByDateResponse> countChildrenByIntroduceDateYear();
+    List<StatisticsByDateResponse> countChildrenByIntroduceDateYear();
     @Query(value = "select month(c.adoptiveDate) as month,year(c.adoptiveDate) as year, count(distinct c) as amount from Children c group by month(c.adoptiveDate),year(c.adoptiveDate) ")
-    List<ChildrenStatisticsByDateResponse> countChildrenByAdoptiveDate();
+    List<StatisticsByDateResponse> countChildrenByAdoptiveDate();
 
     @Query(value = "select year(c.adoptiveDate) as year, count(distinct c) as amount from Children c where c.status='RECEIVED' group by year(c.adoptiveDate)")
-    List<ChildrenStatisticsByDateResponse> countChildrenByAdoptiveDateYear();
+    List<StatisticsByDateResponse> countChildrenByAdoptiveDateYear();
 
     @Query(value = "select c.gender as keyword , count(distinct c) as value from Children c group by c.gender ")
     List<StatisticsResponse> countChildrenByGender();

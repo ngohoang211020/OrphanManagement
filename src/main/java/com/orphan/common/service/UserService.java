@@ -10,9 +10,7 @@ import com.orphan.common.entity.Role;
 import com.orphan.common.entity.User;
 import com.orphan.common.repository.RoleRepository;
 import com.orphan.common.repository.UserRepository;
-import com.orphan.common.request.GenderRequest;
-import com.orphan.common.request.RoleRequest;
-import com.orphan.common.response.ChildrenStatisticsByDateResponse;
+import com.orphan.common.response.StatisticsByDateResponse;
 import com.orphan.common.response.StatisticsResponse;
 import com.orphan.common.vo.PageInfo;
 import com.orphan.config.EmailSenderService;
@@ -325,13 +323,22 @@ public class UserService extends BaseService {
     }
 
     public List<StatisticsResponse> countUsersByRole() {
-        List<StatisticsResponse> statisticsResponses = userRepository.countUserByRole();
+        List<StatisticsResponse> statisticsResponses = userRepository.countUserByRole(UserStatus.ACTIVED.getCode());
         return statisticsResponses;
     }
 
     public List<StatisticsResponse> countUsersByGender() {
-        List<StatisticsResponse> statisticsResponses = userRepository.countUserByGender();
+        List<StatisticsResponse> statisticsResponses = userRepository.countUserByGender(UserStatus.ACTIVED.getCode());
         return statisticsResponses;
+    }
+
+    public List<StatisticsByDateResponse> countUserOnBoardByMonth() {
+        List<StatisticsByDateResponse> statisticsByDateRespons = userRepository.countUserOnBoardByMonth(UserStatus.ACTIVED.getCode());
+        return statisticsByDateRespons;
+    }
+    public List<StatisticsByDateResponse> countUserOnBoardByYear() {
+        List<StatisticsByDateResponse> statisticsByDateRespons = userRepository.countUserOnBoardByYear(UserStatus.ACTIVED.getCode());
+        return statisticsByDateRespons;
     }
 
     //send api to email need change password
@@ -548,4 +555,5 @@ public class UserService extends BaseService {
         }
 
     }
+
 }

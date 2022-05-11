@@ -1,7 +1,7 @@
 package com.orphan.common.repository;
 
 import com.orphan.common.entity.User;
-import com.orphan.common.response.ChildrenStatisticsByDateResponse;
+import com.orphan.common.response.StatisticsByDateResponse;
 import com.orphan.common.response.StatisticsResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -90,12 +90,18 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("select u from User u where u.UserStatus = ?1 order by u.loginId asc ")
     Page<User> findByUserActived(String UserStatus, Pageable pageable);
 
-    @Query(value = "select roles.name as keyword,count(distinct u) as value from User u inner join u.roles roles group by roles.name")
-    List<StatisticsResponse> countUserByRole();
+    @Query(value = "select roles.name as keyword,count(distinct u) as value from User u inner join u.roles roles where u.UserStatus=?1 group by roles.name")
+    List<StatisticsResponse> countUserByRole(String status);
 
 
-    @Query(value = "select u.gender as keyword , count(distinct u) as value from User u group by u.gender ")
-    List<StatisticsResponse> countUserByGender();
+    @Query(value = "select u.gender as keyword,count(distinct u) as value from User u  where u.UserStatus=?1 group by u.gender")
+    List<StatisticsResponse> countUserByGender(String status);
+
+    @Query(value = "select month(u.createdAt) as month,year(u.createdAt) as year, count(distinct u) as amount from User u where u.UserStatus=?1 group by month(u.createdAt),year(u.createdAt) ")
+    List<StatisticsByDateResponse> countUserOnBoardByMonth(String status);
+
+    @Query(value = "select year(u.createdAt) as year, count(distinct u) as amount from User u where u.UserStatus=?1 group by year(u.createdAt) ")
+    List<StatisticsByDateResponse> countUserOnBoardByYear(String status);
 
     @Query(value = "select u from User u inner join u.roles roles where concat(u.fullName,' ',u.address,' ',u.phone,' ',u.email,' ',roles.name,' ',roles.description,' ',u.identification) like %?1% and u.UserStatus=?2")
     Page<User> searchUser(String keyword,String status,Pageable pageable);
