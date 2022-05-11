@@ -123,7 +123,7 @@ public class AdminController {
     }
 
     @ApiOperation("Search Users ACTIVED")
-    @GetMapping("/search")
+    @PostMapping("/search")
     public APIResponse<?> searchUsersActived(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
     , @RequestBody SearchRequest searchRequest) throws NotFoundException {
         PageInfo<UserDto> userDtoPageInfo;
@@ -137,7 +137,7 @@ public class AdminController {
     }
 
     @ApiOperation("Search Users Deleted")
-    @GetMapping("/search/deleted")
+    @PostMapping("/search/deleted")
     public APIResponse<?> searchUsersDeleted(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
             , @RequestBody SearchRequest searchRequest) throws NotFoundException {
         PageInfo<UserDto> userDtoPageInfo;
