@@ -43,7 +43,7 @@ public interface ChildrenRepository extends JpaRepository<Children, Integer> {
     @Query(value = "select month(c.adoptiveDate) as month,year(c.adoptiveDate) as year, count(distinct c) as amount from Children c group by month(c.adoptiveDate),year(c.adoptiveDate) ")
     List<ChildrenStatisticsByDateResponse> countChildrenByAdoptiveDate();
 
-    @Query(value = "select year(c.adoptiveDate) as year, count(distinct c) as amount from Children c group by year(c.adoptiveDate) ")
+    @Query(value = "select year(c.adoptiveDate) as year, count(distinct c) as amount from Children c where c.status='RECEIVED' group by year(c.adoptiveDate)")
     List<ChildrenStatisticsByDateResponse> countChildrenByAdoptiveDateYear();
 
     @Query(value = "select c.gender as keyword , count(distinct c) as value from Children c group by c.gender ")
