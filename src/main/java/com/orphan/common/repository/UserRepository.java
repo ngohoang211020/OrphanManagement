@@ -103,8 +103,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query(value = "select year(u.createdAt) as year, count(distinct u) as amount from User u where u.UserStatus=?1 group by year(u.createdAt) ")
     List<StatisticsByDateResponse> countUserOnBoardByYear(String status);
 
-    @Query(value = "select u from User u inner join u.roles roles where concat(u.fullName,' ',u.address,' ',u.phone,' ',u.email,' ',roles.name,' ',roles.description,' ',u.identification) like %?1% and u.UserStatus=?2")
+    @Query(value = "select u from User u inner join u.roles roles where lower(concat(u.fullName,' ',u.address,' ',u.phone,' ',u.email,' ',roles.name,' ',roles.description,' ',u.identification)) like  lower(concat('%', ?1,'%')) and u.UserStatus=?2")
     Page<User> searchUser(String keyword,String status,Pageable pageable);
-    @Query(value = "select u from User u inner join u.roles roles where concat(u.fullName,' ',u.address,' ',u.phone,' ',u.email,' ',roles.name,' ',roles.description,' ',u.identification) like %?1% and u.UserStatus=?2 and roles.name='ROLE_EMPLOYEE'")
+    @Query(value = "select u from User u inner join u.roles roles where  lower(concat(u.fullName,' ',u.address,' ',u.phone,' ',u.email,' ',roles.name,' ',roles.description,' ',u.identification)) like lower(concat('%', ?1,'%')) and u.UserStatus=?2 and roles.name='ROLE_EMPLOYEE'")
     Page<User> searchEmployee(String keyword,String status,Pageable pageable);
 }

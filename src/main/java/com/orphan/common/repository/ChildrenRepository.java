@@ -48,7 +48,7 @@ public interface ChildrenRepository extends JpaRepository<Children, Integer> {
     @Query(value = "select c.gender as keyword , count(distinct c) as value from Children c group by c.gender ")
     List<StatisticsResponse> countChildrenByGender();
 
-    @Query(value = "select c from Children c where c.fullName like %?1%")
+   @Query(value = "select c from Children c where lower(c.fullName) like lower(concat('%', ?1,'%')) ")
     Page<Children> searchChildren(String keyword,Pageable pageable);
 
 }

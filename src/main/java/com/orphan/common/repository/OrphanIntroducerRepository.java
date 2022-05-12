@@ -22,7 +22,7 @@ public interface OrphanIntroducerRepository extends JpaRepository<OrphanIntroduc
     Page<OrphanIntroducer> findByOrderByCreatedAtAsc(Pageable pageable);
 
 
-    @Query("select o from OrphanIntroducer o where concat(o.email,' ',o.phone,' ',o.address,' ',o.fullName,' ',o.identification) like %?1%")
+    @Query("select o from OrphanIntroducer o where lower(concat(o.email,' ',o.phone,' ',o.address,' ',o.fullName,' ',o.identification)) like lower(concat('%', ?1,'%'))")
     Page<OrphanIntroducer> searchIntroducer(String keyword,Pageable pageable);
 
 }
