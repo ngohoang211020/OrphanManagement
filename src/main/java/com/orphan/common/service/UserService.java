@@ -51,7 +51,7 @@ public class UserService extends BaseService {
 
     private final MessageService messageService;
 
-    private static final String URL_CHANGE_PASSWORD_OPEN_WEB = "https://orphanmanagement.herokuapp.com/api/v1/auth/change-password";
+    private static final String URL_CHANGE_PASSWORD_OPEN_WEB = "http://localhost:3000/changepassword";
 
     //findUserById
     public User findById(Integer userId) throws NotFoundException {
