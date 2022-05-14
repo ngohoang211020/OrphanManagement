@@ -85,7 +85,7 @@ public class FurnitureController {
     }
 
     @ApiOperation("Search Furnitures By Pages")
-    @GetMapping("/search")
+    @PostMapping("/search")
     public APIResponse<?> searchFurnitureByPage(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
             , @RequestBody SearchRequest searchRequest) throws NotFoundException {
         PageInfo<FurnitureDto> furnitureDtoPageInfo;
