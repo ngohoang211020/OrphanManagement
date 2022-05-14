@@ -106,6 +106,23 @@ public class FurnitureService extends BaseService {
         return furnitureDtoList;
     }
 
+    public PageInfo<FurnitureDto> searchFurnitureByPage(String keyword,Integer page, Integer limit) throws NotFoundException {
+        PageRequest pageRequest = buildPageRequest(page, limit);
+        Page<Furniture> furniturePage = furnitureRepository.searchFurniture(keyword,pageRequest);
+        if (furniturePage.getContent().isEmpty()) {
+            throw new NotFoundException(NotFoundException.ERROR_FURNITURE_NOT_FOUND,
+                    APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.FURNITURE));
+        }
+        List<FurnitureDto> furnitureDtoList = furniturePage.getContent().stream().map(furniture -> furnitureToFurnitureDto(furniture)).collect(Collectors.toList());
+        PageInfo<FurnitureDto> furnitureDtoPageInfo = new PageInfo<>();
+        furnitureDtoPageInfo.setPage(page);
+        furnitureDtoPageInfo.setLimit(limit);
+        furnitureDtoPageInfo.setResult(furnitureDtoList);
+        furnitureDtoPageInfo.setTotal(furniturePage.getTotalElements());
+        furnitureDtoPageInfo.setPages(furniturePage.getTotalPages());
+        return furnitureDtoPageInfo;
+    }
+
     public FurnitureDto viewFurnitureDetail(Integer furnitureId) throws NotFoundException {
         Furniture furniture = findById(furnitureId);
         return furnitureToFurnitureDto(furniture);

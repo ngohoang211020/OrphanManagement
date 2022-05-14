@@ -3,6 +3,7 @@ package com.orphan.api.controller.manager.Logistic.Furniture;
 import com.google.gson.JsonObject;
 import com.orphan.api.controller.manager.Logistic.Furniture.dto.FurnitureDto;
 import com.orphan.api.controller.manager.Logistic.Furniture.dto.FurnitureRequest;
+import com.orphan.common.request.SearchRequest;
 import com.orphan.common.response.APIResponse;
 import com.orphan.common.service.FurnitureService;
 import com.orphan.common.vo.PageInfo;
@@ -83,4 +84,17 @@ public class FurnitureController {
         return APIResponse.okStatus();
     }
 
+    @ApiOperation("Search Furnitures By Pages")
+    @GetMapping("/search")
+    public APIResponse<?> searchFurnitureByPage(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
+            , @RequestBody SearchRequest searchRequest) throws NotFoundException {
+        PageInfo<FurnitureDto> furnitureDtoPageInfo;
+        if (page != null) {
+            furnitureDtoPageInfo = furnitureService.searchFurnitureByPage(searchRequest.getKeyword(), page, PageableConstants.limit);
+        } else {
+            furnitureDtoPageInfo = furnitureService.searchFurnitureByPage(searchRequest.getKeyword(), 1, PageableConstants.limit);
+
+        }
+        return APIResponse.okStatus(furnitureDtoPageInfo);
+    }
 }
