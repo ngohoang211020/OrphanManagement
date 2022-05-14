@@ -23,7 +23,7 @@ public interface FurnitureRepository extends JpaRepository<Furniture,Integer> {
     @Query("update Furniture f set f.goodQuantity = ?1, f.brokenQuantity = ?2 where f.specifyFurnitureRequestList = ?3")
     void updateGoodQuantityAndBrokenQuantityBySpecifyFurnitureRequestList(Integer goodQuantity, Integer brokenQuantity, SpecifyFurnitureRequest specifyFurnitureRequestList);
 
-    @Query("select f from Furniture f where lower(concat(f.furnitureName,' ',f.status,' ',f.brokenQuantity,' ',f.goodQuantity,' ',f.unitPrice)) like lower(concat('%', ?1,'%')) ")
+    @Query("select f from Furniture f where lower(concat(f.furnitureName,' ',f.status)) like lower(concat('%', ?1,'%')) ")
     Page<Furniture> searchFurniture(String keyword, Pageable pageable);
 
 
