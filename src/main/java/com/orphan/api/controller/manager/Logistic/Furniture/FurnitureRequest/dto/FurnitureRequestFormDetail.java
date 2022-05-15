@@ -22,4 +22,6 @@ public class FurnitureRequestFormDetail {
 
     private String status;
 
+    private Integer createdId;
+
 }

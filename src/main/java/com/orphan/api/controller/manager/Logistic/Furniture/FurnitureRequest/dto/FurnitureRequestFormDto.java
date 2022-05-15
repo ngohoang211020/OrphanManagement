@@ -13,5 +13,7 @@ public class FurnitureRequestFormDto {
 
     private Integer employeeId;
 
+    private Integer createdId;
+
     List<SpecifyFurnitureRequestDto> furnitureRequestList;
 }
