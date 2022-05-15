@@ -72,13 +72,7 @@ public class UserController {
         return APIResponse.okStatus(user);
     }
 
-    /**
-     * Reset password
-     *
-     * @param email request
-     * @return String
-     * @throws NotFoundException
-     */
+
     @ApiOperation("Reset password for account")
     @PostMapping(RESET_PASSWORD_ENDPOINT)
     public APIResponse<?> processResetPassword( @Valid @RequestBody ResetPasswordDto resetPasswordDto, Errors errors) throws NotFoundException, BadRequestException {
@@ -107,47 +101,5 @@ public class UserController {
         }
         userService.changePassWord(passwordDto, email);
         return APIResponse.okStatus(passwordDto);
-    }
-    /**
-     * View User login
-     * @return APIResponse
-     * @throws NotFoundException
-     */
-
-    @ApiOperation("View detail info of the currently logged user")
-    @GetMapping("/account")
-    public APIResponse<?> viewLoggedUserDetail() throws NotFoundException, BadRequestException, IOException {
-        UserDetailDto userDetailDto=userService.viewUserDetail(userService.getCurrentUserId());
-        return APIResponse.okStatus(userDetailDto);
-    }
-
-    /**
-     * Update User login
-     * @Param registerRequestDto RegisterRequestDto
-     * @return APIResponse
-     * @throws NotFoundException
-     */
-
-    @ApiOperation("Update detail info of the currently logged user")
-    @PostMapping("/account")
-    public APIResponse<?> updateLoggedUserDetail(@Valid @RequestBody RegisterRequestDto registerRequestDto, Errors errors) throws NotFoundException, BadRequestException, IOException {
-        if (errors.hasErrors()) {
-            JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
-            throw new BadRequestException(BadRequestException.ERROR_REGISTER_USER_INVALID, messages.toString(), true);
-        }
-        registerRequestDto=userService.updateUser(registerRequestDto,userService.getCurrentUserId());
-        return APIResponse.okStatus(registerRequestDto);
-    }
-
-    /**
-     * Delete User Logged
-     * @return APIResponse
-     * @throws NotFoundException
-     */
-    @ApiOperation("Delete User Logged")
-    @DeleteMapping("/account")
-    public ResponseEntity<?> deleteUser() throws NotFoundException, BadRequestException {
-        userService.deleteUserById(userService.getCurrentUserId());
-        return APIResponse.okStatus();
     }
 }

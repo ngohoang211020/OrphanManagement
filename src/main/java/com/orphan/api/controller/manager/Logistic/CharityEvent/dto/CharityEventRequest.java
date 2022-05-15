@@ -5,18 +5,23 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
 
 @Getter
 @Setter
 
-public class EventRequest {
+public class CharityEventRequest {
 
-    private Integer idEvent;
+    private Integer id;
 
     @NotEmpty(message="{error.msg.name-is-required}")
-    private String nameEvent;
+    private String charityName;
+    @NotEmpty(message="{error.msg.title-is-required}")
+    private String title;
+    @NotEmpty(message="{error.msg.content-is-required}")
+    private String content;
 
-    private String donors;
+    private List<BenefactorRequest> benefactorRequestList;
 
     @NotEmpty(message="{error.msg.adoptive-Date-is-required}")
     @Date
@@ -24,9 +29,4 @@ public class EventRequest {
 
     private String image;
 
-    private Integer money;
-
-    private Integer quantity;
-
-    private String timeOfEvent;
 }

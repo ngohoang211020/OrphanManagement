@@ -5,8 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.sql.Time;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -17,13 +17,16 @@ public class CharityEvent extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer EventId;
+    private Integer charityEventId;
 
     @Column(length = 256, nullable = false)
-    private String nameEvent;
+    private String charityName;
 
     @Column(length = 256, nullable = false)
-    private String donors;
+    private String title;
+
+    @Column(columnDefinition = "text")
+    private String content;
 
     @Temporal(TemporalType.DATE)
     private Date dateOfEvent;
@@ -31,12 +34,10 @@ public class CharityEvent extends BaseEntity {
     @Column(length = 256)
     private String image;
 
-    private Integer money;
+    private Long money;
 
-    private Integer quantity;
+    private String status;
 
-//    @Temporal(TemporalType.TIME)
-    private String timeOfEvent;
-
-
+    @OneToMany(mappedBy = "charityEvent", cascade = CascadeType.ALL)
+    private List<BenefactorCharity> benefactorCharities;
 }

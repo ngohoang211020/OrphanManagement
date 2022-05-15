@@ -3,6 +3,7 @@ package com.orphan.common.service;
 import com.orphan.api.controller.admin.dto.RoleDto;
 import com.orphan.api.controller.admin.dto.UserDetailDto;
 import com.orphan.api.controller.admin.dto.UserDto;
+import com.orphan.api.controller.common.dto.EmailNotifyDto;
 import com.orphan.api.controller.common.dto.PasswordDto;
 import com.orphan.api.controller.common.dto.RegisterRequestDto;
 import com.orphan.api.controller.common.dto.ResetPasswordDto;
@@ -20,6 +21,7 @@ import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
 import com.orphan.utils.constants.APIConstants;
+import com.orphan.utils.constants.Constants;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,10 +66,10 @@ public class UserService extends BaseService {
     }
 
     //Create Account
-    public RegisterRequestDto createUser(RegisterRequestDto registerRequestDto) throws BadRequestException {
+    public RegisterRequestDto createUser(RegisterRequestDto registerRequestDto) throws BadRequestException, NotFoundException {
         User user = new User();
 
-        validatePassword(registerRequestDto.getPassword(), registerRequestDto.getConfirmPassword());
+        //   validatePassword(registerRequestDto.getPassword(), registerRequestDto.getConfirmPassword());
 
         if (userRepository.existsByEmail(registerRequestDto.getEmail())) {
             throw new BadRequestException(BadRequestException.ERROR_EMAIL_ALREADY_EXIST,
@@ -79,7 +81,7 @@ public class UserService extends BaseService {
                     this.messageService.buildMessages("error.msg.identification-existed"));
         }
 
-        user.setPassword(passwordEncoder.encode(registerRequestDto.getPassword()));
+        user.setPassword(passwordEncoder.encode(Constants.passwordDefault));
 
         List<Role> roleList = new ArrayList<>();
         if (registerRequestDto.getRoles().size() != 0) {
@@ -138,6 +140,12 @@ public class UserService extends BaseService {
 
         registerRequestDto.setLoginId(user.getLoginId());
 
+        EmailNotifyDto emailNotifyDto = new EmailNotifyDto();
+        emailNotifyDto.setFullName(user.getFullName());
+        emailNotifyDto.setEmail(user.getEmail());
+        emailNotifyDto.setPassword(Constants.passwordDefault);
+        createAccountMail(emailNotifyDto);
+
         return registerRequestDto;
     }
 
@@ -161,11 +169,11 @@ public class UserService extends BaseService {
             user.setIdentification(registerRequestDto.getIdentification());
         }
 
-
-        if (registerRequestDto.getPassword() != "") {
-            validatePassword(registerRequestDto.getPassword(), registerRequestDto.getConfirmPassword());
-            user.setPassword(passwordEncoder.encode(registerRequestDto.getPassword()));
-        }
+//
+//        if (registerRequestDto.getPassword() != "") {
+//            validatePassword(registerRequestDto.getPassword(), registerRequestDto.getConfirmPassword());
+//            user.setPassword(passwordEncoder.encode(registerRequestDto.getPassword()));
+//        }
 
         if (registerRequestDto.getImage() != "") {
             user.setImage(registerRequestDto.getImage());
@@ -265,6 +273,7 @@ public class UserService extends BaseService {
         }).collect(Collectors.toList());
         return userDtoList;
     }
+
     public PageInfo<UserDto> viewUsersActivedByPage(Integer page, Integer limit, String status) throws NotFoundException {
         PageRequest pageRequest = buildPageRequest(page, limit);
         Page<User> userPage = userRepository.findByUserActived(status, pageRequest);
@@ -306,6 +315,7 @@ public class UserService extends BaseService {
         }).collect(Collectors.toList());
         return userDtoList;
     }
+
     //View detail by id
     public UserDetailDto viewUserDetail(Integer userId) throws NotFoundException, IOException {
         UserDetailDto userDetailDto = UserToUserDetailDto(findById(userId));
@@ -336,6 +346,7 @@ public class UserService extends BaseService {
         List<StatisticsByDateResponse> statisticsByDateRespons = userRepository.countUserOnBoardByMonth(UserStatus.ACTIVED.getCode());
         return statisticsByDateRespons;
     }
+
     public List<StatisticsByDateResponse> countUserOnBoardByYear() {
         List<StatisticsByDateResponse> statisticsByDateRespons = userRepository.countUserOnBoardByYear(UserStatus.ACTIVED.getCode());
         return statisticsByDateRespons;
@@ -371,6 +382,35 @@ public class UserService extends BaseService {
         return user.get();
     }
 
+    public User createAccountMail(EmailNotifyDto emailNotifyDto) throws NotFoundException {
+        Optional<User> user = this.userRepository.findByEmail(emailNotifyDto.getEmail());
+        if (!user.isPresent()) {
+            throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
+                    APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
+        }
+
+
+        try {
+            String subject = "Orphan Management – Hi " + emailNotifyDto.getFullName();
+            String content = "<p>Hello,</p>"
+                    + "<p>Here is the password for your account at CYF Center. You can change it after logging in.</p>"
+                    + "<p>To login please use the account information below</p>"
+                    + "<br>"
+                    + "<h2>Username: " + emailNotifyDto.getEmail()
+                    + "<br>"
+                    + "Password: " + emailNotifyDto.getPassword()
+                    + "</h2>"
+                    +"<br>"
+                    +"<p>Thank you and regards," +
+                    "<br>" +
+                    "CYF team</p>";
+            service.sendEmailWithAttachment(emailNotifyDto.getEmail(), content, subject);
+        } catch (Exception ex) {
+            log.info("sendEmail error, error msg: {}", ex.getMessage());
+        }
+        return user.get();
+    }
+
     //call send email change password api
     public void changePassWord(PasswordDto passwordDto, String email) throws
             NotFoundException, BadRequestException {
@@ -397,6 +437,16 @@ public class UserService extends BaseService {
         userRepository.save(user.get());
     }
 
+    public void changePassWord(PasswordDto passwordDto, Integer userId) throws
+            NotFoundException, BadRequestException {
+        User user = this.getUserByLoginId(String.valueOf(userId)).get();
+
+        validatePassword(passwordDto.getNewPassWord(), passwordDto.getConfirmPassWord());
+
+        user.setPassword(passwordEncoder.encode(passwordDto.getNewPassWord()));
+        userRepository.save(user);
+    }
+
     //delete auto
     public void updateStatusUser(Integer userId) throws NotFoundException {
         if (userRepository.existsByLoginId(userId)) {
@@ -418,45 +468,13 @@ public class UserService extends BaseService {
         userRepository.deleteByRecoveryExpirationDateAndUserStatus(new Date(new Date().getTime()), UserStatus.DELETED.getCode());
     }
 
-
-    public PageInfo<UserDto> searchUser(String keyword,String status,Integer page, Integer limit    ) throws NotFoundException {
+    public PageInfo<UserDto> searchUser(String keyword, String status, Integer page, Integer limit) throws NotFoundException {
         PageRequest pageRequest = buildPageRequest(page, limit);
-        Page<User> userPage=null;
-       if(status.equals(UserStatus.ACTIVED.getCode())) {
-           userPage = userRepository.searchUser(keyword,UserStatus.ACTIVED.getCode(), pageRequest);
-       }
-       else {
-           userPage = userRepository.searchUser(keyword,UserStatus.DELETED.getCode(), pageRequest);
-       }
-       if (userPage.getContent().isEmpty()) {
-            throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
-                    APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
-        }
-        List<UserDto> userDtoList = userPage.getContent().stream().map(user -> {
-            try {
-                return UserToUserDto(user);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }).collect(Collectors.toList());
-        PageInfo<UserDto> userDtoPageInfo = new PageInfo<>();
-        userDtoPageInfo.setPage(page);
-        userDtoPageInfo.setLimit(limit);
-        userDtoPageInfo.setResult(userDtoList);
-        userDtoPageInfo.setTotal(userPage.getTotalElements());
-        userDtoPageInfo.setPages(userPage.getTotalPages());
-        return userDtoPageInfo;
-    }
-
-    public PageInfo<UserDto> searchEmployee(String keyword,String status,Integer page, Integer limit    ) throws NotFoundException {
-        PageRequest pageRequest = buildPageRequest(page, limit);
-        Page<User> userPage=null;
-        if(status.equals(UserStatus.ACTIVED.getCode())) {
-            userPage = userRepository.searchEmployee(keyword,UserStatus.ACTIVED.getCode(), pageRequest);
-        }
-        else {
-            userPage = userRepository.searchEmployee(keyword,UserStatus.DELETED.getCode(), pageRequest);
+        Page<User> userPage = null;
+        if (status.equals(UserStatus.ACTIVED.getCode())) {
+            userPage = userRepository.searchUser(keyword, UserStatus.ACTIVED.getCode(), pageRequest);
+        } else {
+            userPage = userRepository.searchUser(keyword, UserStatus.DELETED.getCode(), pageRequest);
         }
         if (userPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
@@ -478,24 +496,38 @@ public class UserService extends BaseService {
         userDtoPageInfo.setPages(userPage.getTotalPages());
         return userDtoPageInfo;
     }
-    //mapper
 
-    public Role StringToRole(String role) {
-        Optional<Role> oRole;
-        if (role.equals(ERole.ROLE_ADMIN.getCode())) {
-            oRole = roleRepository.findByName(ERole.ROLE_ADMIN.getCode());
-        } else if (role.equals(ERole.ROLE_MANAGER_HR.getCode())) {
-            oRole = roleRepository.findByName(ERole.ROLE_MANAGER_HR.getCode());
-        } else if (role.equals(ERole.ROLE_MANAGER_LOGISTIC.getCode())) {
-            oRole = roleRepository.findByName(ERole.ROLE_MANAGER_LOGISTIC.getCode());
-
-        } else if (role.equals(ERole.ROLE_MANAGER_CHILDREN.getCode())) {
-            oRole = roleRepository.findByName(ERole.ROLE_MANAGER_CHILDREN.getCode());
+    public PageInfo<UserDto> searchEmployee(String keyword, String status, Integer page, Integer limit) throws NotFoundException {
+        PageRequest pageRequest = buildPageRequest(page, limit);
+        Page<User> userPage = null;
+        if (status.equals(UserStatus.ACTIVED.getCode())) {
+            userPage = userRepository.searchEmployee(keyword, UserStatus.ACTIVED.getCode(), pageRequest);
         } else {
-            oRole = roleRepository.findByName(ERole.ROLE_EMPLOYEE.getCode());
+            userPage = userRepository.searchEmployee(keyword, UserStatus.DELETED.getCode(), pageRequest);
         }
-        return oRole.get();
+        if (userPage.getContent().isEmpty()) {
+            throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
+                    APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
+        }
+        List<UserDto> userDtoList = userPage.getContent().stream().map(user -> {
+            try {
+                return UserToUserDto(user);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }).collect(Collectors.toList());
+        PageInfo<UserDto> userDtoPageInfo = new PageInfo<>();
+        userDtoPageInfo.setPage(page);
+        userDtoPageInfo.setLimit(limit);
+        userDtoPageInfo.setResult(userDtoList);
+        userDtoPageInfo.setTotal(userPage.getTotalElements());
+        userDtoPageInfo.setPages(userPage.getTotalPages());
+        return userDtoPageInfo;
     }
+
+
+    //mapper
 
     public RoleDto RoleToRoleDto(Role role) {
         RoleDto roleDto = new RoleDto();

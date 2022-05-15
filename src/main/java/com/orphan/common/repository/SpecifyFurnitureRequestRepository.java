@@ -18,5 +18,8 @@ public interface SpecifyFurnitureRequestRepository extends JpaRepository<Specify
             "where s.status = ?1 and s.furnitureRequestForm.status = ?2 and s.furnitureRequestForm.finishDate = ?3")
     List<SpecifyFurnitureRequest> findByStatusAndFurnitureRequestForm_StatusAndFurnitureRequestForm_FinishDate(Boolean status, String status1, Date finishDate);
 
+    @Query("select s from SpecifyFurnitureRequest s where s.status = ?1")
+    List<SpecifyFurnitureRequest> findByStatus(Boolean status);
+
 
 }

@@ -3,7 +3,7 @@ package com.orphan.api.controller.manager.HR.Employee;
 import com.google.gson.JsonObject;
 import com.orphan.api.controller.admin.dto.UserDetailDto;
 import com.orphan.api.controller.admin.dto.UserDto;
-import com.orphan.api.controller.manager.HR.Employee.dto.EmployeeRequest;
+import com.orphan.api.controller.manager.HR.Employee.dto.AccountRequest;
 import com.orphan.common.request.SearchRequest;
 import com.orphan.common.response.APIResponse;
 import com.orphan.common.service.EmployeeService;
@@ -43,24 +43,24 @@ public class EmployeeController {
 
     @ApiOperation("Create new Employee")
     @PostMapping
-    public APIResponse<?> createEmployee(@Valid @RequestBody EmployeeRequest employeeRequest, Errors errors) throws BadRequestException {
+    public APIResponse<?> createEmployee(@Valid @RequestBody AccountRequest accountRequest, Errors errors) throws BadRequestException, NotFoundException {
         if (errors.hasErrors()) {
             JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
             throw new BadRequestException(BadRequestException.ERROR_REGISTER_USER_INVALID, messages.toString(), true);
         }
-        employeeRequest = employeeService.createEmployee(employeeRequest);
-        return APIResponse.okStatus(employeeRequest);
+        accountRequest = employeeService.createEmployee(accountRequest);
+        return APIResponse.okStatus(accountRequest);
     }
 
     @ApiOperation("Update employee detail")
     @PutMapping("/{employeeId}")
-    public APIResponse<?> updateEmployee(@PathVariable("employeeId") Integer employeeId, @Valid @RequestBody EmployeeRequest employeeRequest, Errors errors) throws NotFoundException, BadRequestException {
+    public APIResponse<?> updateEmployee(@PathVariable("employeeId") Integer employeeId, @Valid @RequestBody AccountRequest accountRequest, Errors errors) throws NotFoundException, BadRequestException {
         if (errors.hasErrors()) {
             JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
             throw new BadRequestException(BadRequestException.ERROR_REGISTER_USER_INVALID, messages.toString(), true);
         }
-        employeeRequest = employeeService.updateEmployee(employeeRequest, employeeId);
-        return APIResponse.okStatus(employeeRequest);
+        accountRequest = employeeService.updateEmployee(accountRequest, employeeId);
+        return APIResponse.okStatus(accountRequest);
     }
 
     @ApiOperation("Delete employee")

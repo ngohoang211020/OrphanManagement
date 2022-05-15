@@ -63,7 +63,7 @@ public class AdminController {
     @ApiOperation("Create User")
     @PostMapping()
     public ResponseEntity<?> createUser(@RequestBody @Valid RegisterRequestDto newUserRegisterInfo
-            , Errors errors) throws BadRequestException {
+            , Errors errors) throws BadRequestException, NotFoundException {
         if (errors.hasErrors()) {
             JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
             throw new BadRequestException(BadRequestException.ERROR_REGISTER_USER_INVALID, messages.toString(), true);

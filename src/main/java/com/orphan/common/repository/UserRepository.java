@@ -107,4 +107,12 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Page<User> searchUser(String keyword,String status,Pageable pageable);
     @Query(value = "select u from User u inner join u.roles roles where  lower(concat(u.fullName,' ',u.address,' ',u.phone,' ',u.email,' ',roles.name,' ',roles.description,' ',u.identification)) like lower(concat('%', ?1,'%')) and u.UserStatus=?2 and roles.name='ROLE_EMPLOYEE'")
     Page<User> searchEmployee(String keyword,String status,Pageable pageable);
+
+    @Transactional
+    @Modifying
+    @Query("update User u set u.password = ?1 where u.loginId = ?2")
+    void updatePasswordByLoginId(String password, Integer loginId);
+
+
+
 }

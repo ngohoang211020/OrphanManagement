@@ -224,7 +224,67 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 .globalResponseMessage(RequestMethod.GET, responseMessages)
                 .globalResponseMessage(RequestMethod.DELETE, responseMessages);
     }
+    @Bean
+    public Docket apiProfileForUserLogin() {
+        List<ResponseMessage> responseMessages = Arrays.asList(
+                new ResponseMessageBuilder().code(HttpStatus.BAD_REQUEST.value())
+                        .message(HttpStatus.BAD_REQUEST.getReasonPhrase()).build(),
+                new ResponseMessageBuilder().code(HttpStatus.UNAUTHORIZED.value())
+                        .message(HttpStatus.UNAUTHORIZED.getReasonPhrase()).build(),
+                new ResponseMessageBuilder().code(HttpStatus.FORBIDDEN.value())
+                        .message(HttpStatus.FORBIDDEN.getReasonPhrase()).build(),
+                new ResponseMessageBuilder().code(HttpStatus.CONFLICT.value())
+                        .message(HttpStatus.CONFLICT.getReasonPhrase()).build(),
+                new ResponseMessageBuilder().code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                        .message(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()).build());
 
+        return new Docket(DocumentationType.SWAGGER_2).groupName("User Logged Api").select()
+                .apis(RequestHandlerSelectors.basePackage("com.orphan.api.controller.profile"))
+                .paths(Predicates.not(PathSelectors.regex("/error.*"))).build()
+                .genericModelSubstitutes(APIResponse.class).alternateTypeRules(
+                        newRule(resolver.resolve(DeferredResult.class,
+                                        resolver.resolve(APIResponse.class, WildcardType.class)),
+                                resolver.resolve(WildcardType.class)))
+                .apiInfo(metaData())
+                .securitySchemes(Collections.singletonList(apiKey()))
+                .securityContexts(Collections.singletonList(securityContext()))
+                .useDefaultResponseMessages(false)
+                .globalResponseMessage(RequestMethod.POST, responseMessages)
+                .globalResponseMessage(RequestMethod.PUT, responseMessages)
+                .globalResponseMessage(RequestMethod.GET, responseMessages)
+                .globalResponseMessage(RequestMethod.DELETE, responseMessages);
+    }
+
+    @Bean
+    public Docket apiProfileForEmployee() {
+        List<ResponseMessage> responseMessages = Arrays.asList(
+                new ResponseMessageBuilder().code(HttpStatus.BAD_REQUEST.value())
+                        .message(HttpStatus.BAD_REQUEST.getReasonPhrase()).build(),
+                new ResponseMessageBuilder().code(HttpStatus.UNAUTHORIZED.value())
+                        .message(HttpStatus.UNAUTHORIZED.getReasonPhrase()).build(),
+                new ResponseMessageBuilder().code(HttpStatus.FORBIDDEN.value())
+                        .message(HttpStatus.FORBIDDEN.getReasonPhrase()).build(),
+                new ResponseMessageBuilder().code(HttpStatus.CONFLICT.value())
+                        .message(HttpStatus.CONFLICT.getReasonPhrase()).build(),
+                new ResponseMessageBuilder().code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                        .message(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()).build());
+
+        return new Docket(DocumentationType.SWAGGER_2).groupName("Employee Api").select()
+                .apis(RequestHandlerSelectors.basePackage("com.orphan.api.controller.employee"))
+                .paths(Predicates.not(PathSelectors.regex("/error.*"))).build()
+                .genericModelSubstitutes(APIResponse.class).alternateTypeRules(
+                        newRule(resolver.resolve(DeferredResult.class,
+                                        resolver.resolve(APIResponse.class, WildcardType.class)),
+                                resolver.resolve(WildcardType.class)))
+                .apiInfo(metaData())
+                .securitySchemes(Collections.singletonList(apiKey()))
+                .securityContexts(Collections.singletonList(securityContext()))
+                .useDefaultResponseMessages(false)
+                .globalResponseMessage(RequestMethod.POST, responseMessages)
+                .globalResponseMessage(RequestMethod.PUT, responseMessages)
+                .globalResponseMessage(RequestMethod.GET, responseMessages)
+                .globalResponseMessage(RequestMethod.DELETE, responseMessages);
+    }
     private ApiInfo metaData() {
         return new ApiInfoBuilder().version("1.0").title("Orphan Management API")
                 .description("Documentation for OrphanManagement API v1.0").build();

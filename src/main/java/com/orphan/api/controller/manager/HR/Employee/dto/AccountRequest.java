@@ -13,7 +13,7 @@ import javax.validation.constraints.NotEmpty;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class EmployeeRequest {
+public class AccountRequest {
     private Integer id;
 
     @NotEmpty(message="{error.msg.email-is-required}")
@@ -42,6 +42,6 @@ public class EmployeeRequest {
 
     private String image;
 
-    public EmployeeRequest() {
+    public AccountRequest() {
     }
 }
