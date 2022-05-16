@@ -55,7 +55,7 @@ public class CharityEventService extends BaseService {
 
         charityEvent.setCreatedId(String.valueOf(getCurrentUserId()));
 
-        this.charityEventRepository.save(charityEvent);
+        charityEvent=charityEventRepository.save(charityEvent);
         return toCharityRequestDto(charityEvent);
     }
 
