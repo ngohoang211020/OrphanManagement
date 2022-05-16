@@ -47,7 +47,7 @@ public class OrphanExceptionHandler {
                 .message(e.getMessage())
                 .build();
         log.warn(Constants.LOG_LEVEL_WARN + ":" + e.getMessage());
-        return new ResponseEntity<APIResponseError>(apiResponseError, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(apiResponseError, HttpStatus.UNAUTHORIZED);
     }
 
     /**

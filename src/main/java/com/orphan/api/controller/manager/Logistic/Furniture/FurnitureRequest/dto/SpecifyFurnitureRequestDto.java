@@ -17,8 +17,4 @@ public class SpecifyFurnitureRequestDto {
 
     private String note;
 
-    private Long totalPrice;
-
-    private Boolean status;
-
 }

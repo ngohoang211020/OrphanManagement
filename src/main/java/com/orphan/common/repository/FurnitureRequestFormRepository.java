@@ -22,10 +22,10 @@ public interface FurnitureRequestFormRepository extends JpaRepository<FurnitureR
     @Query("select f from FurnitureRequestForm f order by f.createdAt")
     Page<FurnitureRequestForm> findByOrderByCreatedAtAsc(Pageable pageable);
 
-    @Query("select f from FurnitureRequestForm f where f.finishDate = ?1 and f.status = ?2")
-    List<FurnitureRequestForm> findByFinishDateAndStatus(Date finishDate, String status);
-
-    List<FurnitureRequestForm> findByStartDateAndStatus(Date startDate, String status);
+//    @Query("select f from FurnitureRequestForm f where f.finishDate = ?1 and f.status = ?2")
+//    List<FurnitureRequestForm> findByFinishDateAndStatus(Date finishDate, String status);
+//
+//    List<FurnitureRequestForm> findByStartDateAndStatus(Date startDate, String status);
 
     @Query("select f from FurnitureRequestForm f where f.user.loginId = ?1 order by f.startDate")
     Page<FurnitureRequestForm> findByUser_LoginIdOrderByStartDateAsc(Integer loginId, Pageable pageable);
@@ -37,6 +37,17 @@ public interface FurnitureRequestFormRepository extends JpaRepository<FurnitureR
 
     @Query("select (count(f) > 0) from FurnitureRequestForm f where f.furnitureRequestId = ?1")
     boolean existsByFurnitureRequestId(Integer furnitureRequestId);
+
+    @Transactional
+    @Modifying
+    @Query("update FurnitureRequestForm f set f.status = ?1, f.finishDate = ?2, f.totalPrice = ?3 " +
+            "where f.furnitureRequestId = ?4")
+    void confirmFinish(String status, Date finishDate, Long totalPrice, Integer furnitureRequestId);
+
+    @Transactional
+    @Modifying
+    @Query("update FurnitureRequestForm f set f.deadlineDate = ?1 where f.status = ?2 and f.furnitureRequestId = ?3")
+    void extensionOfTime(Date deadlineDate, String status, Integer furnitureRequestId);
 
 
 }
