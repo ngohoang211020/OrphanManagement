@@ -16,7 +16,6 @@ public class FurnitureRequestForm extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer furnitureRequestId;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -31,6 +30,9 @@ public class FurnitureRequestForm extends BaseEntity{
 
     @Temporal(TemporalType.DATE)
     private Date finishDate;
+
+    @Temporal(TemporalType.DATE)
+    private Date deadlineDate;
 
     @Temporal(TemporalType.DATE)
     private Date startDate;

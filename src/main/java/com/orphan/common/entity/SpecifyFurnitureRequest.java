@@ -21,15 +21,10 @@ public class SpecifyFurnitureRequest extends BaseEntity{
 
     private String note;
 
-    private Long totalPrice;
-
     @ManyToOne
     @JoinColumn(name = "furniture_id")
     private Furniture furniture;
-
     @ManyToOne
     @JoinColumn(name = "furniture_request_form_id")
     private FurnitureRequestForm furnitureRequestForm;
-
-    private Boolean status;
 }

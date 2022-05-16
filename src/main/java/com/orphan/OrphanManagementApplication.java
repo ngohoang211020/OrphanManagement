@@ -24,13 +24,13 @@ public class OrphanManagementApplication {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private FurnitureRequestFormService furnitureRequestFormService;
+//    @Autowired
+//    private FurnitureRequestFormService furnitureRequestFormService;
 
     @Scheduled(fixedRate = 10000L) // this method will be executed as 12:00:00 AM of every friday
     public void myMethod() {
         userRepository.deleteByRecoveryExpirationDateAndUserStatus(new Date(), UserStatus.DELETED.getCode());
-        furnitureRequestFormService.updateAutoFurnitureForm();
+//        furnitureRequestFormService.updateAutoFurnitureForm();
         // do your logic
     }
 

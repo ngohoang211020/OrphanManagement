@@ -1,9 +1,10 @@
 package com.orphan.common.service;
 
-import com.orphan.api.controller.manager.Logistic.Furniture.FurnitureRequest.dto.FurnitureRequestFormDetail;
-import com.orphan.api.controller.manager.Logistic.Furniture.FurnitureRequest.dto.FurnitureRequestFormDto;
-import com.orphan.api.controller.manager.Logistic.Furniture.FurnitureRequest.dto.SpecifyFurnitureRequestDto;
-import com.orphan.common.entity.*;
+import com.orphan.api.controller.manager.Logistic.Furniture.FurnitureRequest.dto.*;
+import com.orphan.common.entity.Furniture;
+import com.orphan.common.entity.FurnitureRequestForm;
+import com.orphan.common.entity.SpecifyFurnitureRequest;
+import com.orphan.common.entity.User;
 import com.orphan.common.repository.FundManagementRepository;
 import com.orphan.common.repository.FurnitureRepository;
 import com.orphan.common.repository.FurnitureRequestFormRepository;
@@ -63,17 +64,13 @@ public class FurnitureRequestFormService extends BaseService {
         long dateToMilliseconds = 60 * 60 * 1000;
         furnitureRequestForm.setStartDate(new Date(now));
 
-        furnitureRequestForm.setFinishDate(new Date(now + 4 * 24 * dateToMilliseconds));
+        furnitureRequestForm.setDeadlineDate(new Date(now + 4 * 24 * dateToMilliseconds));
 
         furnitureRequestForm.setStatus(RequestStatus.IN_PROGRESS.getCode());
 
         furnitureRequestForm.setCreatedId(String.valueOf(getCurrentUserId()));
 
         List<SpecifyFurnitureRequest> specifyFurnitureRequestList = toListEntity(furnitureRequestFormDto.getFurnitureRequestList(), furnitureRequestForm);
-
-        Long totalPrice = specifyFurnitureRequestList.stream().mapToLong(SpecifyFurnitureRequest::getTotalPrice).sum();
-
-        furnitureRequestForm.setTotalPrice(totalPrice);
 
         furnitureRequestForm.setSpecifyFurnitureRequestList(specifyFurnitureRequestList);
 
@@ -85,7 +82,6 @@ public class FurnitureRequestFormService extends BaseService {
 
         return toDto(furnitureRequestForm);
     }
-
 
     public void deleteFurnitureRequestForm(Integer furnitureRequestId) throws NotFoundException {
 
@@ -102,9 +98,9 @@ public class FurnitureRequestFormService extends BaseService {
         }
     }
 
-    public void updateDoneStatus() {
-        furnitureRequestFormRepository.updateStatusByStatusAndFinishDate(RequestStatus.DONE.getCode(), RequestStatus.IN_PROGRESS.getCode(), new Date(new Date().getTime()));
-    }
+//    public void updateDoneStatus() {
+//        furnitureRequestFormRepository.updateStatusByStatusAndFinishDate(RequestStatus.DONE.getCode(), RequestStatus.IN_PROGRESS.getCode(), new Date(new Date().getTime()));
+//    }
 
     public List<FurnitureRequestFormDetail> viewAllFurnitureRequestForms() throws NotFoundException {
         List<FurnitureRequestForm> furnitureRequestForms = furnitureRequestFormRepository.findAll();
@@ -133,37 +129,52 @@ public class FurnitureRequestFormService extends BaseService {
         return furnitureRequestFormDetailPageInfo;
     }
 
-    public void updateAutoFurnitureForm() {
+//    public void updateAutoFurnitureForm() {
+//
+//        furnitureRequestFormRepository.updateStatusByStatusAndFinishDate(RequestStatus.DONE.getCode(), RequestStatus.IN_PROGRESS.getCode(), new Date(new Date().getTime()));
+//        List<SpecifyFurnitureRequest> specifyFurnitureRequestList1 = specifyFurnitureRequestRepository.findByStatus(false);
+//        for (SpecifyFurnitureRequest specifyFurnitureRequest : specifyFurnitureRequestList1
+//        ) {
+//            Furniture furniture = specifyFurnitureRequest.getFurniture();
+//            Integer goodQuantity = furniture.getGoodQuantity() + specifyFurnitureRequest.getImportQuantity() + specifyFurnitureRequest.getFixQuantity();
+//            Integer brokenQuantity = furniture.getBrokenQuantity() - specifyFurnitureRequest.getFixQuantity();
+//            furniture.setGoodQuantity(goodQuantity);
+//            furniture.setBrokenQuantity(brokenQuantity);
+//            furnitureRepository.save(furniture);
+//            specifyFurnitureRequestRepository.save(specifyFurnitureRequest);
+//        }
+//
+//        List<SpecifyFurnitureRequest> specifyFurnitureRequestList = specifyFurnitureRequestRepository.findByStatusAndFurnitureRequestForm_StatusAndFurnitureRequestForm_FinishDate(false, RequestStatus.DONE.getCode(), new Date(new Date().getTime()));
+//
+//        for (SpecifyFurnitureRequest specifyFurnitureRequest : specifyFurnitureRequestList
+//        ) {
+//            Furniture furniture = specifyFurnitureRequest.getFurniture();
+//            Integer goodQuantity = furniture.getGoodQuantity() + specifyFurnitureRequest.getImportQuantity() + specifyFurnitureRequest.getFixQuantity();
+//            Integer brokenQuantity = furniture.getBrokenQuantity() - specifyFurnitureRequest.getFixQuantity();
+//            furniture.setGoodQuantity(goodQuantity);
+//            furniture.setBrokenQuantity(brokenQuantity);
+//            furnitureRepository.save(furniture);
+//            specifyFurnitureRequestRepository.save(specifyFurnitureRequest);
+//        }
+//    }
 
-        furnitureRequestFormRepository.updateStatusByStatusAndFinishDate(RequestStatus.DONE.getCode(), RequestStatus.IN_PROGRESS.getCode(), new Date(new Date().getTime()));
-        List<SpecifyFurnitureRequest> specifyFurnitureRequestList1 = specifyFurnitureRequestRepository.findByStatus(false);
-        for (SpecifyFurnitureRequest specifyFurnitureRequest : specifyFurnitureRequestList1
-        ) {
-            Furniture furniture = specifyFurnitureRequest.getFurniture();
-            Integer goodQuantity = furniture.getGoodQuantity() + specifyFurnitureRequest.getImportQuantity() + specifyFurnitureRequest.getFixQuantity();
-            Integer brokenQuantity = furniture.getBrokenQuantity() - specifyFurnitureRequest.getFixQuantity();
-            furniture.setGoodQuantity(goodQuantity);
-            furniture.setBrokenQuantity(brokenQuantity);
-            furnitureRepository.save(furniture);
-            specifyFurnitureRequest.setStatus(true);
-            specifyFurnitureRequestRepository.save(specifyFurnitureRequest);
+    public void confirmFinish(TotalMoneyDto totalMoneyDto) throws NotFoundException {
+        Optional<FurnitureRequestForm> furnitureRequestFormOptional = furnitureRequestFormRepository.findById(totalMoneyDto.getId());
+        if (!furnitureRequestFormOptional.isPresent()) {
+            throw new NotFoundException(NotFoundException.ERROR_FURNITURE_REQUEST_FORM_NOT_FOUND,
+                    APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.FURNITURE_REQUEST_FORM));
         }
-
-        List<SpecifyFurnitureRequest> specifyFurnitureRequestList = specifyFurnitureRequestRepository.findByStatusAndFurnitureRequestForm_StatusAndFurnitureRequestForm_FinishDate(false, RequestStatus.DONE.getCode(), new Date(new Date().getTime()));
-
-        for (SpecifyFurnitureRequest specifyFurnitureRequest : specifyFurnitureRequestList
-        ) {
-            Furniture furniture = specifyFurnitureRequest.getFurniture();
-            Integer goodQuantity = furniture.getGoodQuantity() + specifyFurnitureRequest.getImportQuantity() + specifyFurnitureRequest.getFixQuantity();
-            Integer brokenQuantity = furniture.getBrokenQuantity() - specifyFurnitureRequest.getFixQuantity();
-            furniture.setGoodQuantity(goodQuantity);
-            furniture.setBrokenQuantity(brokenQuantity);
-            furnitureRepository.save(furniture);
-            specifyFurnitureRequest.setStatus(true);
-            specifyFurnitureRequestRepository.save(specifyFurnitureRequest);
-        }
+        furnitureRequestFormRepository.confirmFinish(RequestStatus.DONE.getCode(), new Date(new Date().getTime()), totalMoneyDto.getTotalMoney(), totalMoneyDto.getId());
     }
 
+    public void extensionOfTime(ExtensionTimeDateDto extensionTimeDateDto) throws NotFoundException {
+        Optional<FurnitureRequestForm> furnitureRequestFormOptional = furnitureRequestFormRepository.findById(extensionTimeDateDto.getId());
+        if (!furnitureRequestFormOptional.isPresent()) {
+            throw new NotFoundException(NotFoundException.ERROR_FURNITURE_REQUEST_FORM_NOT_FOUND,
+                    APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.FURNITURE_REQUEST_FORM));
+        }
+        furnitureRequestFormRepository.extensionOfTime(OrphanUtils.StringToDate(extensionTimeDateDto.getExtensionDate()), RequestStatus.IN_PROGRESS.getCode(), extensionTimeDateDto.getId());
+    }
 //    public void updateFundInFundOut() {
 //        FundManagement fundManagement = fundManagementRepository.findByDate(new Date(new Date().getTime()));
 //        Long outMoney = null;
@@ -196,14 +207,11 @@ public class FurnitureRequestFormService extends BaseService {
         specifyFurnitureRequest.setNote(specifyFurnitureRequestDto.getNote());
         specifyFurnitureRequest.setSpecifyFurnitureRequestId(specifyFurnitureRequestDto.getSpecifyFurnitureRequestId());
         specifyFurnitureRequest.setFurnitureRequestForm(furnitureRequestForm);
-        Long totalPrice = furniture.getUnitPrice() * (specifyFurnitureRequest.getImportQuantity() + specifyFurnitureRequest.getFixQuantity() / 2);
-        specifyFurnitureRequest.setTotalPrice(totalPrice);
-        specifyFurnitureRequest.setStatus(false);
         return specifyFurnitureRequest;
     }
 
     private List<SpecifyFurnitureRequest> toListEntity(List<SpecifyFurnitureRequestDto> specifyFurnitureRequestDtoList, FurnitureRequestForm furnitureRequestForm) {
-        List<SpecifyFurnitureRequest> specifyFurnitureRequestList = new ArrayList<>();
+        List<SpecifyFurnitureRequest> specifyFurnitureRequestList;
         specifyFurnitureRequestList = specifyFurnitureRequestDtoList.stream().map(specifyFurnitureRequestDto ->
         {
             try {
@@ -215,18 +223,18 @@ public class FurnitureRequestFormService extends BaseService {
         return specifyFurnitureRequestList;
     }
 
-    public List<SpecifyFurnitureRequest> toListEntity(List<SpecifyFurnitureRequestDto> specifyFurnitureRequestDtoList) {
-        List<SpecifyFurnitureRequest> specifyFurnitureRequestList = new ArrayList<>();
-        specifyFurnitureRequestList = specifyFurnitureRequestDtoList.stream().map(specifyFurnitureRequestDto ->
-        {
-            try {
-                return toEntity(specifyFurnitureRequestDto, null);
-            } catch (NotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        }).collect(Collectors.toList());
-        return specifyFurnitureRequestList;
-    }
+//    public List<SpecifyFurnitureRequest> toListEntity(List<SpecifyFurnitureRequestDto> specifyFurnitureRequestDtoList) {
+//        List<SpecifyFurnitureRequest> specifyFurnitureRequestList = new ArrayList<>();
+//        specifyFurnitureRequestList = specifyFurnitureRequestDtoList.stream().map(specifyFurnitureRequestDto ->
+//        {
+//            try {
+//                return toEntity(specifyFurnitureRequestDto, null);
+//            } catch (NotFoundException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }).collect(Collectors.toList());
+//        return specifyFurnitureRequestList;
+//    }
 
     private SpecifyFurnitureRequestDto toDto(SpecifyFurnitureRequest specifyFurnitureRequest) {
         SpecifyFurnitureRequestDto specifyFurnitureRequestDto = new SpecifyFurnitureRequestDto();
@@ -235,13 +243,11 @@ public class FurnitureRequestFormService extends BaseService {
         specifyFurnitureRequestDto.setFixQuantity(specifyFurnitureRequest.getFixQuantity());
         specifyFurnitureRequestDto.setImportQuantity(specifyFurnitureRequest.getImportQuantity());
         specifyFurnitureRequestDto.setNote(specifyFurnitureRequest.getNote());
-        specifyFurnitureRequestDto.setTotalPrice(specifyFurnitureRequest.getTotalPrice());
-        specifyFurnitureRequestDto.setStatus(specifyFurnitureRequest.getStatus());
         return specifyFurnitureRequestDto;
     }
 
     public List<SpecifyFurnitureRequestDto> toListDto(List<SpecifyFurnitureRequest> specifyFurnitureRequestList) {
-        List<SpecifyFurnitureRequestDto> specifyFurnitureRequestDtoList = new ArrayList<>();
+        List<SpecifyFurnitureRequestDto> specifyFurnitureRequestDtoList;
         specifyFurnitureRequestDtoList = specifyFurnitureRequestList.stream().map(specifyFurnitureRequest ->
                 toDto(specifyFurnitureRequest)).collect(Collectors.toList());
         return specifyFurnitureRequestDtoList;
@@ -255,8 +261,12 @@ public class FurnitureRequestFormService extends BaseService {
         furnitureRequestFormDetail.setEmployeeId(furnitureRequestForm.getUser().getLoginId());
         furnitureRequestFormDetail.setEmployeeName(furnitureRequestForm.getUser().getFullName());
         furnitureRequestFormDetail.setTotalPrice(furnitureRequestForm.getTotalPrice());
+
         furnitureRequestFormDetail.setStartDate(OrphanUtils.DateToString(furnitureRequestForm.getStartDate()));
-        furnitureRequestFormDetail.setFinishDate(OrphanUtils.DateToString(furnitureRequestForm.getFinishDate()));
+        if (furnitureRequestForm.getFinishDate()!=null) {
+            furnitureRequestFormDetail.setFinishDate(OrphanUtils.DateToString(furnitureRequestForm.getFinishDate()));
+        }
+        furnitureRequestFormDetail.setDeadlineDate(OrphanUtils.DateToString(furnitureRequestForm.getDeadlineDate()));
         furnitureRequestFormDetail.setStatus(furnitureRequestForm.getStatus());
         furnitureRequestFormDetail.setCreatedId(Integer.valueOf(furnitureRequestForm.getCreatedId()));
         return furnitureRequestFormDetail;

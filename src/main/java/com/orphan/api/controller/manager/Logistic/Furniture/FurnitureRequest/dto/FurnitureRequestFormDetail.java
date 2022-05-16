@@ -18,6 +18,8 @@ public class FurnitureRequestFormDetail {
 
     private String startDate;
 
+    private String deadlineDate;
+
     private String finishDate;
 
     private String status;
