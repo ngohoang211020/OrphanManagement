@@ -59,9 +59,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Transactional
     @Modifying
-    @Query("delete from User u where u.recoveryExpirationDate <= ?1 and u.UserStatus = ?2")
+    @Query("delete from User u where u.recoveryExpirationDate = ?1 and u.UserStatus = ?2")
     void deleteByRecoveryExpirationDateAndUserStatus(Date recoveryExpirationDate, String UserStatus);
-
 
     //view
     @Query("select u from User u where u.UserStatus = ?1 order by u.recoveryExpirationDate asc ")
