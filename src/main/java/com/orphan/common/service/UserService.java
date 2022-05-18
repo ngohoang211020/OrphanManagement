@@ -526,7 +526,14 @@ public class UserService extends BaseService {
         return userDtoPageInfo;
     }
 
-
+    public List<StatisticsByDateResponse> countUserArchivedByMonth() {
+        List<StatisticsByDateResponse> statisticsByDateRespons = userRepository.countUserArchivedByMonth();
+        return statisticsByDateRespons;
+    }
+    public List<StatisticsByDateResponse> countUserArchivedByYear() {
+        List<StatisticsByDateResponse> statisticsByDateRespons = userRepository.countUserArchivedByYear();
+        return statisticsByDateRespons;
+    }
     //mapper
 
     public RoleDto RoleToRoleDto(Role role) {

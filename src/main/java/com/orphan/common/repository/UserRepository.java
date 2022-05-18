@@ -113,6 +113,11 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("update User u set u.password = ?1 where u.loginId = ?2")
     void updatePasswordByLoginId(String password, Integer loginId);
 
+    @Query(value = "select month(u.recoveryExpirationDate) as month,year(u.recoveryExpirationDate) as year, count(distinct u) as amount from User u where u.UserStatus='DELETED' group by month(u.recoveryExpirationDate),year(u.recoveryExpirationDate)")
+    List<StatisticsByDateResponse> countUserArchivedByMonth();
+
+    @Query(value = "select year(u.recoveryExpirationDate) as year, count(distinct u) as amount from User u where u.UserStatus='DELETED' group by month(u.recoveryExpirationDate),year(u.recoveryExpirationDate)")
+    List<StatisticsByDateResponse> countUserArchivedByYear();
 
 
 }

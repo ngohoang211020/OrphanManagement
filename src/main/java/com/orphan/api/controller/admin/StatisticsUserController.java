@@ -44,4 +44,16 @@ public class StatisticsUserController {
         return APIResponse.okStatus(userService.countUserOnBoardByYear());
     }
 
+    @ApiOperation("Count User Archived By Month")
+    @GetMapping("/archived/month")
+    public APIResponse<?> countUserArchivedByMonth()  {
+        return APIResponse.okStatus(userService.countUserArchivedByMonth());
+    }
+
+    @ApiOperation("Count User Archived By Year")
+    @GetMapping("/archived/year")
+    public APIResponse<?> countUserArchivedByYear()  {
+        return APIResponse.okStatus(userService.countUserArchivedByYear());
+    }
+
 }
