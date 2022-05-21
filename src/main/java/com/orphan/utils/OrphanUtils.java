@@ -5,6 +5,7 @@ import com.orphan.enums.ERole;
 import com.orphan.exception.BadRequestException;
 import com.orphan.utils.constants.APIConstants;
 import com.orphan.utils.constants.Constants;
+import java.time.LocalTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.Errors;
@@ -124,6 +125,12 @@ public class OrphanUtils {
         return df.format(date);
     }
 
+    public static String LocalTimeToString(LocalTime localTime) {
+        return localTime.toString();
+    }
+    public static LocalTime StringToLocalTime(String string) {
+        return LocalTime.parse(string, DateTimeFormatter.ofPattern("HH:mm"));
+    }
     public static Integer daysBetween2Dates(Date x, Date y) {
         return Math.toIntExact((y.getTime() - x.getTime()) / (24 * 3600 * 1000));
     }

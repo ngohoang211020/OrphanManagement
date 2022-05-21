@@ -36,5 +36,6 @@ public class User extends BasePeopleEntity{
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<FurnitureRequestForm> furnitureRequestForms;
 
-
+    @OneToMany(mappedBy = "personInChargeId", cascade = CascadeType.ALL)
+    private List<Picnic> picnics;
 }
