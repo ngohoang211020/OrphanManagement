@@ -37,12 +37,12 @@ public class FurnitureController {
     @ApiOperation("Get Furnitures By Pages")
     @GetMapping
     public APIResponse<?> viewFurnituresByPages(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
-    ) throws NotFoundException {
+            ,@ApiParam(value = "Limit", required = false) @RequestParam(value = "limit", required = false) Integer limit) throws NotFoundException {
         PageInfo<FurnitureDto> furnitureDtoPageInfo;
         if (page != null) {
-            furnitureDtoPageInfo = furnitureService.viewFurnituresByPage(page, PageableConstants.limit);
+            furnitureDtoPageInfo = furnitureService.viewFurnituresByPage(page, limit);
         } else {
-            furnitureDtoPageInfo = furnitureService.viewFurnituresByPage(1, PageableConstants.limit);
+            furnitureDtoPageInfo = furnitureService.viewFurnituresByPage(1, limit);
 
         }
         return APIResponse.okStatus(furnitureDtoPageInfo);
@@ -87,12 +87,12 @@ public class FurnitureController {
     @ApiOperation("Search Furnitures By Pages")
     @PostMapping("/search")
     public APIResponse<?> searchFurnitureByPage(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
-            , @RequestBody SearchRequest searchRequest) throws NotFoundException {
+            ,@ApiParam(value = "Limit", required = false) @RequestParam(value = "limit", required = false) Integer limit, @RequestBody SearchRequest searchRequest) throws NotFoundException {
         PageInfo<FurnitureDto> furnitureDtoPageInfo;
         if (page != null) {
-            furnitureDtoPageInfo = furnitureService.searchFurnitureByPage(searchRequest.getKeyword(), page, PageableConstants.limit);
+            furnitureDtoPageInfo = furnitureService.searchFurnitureByPage(searchRequest.getKeyword(), page, limit);
         } else {
-            furnitureDtoPageInfo = furnitureService.searchFurnitureByPage(searchRequest.getKeyword(), 1, PageableConstants.limit);
+            furnitureDtoPageInfo = furnitureService.searchFurnitureByPage(searchRequest.getKeyword(), 1, limit);
 
         }
         return APIResponse.okStatus(furnitureDtoPageInfo);

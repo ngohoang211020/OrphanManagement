@@ -43,12 +43,12 @@ public class OrphanNurturerController {
     @ApiOperation("Get nurturers By Pages")
     @GetMapping
     public APIResponse<?> viewNurturersByPages(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
-    ) throws NotFoundException {
+            ,@ApiParam(value = "Limit", required = false) @RequestParam(value = "limit", required = false) Integer limit ) throws NotFoundException {
         PageInfo<NurturerDto> nurturerDtoPageInfo;
         if (page != null) {
-            nurturerDtoPageInfo = orphanNurturerService.viewNurturersByPage(page, PageableConstants.limit);
+            nurturerDtoPageInfo = orphanNurturerService.viewNurturersByPage(page, limit);
         } else {
-            nurturerDtoPageInfo = orphanNurturerService.viewNurturersByPage(1, PageableConstants.limit);
+            nurturerDtoPageInfo = orphanNurturerService.viewNurturersByPage(1, limit);
 
         }
         return APIResponse.okStatus(nurturerDtoPageInfo);
@@ -93,12 +93,12 @@ public class OrphanNurturerController {
     @ApiOperation("Search Nurturers By Pages")
     @PostMapping("/search")
     public APIResponse<?> searchNurturerByPage(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
-            ,@RequestBody SearchRequest searchRequest) throws NotFoundException {
+            ,@ApiParam(value = "Limit", required = false) @RequestParam(value = "limit", required = false) Integer limit ,@RequestBody SearchRequest searchRequest) throws NotFoundException {
         PageInfo<NurturerDto> nurturerDtoPageInfo;
         if (page != null) {
-            nurturerDtoPageInfo = orphanNurturerService.searchNurturer(searchRequest.getKeyword(),page, PageableConstants.limit);
+            nurturerDtoPageInfo = orphanNurturerService.searchNurturer(searchRequest.getKeyword(),page, limit);
         } else {
-            nurturerDtoPageInfo = orphanNurturerService.searchNurturer(searchRequest.getKeyword(),1, PageableConstants.limit);
+            nurturerDtoPageInfo = orphanNurturerService.searchNurturer(searchRequest.getKeyword(),1, limit);
 
         }
         return APIResponse.okStatus(nurturerDtoPageInfo);

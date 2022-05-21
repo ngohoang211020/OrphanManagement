@@ -39,12 +39,12 @@ public class ChildrenController {
     @ApiOperation("Get Childrens By Pages")
     @GetMapping
     public APIResponse<?> viewChildrensByPages(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
-    ) throws NotFoundException {
+            ,@ApiParam(value = "Limit", required = false) @RequestParam(value = "limit", required = false) Integer limit) throws NotFoundException {
         PageInfo<ChildrenDto> childrenDtoPageInfo;
         if (page != null) {
-            childrenDtoPageInfo = childrenService.viewChildrensByPage(page, PageableConstants.limit);
+            childrenDtoPageInfo = childrenService.viewChildrensByPage(page, limit);
         } else {
-            childrenDtoPageInfo = childrenService.viewChildrensByPage(1, PageableConstants.limit);
+            childrenDtoPageInfo = childrenService.viewChildrensByPage(1, limit);
 
         }
         return APIResponse.okStatus(childrenDtoPageInfo);
@@ -89,12 +89,12 @@ public class ChildrenController {
     @ApiOperation("Search Childrens By Pages")
     @PostMapping("/search")
     public APIResponse<?> searchChildrensByPages(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
-            ,@RequestBody SearchRequest searchRequest) throws NotFoundException {
+            ,@ApiParam(value = "Limit", required = false) @RequestParam(value = "limit", required = false) Integer limit,@RequestBody SearchRequest searchRequest) throws NotFoundException {
         PageInfo<ChildrenDto> childrenDtoPageInfo;
         if (page != null) {
-            childrenDtoPageInfo = childrenService.searchChildrensByPage(searchRequest.getKeyword(),page, PageableConstants.limit);
+            childrenDtoPageInfo = childrenService.searchChildrensByPage(searchRequest.getKeyword(),page, limit);
         } else {
-            childrenDtoPageInfo = childrenService.searchChildrensByPage(searchRequest.getKeyword(),1, PageableConstants.limit);
+            childrenDtoPageInfo = childrenService.searchChildrensByPage(searchRequest.getKeyword(),1, limit);
 
         }
         return APIResponse.okStatus(childrenDtoPageInfo);

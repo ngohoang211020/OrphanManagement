@@ -39,12 +39,12 @@ public class CharityEventController {
     @ApiOperation("Get CharityEvent By Pages")
     @GetMapping
     public APIResponse<?> viewEventByPages(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
-    ) throws NotFoundException {
+            ,@ApiParam(value = "Limit", required = false) @RequestParam(value = "limit", required = false) Integer limit) throws NotFoundException {
         PageInfo<CharityEventDetailDto> eventDtoPageInfo;
         if (page != null) {
-            eventDtoPageInfo = charityEventService.viewEventByPage(page, PageableConstants.limit);
+            eventDtoPageInfo = charityEventService.viewEventByPage(page, limit);
         } else {
-            eventDtoPageInfo = charityEventService.viewEventByPage(1, PageableConstants.limit);
+            eventDtoPageInfo = charityEventService.viewEventByPage(1, limit);
 
         }
         return APIResponse.okStatus(eventDtoPageInfo);
