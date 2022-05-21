@@ -68,10 +68,15 @@ public class ChildrenService extends BaseService {
             children.setOrphanNurturer(orphanNurturer);
         } else {
             children.setStatus(ChildrenStatus.WAIT_TO_RECEIVE.getCode());
+            children.setAdoptiveDate(null);
+            children.setOrphanNurturer(null);
         }
         if (childrenRequest.getIntroducerId() > 0 && childrenRequest.getIntroducerId() != null) {
             OrphanIntroducer orphanIntroducer = orphanIntroducerRepository.findById(childrenRequest.getIntroducerId()).get();
             children.setOrphanIntroducer(orphanIntroducer);
+        }
+        else {
+            children.setOrphanIntroducer(null);
         }
         if (childrenRequest.getImage() != "" && childrenRequest.getImage() != null) {
             children.setImage(childrenRequest.getImage());
