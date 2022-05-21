@@ -42,12 +42,12 @@ public class AdminController {
     @ApiOperation("Get Users ACTIVED By Page")
     @GetMapping
     public APIResponse<?> viewUsersByPage(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
-    ) throws NotFoundException {
+    ,@ApiParam(value = "Limit", required = false) @RequestParam(value = "limit", required = false) Integer limit) throws NotFoundException {
         PageInfo<UserDto> userDtoPageInfo;
         if (page != null) {
-            userDtoPageInfo = userService.viewUsersActivedByPage(page, PageableConstants.limit,UserStatus.ACTIVED.getCode());
+            userDtoPageInfo = userService.viewUsersActivedByPage(page, limit,UserStatus.ACTIVED.getCode());
         } else {
-            userDtoPageInfo = userService.viewUsersActivedByPage(1, PageableConstants.limit,UserStatus.ACTIVED.getCode());
+            userDtoPageInfo = userService.viewUsersActivedByPage(1, limit,UserStatus.ACTIVED.getCode());
 
         }
         return APIResponse.okStatus(userDtoPageInfo);
@@ -111,12 +111,12 @@ public class AdminController {
     @ApiOperation("Get Users Deleted By Page")
     @GetMapping("/deleted")
     public APIResponse<?> viewUsersDeletedByPage(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
-    ) throws NotFoundException {
+            ,@ApiParam(value = "Limit", required = false) @RequestParam(value = "limit", required = false) Integer limit) throws NotFoundException {
         PageInfo<UserDto> userDtoPageInfo;
         if (page != null) {
-            userDtoPageInfo = userService.viewUsersDeletedByPage(page, PageableConstants.limit,UserStatus.DELETED.getCode());
+            userDtoPageInfo = userService.viewUsersDeletedByPage(page, limit,UserStatus.DELETED.getCode());
         } else {
-            userDtoPageInfo = userService.viewUsersDeletedByPage(1, PageableConstants.limit,UserStatus.DELETED.getCode());
+            userDtoPageInfo = userService.viewUsersDeletedByPage(1, limit,UserStatus.DELETED.getCode());
 
         }
         return APIResponse.okStatus(userDtoPageInfo);
@@ -125,12 +125,12 @@ public class AdminController {
     @ApiOperation("Search Users ACTIVED")
     @PostMapping("/search")
     public APIResponse<?> searchUsersActived(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
-    , @RequestBody SearchRequest searchRequest) throws NotFoundException {
+            ,@ApiParam(value = "Limit", required = false) @RequestParam(value = "limit", required = false) Integer limit, @RequestBody SearchRequest searchRequest) throws NotFoundException {
         PageInfo<UserDto> userDtoPageInfo;
         if (page != null) {
-            userDtoPageInfo = userService.searchUser(searchRequest.getKeyword(),UserStatus.ACTIVED.getCode(), page, PageableConstants.limit);
+            userDtoPageInfo = userService.searchUser(searchRequest.getKeyword(),UserStatus.ACTIVED.getCode(), page, limit);
         } else {
-            userDtoPageInfo = userService.searchUser(searchRequest.getKeyword(),UserStatus.ACTIVED.getCode(),1, PageableConstants.limit);
+            userDtoPageInfo = userService.searchUser(searchRequest.getKeyword(),UserStatus.ACTIVED.getCode(),1, limit);
 
         }
         return APIResponse.okStatus(userDtoPageInfo);
@@ -139,12 +139,12 @@ public class AdminController {
     @ApiOperation("Search Users Deleted")
     @PostMapping("/search/deleted")
     public APIResponse<?> searchUsersDeleted(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
-            , @RequestBody SearchRequest searchRequest) throws NotFoundException {
+            ,@ApiParam(value = "Limit", required = false) @RequestParam(value = "limit", required = false) Integer limit , @RequestBody SearchRequest searchRequest) throws NotFoundException {
         PageInfo<UserDto> userDtoPageInfo;
         if (page != null) {
-            userDtoPageInfo = userService.searchUser(searchRequest.getKeyword(),UserStatus.DELETED.getCode(), page, PageableConstants.limit);
+            userDtoPageInfo = userService.searchUser(searchRequest.getKeyword(),UserStatus.DELETED.getCode(), page, limit);
         } else {
-            userDtoPageInfo = userService.searchUser(searchRequest.getKeyword(),UserStatus.DELETED.getCode(),1, PageableConstants.limit);
+            userDtoPageInfo = userService.searchUser(searchRequest.getKeyword(),UserStatus.DELETED.getCode(),1, limit);
 
         }
         return APIResponse.okStatus(userDtoPageInfo);

@@ -38,12 +38,12 @@ public class OrphanIntroducerController {
     @ApiOperation("Get Introducers By Pages")
     @GetMapping
     public APIResponse<?> viewIntroducersByPages(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
-    ) throws NotFoundException {
+            ,@ApiParam(value = "Limit", required = false) @RequestParam(value = "limit", required = false) Integer limit) throws NotFoundException {
         PageInfo<IntroducerDto> introducerDtoPageInfo;
         if (page != null) {
-            introducerDtoPageInfo = orphanIntroducerService.viewIntroducersByPage(page, PageableConstants.limit);
+            introducerDtoPageInfo = orphanIntroducerService.viewIntroducersByPage(page, limit);
         } else {
-            introducerDtoPageInfo = orphanIntroducerService.viewIntroducersByPage(1, PageableConstants.limit);
+            introducerDtoPageInfo = orphanIntroducerService.viewIntroducersByPage(1, limit);
 
         }
         return APIResponse.okStatus(introducerDtoPageInfo);
@@ -88,12 +88,12 @@ public class OrphanIntroducerController {
     @ApiOperation("Search Introducers By Pages")
     @PostMapping("/search")
     public APIResponse<?> searchIntroducerByPages(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
-            , @RequestBody SearchRequest searchRequest) throws NotFoundException {
+            ,@ApiParam(value = "Limit", required = false) @RequestParam(value = "limit", required = false) Integer limit  , @RequestBody SearchRequest searchRequest) throws NotFoundException {
         PageInfo<IntroducerDto> introducerDtoPageInfo;
         if (page != null) {
-            introducerDtoPageInfo = orphanIntroducerService.searchIntroducer(searchRequest.getKeyword(), page, PageableConstants.limit);
+            introducerDtoPageInfo = orphanIntroducerService.searchIntroducer(searchRequest.getKeyword(), page, limit);
         } else {
-            introducerDtoPageInfo = orphanIntroducerService.searchIntroducer(searchRequest.getKeyword(), 1, PageableConstants.limit);
+            introducerDtoPageInfo = orphanIntroducerService.searchIntroducer(searchRequest.getKeyword(), 1, limit);
 
         }
         return APIResponse.okStatus(introducerDtoPageInfo);

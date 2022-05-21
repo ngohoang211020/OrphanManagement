@@ -83,12 +83,12 @@ public class EmployeeController {
     @ApiOperation("Get Employee ACTIVED By Pages")
     @GetMapping()
     public APIResponse<?> viewEmployeesActivedByPage(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
-    ) throws NotFoundException {
+            ,@ApiParam(value = "Limit", required = false) @RequestParam(value = "limit", required = false) Integer limit) throws NotFoundException {
         PageInfo<UserDto> employeePageInfo;
         if (page != null) {
-            employeePageInfo = employeeService.viewUsersByPageByStatusACTIVED(page, PageableConstants.limit,ERole.ROLE_EMPLOYEE.getCode(), UserStatus.ACTIVED.getCode());
+            employeePageInfo = employeeService.viewUsersByPageByStatusACTIVED(page, limit,ERole.ROLE_EMPLOYEE.getCode(), UserStatus.ACTIVED.getCode());
         } else {
-            employeePageInfo = employeeService.viewUsersByPageByStatusACTIVED(1, PageableConstants.limit,ERole.ROLE_EMPLOYEE.getCode(), UserStatus.ACTIVED.getCode());
+            employeePageInfo = employeeService.viewUsersByPageByStatusACTIVED(1, limit,ERole.ROLE_EMPLOYEE.getCode(), UserStatus.ACTIVED.getCode());
 
         }
         return APIResponse.okStatus(employeePageInfo);
@@ -111,12 +111,12 @@ public class EmployeeController {
     @ApiOperation("Search Employee ACTIVED")
     @PostMapping("/search")
     public APIResponse<?> searchEmployeesActived(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
-            , @RequestBody SearchRequest searchRequest) throws NotFoundException {
+            ,@ApiParam(value = "Limit", required = false) @RequestParam(value = "limit", required = false) Integer limit  , @RequestBody SearchRequest searchRequest) throws NotFoundException {
         PageInfo<UserDto> userDtoPageInfo;
         if (page != null) {
-            userDtoPageInfo = userService.searchEmployee(searchRequest.getKeyword(),UserStatus.ACTIVED.getCode(), page, PageableConstants.limit);
+            userDtoPageInfo = userService.searchEmployee(searchRequest.getKeyword(),UserStatus.ACTIVED.getCode(), page, limit);
         } else {
-            userDtoPageInfo = userService.searchEmployee(searchRequest.getKeyword(),UserStatus.ACTIVED.getCode(),1, PageableConstants.limit);
+            userDtoPageInfo = userService.searchEmployee(searchRequest.getKeyword(),UserStatus.ACTIVED.getCode(),1, limit);
 
         }
         return APIResponse.okStatus(userDtoPageInfo);
@@ -125,12 +125,12 @@ public class EmployeeController {
     @ApiOperation("Search Employee DELETED")
     @PostMapping("/search/deleted")
     public APIResponse<?> searchEmployeesDeleted(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
-            , @RequestBody SearchRequest searchRequest) throws NotFoundException {
+            ,@ApiParam(value = "Limit", required = false) @RequestParam(value = "limit", required = false) Integer limit  , @RequestBody SearchRequest searchRequest) throws NotFoundException {
         PageInfo<UserDto> userDtoPageInfo;
         if (page != null) {
-            userDtoPageInfo = userService.searchEmployee(searchRequest.getKeyword(),UserStatus.DELETED.getCode(), page, PageableConstants.limit);
+            userDtoPageInfo = userService.searchEmployee(searchRequest.getKeyword(),UserStatus.DELETED.getCode(), page, limit);
         } else {
-            userDtoPageInfo = userService.searchEmployee(searchRequest.getKeyword(),UserStatus.DELETED.getCode(),1, PageableConstants.limit);
+            userDtoPageInfo = userService.searchEmployee(searchRequest.getKeyword(),UserStatus.DELETED.getCode(),1, limit);
 
         }
         return APIResponse.okStatus(userDtoPageInfo);

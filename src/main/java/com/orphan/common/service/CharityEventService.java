@@ -144,6 +144,7 @@ public class CharityEventService extends BaseService {
         charityEventDetailDto.setImage(charityEvent.getImage());
         charityEventDetailDto.setTitle(charityEvent.getTitle());
         charityEventDetailDto.setContent(charityEvent.getContent());
+        charityEventDetailDto.setCharityName(charityEvent.getCharityName());
         charityEventDetailDto.setStatus(charityEvent.getStatus());
         List<BenefactorCharity> benefactorCharities = charityEvent.getBenefactorCharities();
         List<BenefactorCharityRequest> benefactorCharityRequestList = new ArrayList<>();

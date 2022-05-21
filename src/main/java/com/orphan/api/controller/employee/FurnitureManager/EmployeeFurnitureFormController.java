@@ -28,12 +28,12 @@ public class EmployeeFurnitureFormController {
     @ApiOperation("Get Furniture Request Forms By Pages")
     @GetMapping
     public APIResponse<?> viewFurnitureRequestFormsByPages(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
-    ) throws NotFoundException {
+            ,@ApiParam(value = "Limit", required = false) @RequestParam(value = "limit", required = false) Integer limit) throws NotFoundException {
         PageInfo<FurnitureRequestFormDetail> furnitureRequestFormDetailPageInfo;
         if (page != null) {
-            furnitureRequestFormDetailPageInfo = employeeFurnitureRequestFormService.viewFurnitureRequestFormsByPage(furnitureRequestFormService.getCurrentUserId(),page, PageableConstants.limit);
+            furnitureRequestFormDetailPageInfo = employeeFurnitureRequestFormService.viewFurnitureRequestFormsByPage(furnitureRequestFormService.getCurrentUserId(),page, limit);
         } else {
-            furnitureRequestFormDetailPageInfo = employeeFurnitureRequestFormService.viewFurnitureRequestFormsByPage(furnitureRequestFormService.getCurrentUserId(),1, PageableConstants.limit);
+            furnitureRequestFormDetailPageInfo = employeeFurnitureRequestFormService.viewFurnitureRequestFormsByPage(furnitureRequestFormService.getCurrentUserId(),1, limit);
 
         }
         return APIResponse.okStatus(furnitureRequestFormDetailPageInfo);
