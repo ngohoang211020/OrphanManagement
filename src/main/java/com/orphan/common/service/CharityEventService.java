@@ -31,15 +31,12 @@ import java.util.stream.Collectors;
 public class CharityEventService extends BaseService {
 
     private static final Logger logger = LoggerFactory.getLogger(CharityEventService.class);
-
     private final CharityEventRepository charityEventRepository;
-
     private final BenefactorRepository benefactorRepository;
 
     private final BenefactorCharityRepository benefactorCharityRepository;
 
     private final FurnitureRequestFormService furnitureRequestFormService;
-
     public CharityEvent findById(Integer eventId) throws NotFoundException {
         Optional<CharityEvent> charityEvent = charityEventRepository.findById(eventId);
         if (!charityEvent.isPresent()) {
@@ -48,41 +45,17 @@ public class CharityEventService extends BaseService {
         }
         return charityEvent.get();
     }
-
-
     public CharityRequest create(CharityRequest charityEventRequest) {
         CharityEvent charityEvent = toEntity(charityEventRequest);
-
         charityEvent.setCreatedId(String.valueOf(getCurrentUserId()));
-
         charityEvent=charityEventRepository.save(charityEvent);
         return toCharityRequestDto(charityEvent);
     }
-
-    public BenefactorListRequest createListBenefactorForCharity(BenefactorListRequest benefactorListRequest) {
-        List<Benefactor> benefactors=benefactorListRequest.getBenefactorRequestList().stream().map(
-                benefactorRequest -> toEntity(benefactorRequest,benefactorListRequest.getCharityEventId())
-        ).collect(Collectors.toList());
-        benefactorRepository.saveAll(benefactors);
-
-
-//        List<BenefactorCharity> benefactorCharities;
-//        benefactorCharities = benefactorListRequest.getBenefactorRequestList().stream().map(
-//                benefactorCharity -> toEntity1(benefactorCharity)
-//        ).collect(Collectors.toList());
-//        benefactorCharityRepository.saveAll(benefactorCharities);
-//        CharityEvent charityEvent=charityEventRepository.findById(benefactorListRequest.getCharityEventId()).get();
-//        charityEvent.setBenefactorCharities(benefactorCharities);
-//        this.charityEventRepository.save(charityEvent);
-        return benefactorListRequest;
-    }
-
     public CharityRequest update(CharityRequest charityEvent) throws NotFoundException {
         CharityEvent charityEvent1 = toEntity(charityEvent);
         this.charityEventRepository.save(charityEvent1);
         return toCharityRequestDto(charityEvent1);
     }
-
     public void deleteById(Integer eventId) throws NotFoundException {
         if (!charityEventRepository.findById(eventId).isPresent()) {
             throw new NotFoundException(NotFoundException.ERROR_EVENT_NOT_FOUND,
@@ -90,8 +63,6 @@ public class CharityEventService extends BaseService {
         }
         charityEventRepository.deleteById(eventId);
     }
-
-
     public PageInfo<CharityEventDetailDto> viewEventByPage(Integer page, Integer limit) throws NotFoundException {
         PageRequest pageRequest = buildPageRequest(page, limit);
         Page<CharityEvent> charityEventPage = charityEventRepository.findByOrderByDateOfEventAsc(pageRequest);
@@ -108,28 +79,36 @@ public class CharityEventService extends BaseService {
         eventDtoPageInfo.setPages(charityEventPage.getTotalPages());
         return eventDtoPageInfo;
     }
-
     public CharityEventDetailDto viewEventDetail(Integer id) throws NotFoundException {
         CharityEvent charityEvent = findById(id);
         return toDto(charityEvent);
     }
 
+//    public BenefactorListRequest createListBenefactorForCharity(BenefactorListRequest benefactorListRequest){
+//        List<BenefactorCharity> benefactorCharities=toEntity(benefactorListRequest);
+//        this.benefactorCharityRepository.saveAll(benefactorCharities);
+//        return benefactorListRequest;
+//    }
+
     //mapper
     private CharityEvent toEntity(CharityRequest charityRequest) {
         CharityEvent charityEvent = new CharityEvent();
-        charityEvent.setCharityEventId(charityRequest.getId());
-        charityEvent.setDateOfEvent(OrphanUtils.StringToDate(charityRequest.getDateOfEvent()));
-        charityEvent.setCharityName(charityRequest.getCharityName());
+        charityEvent.setId(charityRequest.getId());
+        charityEvent.setDateStart(OrphanUtils.StringToDateTime(charityRequest.getDateStart()));
+        charityEvent.setDateEnd(OrphanUtils.StringToDateTime(charityRequest.getDateEnd()));
+        charityEvent.setNameCharity(charityRequest.getCharityName());
         charityEvent.setContent(charityRequest.getContent());
         charityEvent.setImage(charityRequest.getImage());
         charityEvent.setTitle(charityRequest.getTitle());
+        charityEvent.setIsCompleted(charityRequest.getIsCompleted());
         return charityEvent;
     }
     public CharityRequest toCharityRequestDto(CharityEvent charityEvent){
         CharityRequest charityRequest = new CharityRequest();
-        charityRequest.setId(charityEvent.getCharityEventId());
-        charityRequest.setDateOfEvent(OrphanUtils.DateToString(charityEvent.getDateOfEvent()));
-        charityRequest.setCharityName(charityEvent.getCharityName());
+        charityRequest.setId(charityEvent.getId());
+        charityRequest.setDateStart(OrphanUtils.DateTimeToString(charityEvent.getDateStart()));
+        charityRequest.setDateEnd(OrphanUtils.DateTimeToString(charityEvent.getDateEnd()));
+        charityRequest.setCharityName(charityEvent.getNameCharity());
         charityRequest.setContent(charityEvent.getContent());
         charityRequest.setImage(charityEvent.getImage());
         charityRequest.setTitle(charityEvent.getTitle());
@@ -138,16 +117,17 @@ public class CharityEventService extends BaseService {
 
     private CharityEventDetailDto toDto(CharityEvent charityEvent) {
         CharityEventDetailDto charityEventDetailDto = new CharityEventDetailDto();
-        charityEventDetailDto.setId(charityEvent.getCharityEventId());
+        charityEventDetailDto.setId(charityEvent.getId());
         charityEventDetailDto.setTotalDonation(charityEventDetailDto.getTotalDonation());
-        charityEventDetailDto.setDateOfEvent(OrphanUtils.DateToString(charityEvent.getDateOfEvent()));
+        charityEventDetailDto.setDateStart(OrphanUtils.DateTimeToString(charityEvent.getDateStart()));
+        charityEventDetailDto.setDateEnd(OrphanUtils.DateTimeToString(charityEvent.getDateEnd()));
         charityEventDetailDto.setImage(charityEvent.getImage());
         charityEventDetailDto.setTitle(charityEvent.getTitle());
         charityEventDetailDto.setContent(charityEvent.getContent());
-        charityEventDetailDto.setCharityName(charityEvent.getCharityName());
-        charityEventDetailDto.setStatus(charityEvent.getStatus());
+        charityEventDetailDto.setCharityName(charityEvent.getNameCharity());
+        charityEventDetailDto.setIsCompleted(charityEvent.getIsCompleted());
         List<BenefactorCharity> benefactorCharities = charityEvent.getBenefactorCharities();
-        List<BenefactorCharityRequest> benefactorCharityRequestList = new ArrayList<>();
+        List<BenefactorCharityRequest> benefactorCharityRequestList;
         benefactorCharityRequestList = benefactorCharities.stream().map(
                 benefactorCharity -> toDto(benefactorCharity)
         ).collect(Collectors.toList());
@@ -160,68 +140,37 @@ public class CharityEventService extends BaseService {
     private BenefactorCharityRequest toDto(BenefactorCharity benefactorCharity) {
         BenefactorCharityRequest benefactorCharityRequest = new BenefactorCharityRequest();
         benefactorCharityRequest.setId(benefactorCharity.getBenefactorEventId());
-        benefactorCharityRequest.setCharityEventId(benefactorCharity.getCharityEvent().getCharityEventId());
+        benefactorCharityRequest.setCharityEventId(benefactorCharity.getCharityEvent().getId());
         benefactorCharityRequest.setBenefactorId(benefactorCharity.getBenefactor().getBenefactorId());
         benefactorCharityRequest.setContent(benefactorCharity.getContent());
         benefactorCharityRequest.setDonation(benefactorCharity.getDonation());
         return benefactorCharityRequest;
     }
 
-
-
-    private Benefactor toEntity(BenefactorRequest benefactorRequest,Integer charityEventId) {
-        Benefactor benefactor = benefactorRepository.findByPhone( benefactorRequest.getPhone()).orElse(null);
-        if(benefactor==null) {
-            benefactor.setPhone(benefactorRequest.getPhone());
-            benefactor.setAddress(benefactorRequest.getAddress());
-            benefactor.setFullName(benefactorRequest.getFullName());
-            this.benefactorRepository.save(benefactor);
-        }
-//        BenefactorCharityRequest benefactorCharityRequest = new BenefactorCharityRequest();
-//        benefactorCharityRequest.setDonation(benefactorRequest.getDonation());
-//        benefactorCharityRequest.setBenefactorId(benefactorRequest.getId());
-//        benefactorCharityRequest.setContent(benefactorRequest.getContent());
-//        benefactorCharityRequest.setCharityEventId(charityEventId);
-//        benefactorCharityRepository.save(toEntity(benefactorCharityRequest));
-//        List<BenefactorCharity> benefactorCharityList = new ArrayList<>();
-//        benefactorCharityList.add(toEntity(benefactorCharityRequest));
-//        benefactor.setBenefactorCharities(benefactorCharityList);
-//        benefactor.setTotalDonation(benefactor.getTotalDonation() + benefactorRequest.getDonation());
-        return benefactor;
-    }
-//
-//    private BenefactorCharity toEntity1(BenefactorRequest benefactorRequest) {
-//        BenefactorCharity benefactorCharity = new BenefactorCharity();
-//        Benefactor benefactor = toEntity(benefactorRequest);
-//        benefactorRepository.save(benefactor);
-//        CharityEvent charityEvent = charityEventRepository.findById(benefactorRequest.getCharityEventId()).get();
+//    private BenefactorCharity toEntity(BenefactorRequest benefactorRequest,Integer charityEventId){
+//        Benefactor benefactor=benefactorRepository.findByPhone(benefactorRequest.getPhone()).orElse(new Benefactor());
+//        benefactor.setAddress(benefactorRequest.getAddress());
+//        benefactor.setBenefactorId(benefactorRequest.getId());
+//        benefactor.setFullName(benefactorRequest.getFullName());
+//        benefactor.setPhone(benefactorRequest.getPhone());
+//        this.benefactorRepository.save(benefactor);
+//        BenefactorCharity benefactorCharity=new BenefactorCharity();
+//        benefactorCharity.setBenefactor(benefactor);
+//        benefactorCharity.setCharityEvent(charityEventRepository.findById(charityEventId).get());
 //        benefactorCharity.setDonation(benefactorRequest.getDonation());
 //        benefactorCharity.setContent(benefactorRequest.getContent());
-//        benefactorCharity.setBenefactor(benefactor);
-//        benefactorCharity.setCharityEvent(charityEvent);
+//        List<BenefactorCharity> benefactorCharities=new ArrayList<>();
+//        benefactorCharities.add(benefactorCharity
+//        );
+//        benefactor.setBenefactorCharities(benefactorCharities);
+//        this.benefactorRepository.save(benefactor);
+//
 //        return benefactorCharity;
 //    }
-//
-//
-    private BenefactorCharity toEntity(BenefactorCharityRequest benefactorCharityRequest) {
-        BenefactorCharity benefactorCharity = new BenefactorCharity();
-        Benefactor benefactor = benefactorRepository.findById(benefactorCharityRequest.getBenefactorId()).get();
-        CharityEvent charityEvent = charityEventRepository.findById(benefactorCharityRequest.getCharityEventId()).get();
-        benefactorCharity.setBenefactor(benefactor);
-        benefactorCharity.setCharityEvent(charityEvent);
-        benefactorCharity.setDonation(benefactorCharityRequest.getDonation());
-        benefactorCharity.setContent(benefactorCharityRequest.getContent());
-        return benefactorCharity;
-    }
-//
-//    private BenefactorRequest toDto(Benefactor benefactor) {
-//        BenefactorRequest benefactorRequest = new BenefactorRequest();
-//        benefactorRequest.setId(benefactor.getBenefactorId());
-//        benefactorRequest.setAddress(benefactor.getAddress());
-//        benefactorRequest.setPhone(benefactor.getPhone());
-//        benefactorRequest.setFullName(benefactor.getFullName());
-//        Long donation = benefactor.getBenefactorCharities().stream().mapToLong(benefactorCharity -> benefactorCharity.getDonation()).sum();
-//        benefactorRequest.setDonation(donation);
-//        return benefactorRequest;
+//    private List<BenefactorCharity> toEntity(BenefactorListRequest benefactorListRequest){
+//        List<BenefactorCharity> benefactorCharities=benefactorListRequest.getBenefactorRequestList()
+//                .stream().map(benefactorRequest -> toEntity(benefactorRequest,benefactorListRequest.getCharityEventId())).collect(Collectors.toList());
+//        return benefactorCharities;
 //    }
+
 }

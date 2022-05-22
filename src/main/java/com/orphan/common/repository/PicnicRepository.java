@@ -1,20 +1,15 @@
 package com.orphan.common.repository;
 
-import com.orphan.common.entity.CharityEvent;
+
+import com.orphan.common.entity.Picnic;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
-public interface CharityEventRepository extends JpaRepository<CharityEvent,Integer> {
-    @Query("select c from CharityEvent c order by c.dateStart")
-    Page<CharityEvent> findByOrderByDateOfEventAsc(Pageable pageable);
-
-
-
-
+public interface PicnicRepository extends JpaRepository<Picnic,Integer> {
+    @Query("select p from Picnic p order by p.dateStart ASC ")
+    Page<Picnic> findByOrderByDateOfPicnicAsc(Pageable pageable);
 }

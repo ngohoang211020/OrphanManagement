@@ -12,8 +12,10 @@ public class CharityEventDetailDto {
     private String content;
 
     private List<BenefactorCharityRequest> benefactorCharityRequestList;
-    private String dateOfEvent;
+    private String dateStart;
+    private String dateEnd;
     private String image;
     private Long totalDonation;
     private String status;
+    private Boolean isCompleted;
 }

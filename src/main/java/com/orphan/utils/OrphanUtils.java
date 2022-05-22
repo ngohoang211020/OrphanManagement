@@ -1,7 +1,6 @@
 package com.orphan.utils;
 
 import com.google.gson.JsonObject;
-import com.orphan.enums.ERole;
 import com.orphan.exception.BadRequestException;
 import com.orphan.utils.constants.APIConstants;
 import com.orphan.utils.constants.Constants;
@@ -122,6 +121,23 @@ public class OrphanUtils {
     public static String DateToString(Date date) {
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         return df.format(date);
+    }
+    private static final String DATETIME_PATTERN = "dd/MM/yyyy HH:mm";
+
+
+    public static LocalDateTime stringToDateTime(String date, String pattern) {
+        return LocalDateTime.parse(date,
+                DateTimeFormatter.ofPattern(pattern));
+    }
+    public static LocalDateTime StringToDateTime(String str) {
+        return stringToDateTime(str, DATETIME_PATTERN);
+
+    }
+
+    public static String DateTimeToString(LocalDateTime date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String formattedDateTime = date.format(formatter); // "1986-04-08 12:30"
+        return formattedDateTime;
     }
 
     public static Integer daysBetween2Dates(Date x, Date y) {

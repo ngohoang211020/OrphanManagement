@@ -30,12 +30,6 @@ public class CharityEventController {
 
     private final CharityEventService charityEventService;
 
-//    @ApiOperation("Get All CharityEvent")
-//    @GetMapping("/all")
-//    public APIResponse<?> viewAllEvent() throws NotFoundException {
-//        return APIResponse.okStatus(charityEventService.viewAllEvent());
-//    }
-
     @ApiOperation("Get CharityEvent By Pages")
     @GetMapping
     public APIResponse<?> viewEventByPages(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
@@ -87,10 +81,10 @@ public class CharityEventController {
         return APIResponse.okStatus();
     }
 
-    @ApiOperation("Add list Benefactor")
-    @PostMapping("/benefactors")
-    public APIResponse<?> createListBenefactorsForCharityEvent(@RequestBody BenefactorListRequest benefactorListRequest) {
-        benefactorListRequest= charityEventService.createListBenefactorForCharity(benefactorListRequest);
-        return APIResponse.okStatus(benefactorListRequest);
-    }
+//    @ApiOperation("Add list Benefactor")
+//    @PostMapping("/benefactors")
+//    public APIResponse<?> createListBenefactorsForCharityEvent(@RequestBody BenefactorListRequest benefactorListRequest) {
+//        benefactorListRequest= charityEventService.createListBenefactorForCharity(benefactorListRequest);
+//        return APIResponse.okStatus(benefactorListRequest);
+//    }
 }

@@ -67,7 +67,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/webjars/**",
             "/**/swagger-ui.html",
             "/api/v2/docs",
-            "/api/v1/auth/**"
+            "/api/v1/auth/**",
+            "/api/v1/home/**"
     };
 
     public static final String[] AUTH_FOR_GET_METHOD = {

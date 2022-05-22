@@ -9,5 +9,7 @@ public class CharityRequest {
     private String content;
     private String image;
     private String title;
-    private String dateOfEvent;
+    private String dateStart;
+    private String dateEnd;
+    private Boolean isCompleted;
 }

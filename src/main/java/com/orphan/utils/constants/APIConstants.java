@@ -22,6 +22,7 @@ public class APIConstants {
     public static final String EVENT = "Event";
     public static final String STAFF = "Staff";
     public static final String FURNITURE_CATEGORY = "Furniture Category";
+    public static final String PICNIC ="Picnic";
 
     public static final String FURNITURE_REQUEST_FORM = "Furniture Request Form";
 
