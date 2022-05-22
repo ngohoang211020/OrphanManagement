@@ -496,9 +496,9 @@ public class UserService extends BaseService {
             NotFoundException, BadRequestException {
         User user = this.getUserByEmail(email).get();
 
-        validatePassword(passwordDto.getNewPassWord(), passwordDto.getConfirmPassWord());
+        validatePassword(passwordDto.getNewPassword(), passwordDto.getConfirmPassword());
 
-        user.setPassword(passwordEncoder.encode(passwordDto.getNewPassWord()));
+        user.setPassword(passwordEncoder.encode(passwordDto.getNewPassword()));
         userRepository.save(user);
     }
 
@@ -511,9 +511,9 @@ public class UserService extends BaseService {
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
         }
 
-        validatePassword(passwordDto.getNewPassWord(), passwordDto.getConfirmPassWord());
+        validatePassword(passwordDto.getNewPassword(), passwordDto.getConfirmPassword());
 
-        user.get().setPassword(passwordEncoder.encode(passwordDto.getNewPassWord()));
+        user.get().setPassword(passwordEncoder.encode(passwordDto.getNewPassword()));
         userRepository.save(user.get());
     }
 
@@ -521,9 +521,14 @@ public class UserService extends BaseService {
             NotFoundException, BadRequestException {
         User user = this.getUserByLoginId(String.valueOf(userId)).get();
 
-        validatePassword(passwordDto.getNewPassWord(), passwordDto.getConfirmPassWord());
+        if(!passwordEncoder.matches(passwordDto.getCurrentPassword(),user.getPassword())){
+            throw new BadRequestException(BadRequestException.ERROR_CHANGE_PASSWORD_BAD_REQUEST,
+                    "Current Password does not match");
+        }
 
-        user.setPassword(passwordEncoder.encode(passwordDto.getNewPassWord()));
+        validatePassword(passwordDto.getNewPassword(), passwordDto.getConfirmPassword());
+
+        user.setPassword(passwordEncoder.encode(passwordDto.getNewPassword()));
         userRepository.save(user);
     }
 

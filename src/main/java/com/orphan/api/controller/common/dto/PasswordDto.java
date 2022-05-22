@@ -9,10 +9,14 @@ import javax.validation.constraints.NotEmpty;
 @Getter
 @Setter
 public class PasswordDto {
-    @NotEmpty
-    @Password
-    private String newPassWord;
 
     @NotEmpty
-    private String confirmPassWord;
+    private String currentPassword;
+
+    @NotEmpty
+    @Password
+    private String newPassword;
+
+    @NotEmpty
+    private String confirmPassword;
 }
