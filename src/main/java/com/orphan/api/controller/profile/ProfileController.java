@@ -51,13 +51,13 @@ public class ProfileController {
 
     @ApiOperation("Update detail info of the currently logged user")
     @PostMapping("/account")
-    public APIResponse<?> updateLoggedUserDetail(@Valid @RequestBody RegisterRequestDto registerRequestDto, Errors errors) throws NotFoundException, BadRequestException {
+    public APIResponse<?> updateLoggedUserDetail(@Valid @RequestBody UserDetailDto userDetailDto, Errors errors) throws NotFoundException, BadRequestException {
         if (errors.hasErrors()) {
             JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
             throw new BadRequestException(BadRequestException.ERROR_REGISTER_USER_INVALID, messages.toString(), true);
         }
-        registerRequestDto=userService.updateUser(registerRequestDto,userService.getCurrentUserId());
-        return APIResponse.okStatus(registerRequestDto);
+        userDetailDto=userService.updateUserDetail(userDetailDto,userService.getCurrentUserId());
+        return APIResponse.okStatus(userDetailDto);
     }
 
     @ApiOperation("Change password User")

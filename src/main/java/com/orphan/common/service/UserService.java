@@ -230,6 +230,86 @@ public class UserService extends BaseService {
 
         return registerRequestDto;
     }
+    public UserDetailDto updateUserDetail(UserDetailDto userDetailDto, Integer userId) throws BadRequestException, NotFoundException {
+        User user = findById(userId);
+
+        if (!user.getEmail().equals(userDetailDto.getEmail())) {
+            if (userRepository.existsByEmail(userDetailDto.getEmail())) {
+                throw new BadRequestException(BadRequestException.ERROR_EMAIL_ALREADY_EXIST,
+                        this.messageService.buildMessages("error.msg.email-existed"));
+            }
+            user.setEmail(userDetailDto.getEmail());
+        }
+
+        if (!user.getIdentification().equals(userDetailDto.getIdentification())) {
+            if (userRepository.existsByIdentification(userDetailDto.getIdentification())) {
+                throw new BadRequestException(BadRequestException.ERROR_IDENTIFICATION_ALREADY_EXIST,
+                        this.messageService.buildMessages("error.msg.identification-existed"));
+            }
+            user.setIdentification(userDetailDto.getIdentification());
+        }
+
+//
+//        if (registerRequestDto.getPassword() != "") {
+//            validatePassword(registerRequestDto.getPassword(), registerRequestDto.getConfirmPassword());
+//            user.setPassword(passwordEncoder.encode(registerRequestDto.getPassword()));
+//        }
+
+        if (userDetailDto.getImage() != "") {
+            user.setImage(userDetailDto.getImage());
+        }
+
+        List<Role> roleList = new ArrayList<>();
+        if (userDetailDto.getRoles().size() != 0) {
+            userDetailDto.getRoles().forEach(role -> {
+                switch (role.getRoleName()) {
+                    case "ROLE_ADMIN":
+                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN.getCode()).get();
+                        roleList.add(adminRole);
+                        break;
+                    case "ROLE_MANAGER_CHILDREN":
+                        Role childrenManager = roleRepository.findByName(ERole.ROLE_MANAGER_CHILDREN.getCode()).get();
+                        roleList.add(childrenManager);
+                        break;
+                    case "ROLE_MANAGER_LOGISTIC":
+                        Role logisticManager = roleRepository.findByName(ERole.ROLE_MANAGER_LOGISTIC.getCode()).get();
+                        roleList.add(logisticManager);
+                        break;
+                    case "ROLE_MANAGER_HR":
+                        Role hrManager = roleRepository.findByName(ERole.ROLE_MANAGER_HR.getCode()).get();
+                        roleList.add(hrManager);
+                        break;
+                    case "ROLE_EMPLOYEE":
+                        Role employee = roleRepository.findByName(ERole.ROLE_EMPLOYEE.getCode()).get();
+                        roleList.add(employee);
+                        break;
+                }
+            });
+        } else {
+            Role userRole = roleRepository.findByName(ERole.ROLE_EMPLOYEE.getCode()).get();
+            roleList.add(userRole);
+        }
+
+        user.setFullName(userDetailDto.getFullName());
+
+        user.setRoles(roleList);
+
+        user.setPhone(userDetailDto.getPhone());
+
+        user.setGender(userDetailDto.getGender());
+
+        user.setDateOfBirth(OrphanUtils.StringToDate(userDetailDto.getDate_of_birth()));
+
+        user.setAddress(userDetailDto.getAddress());
+
+        user.setModifiedId(String.valueOf(getCurrentUserId()));
+
+        this.userRepository.save(user);
+
+        userDetailDto.setId(user.getLoginId());
+
+        return userDetailDto;
+    }
 
     //View By Page
     public PageInfo<UserDto> viewUsersDeletedByPage(Integer page, Integer limit, String status) throws NotFoundException {
