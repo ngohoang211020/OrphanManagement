@@ -135,7 +135,7 @@ public class OrphanUtils {
     }
 
     public static String DateTimeToString(LocalDateTime date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         String formattedDateTime = date.format(formatter); // "1986-04-08 12:30"
         return formattedDateTime;
     }
