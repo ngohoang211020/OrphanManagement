@@ -11,6 +11,7 @@ import com.orphan.common.entity.Role;
 import com.orphan.common.entity.User;
 import com.orphan.common.repository.RoleRepository;
 import com.orphan.common.repository.UserRepository;
+import com.orphan.common.request.MailTemplate;
 import com.orphan.common.response.StatisticsByDateResponse;
 import com.orphan.common.response.StatisticsResponse;
 import com.orphan.common.vo.PageInfo;
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.context.Context;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -53,6 +55,7 @@ public class UserService extends BaseService {
 
     private final MessageService messageService;
 
+private final SendMailService sendMailService;
     private static final String URL_CHANGE_PASSWORD_OPEN_WEB = "http://localhost:3000/changepassword";
 
     //findUserById
@@ -66,7 +69,7 @@ public class UserService extends BaseService {
     }
 
     //Create Account
-    public RegisterRequestDto createUser(RegisterRequestDto registerRequestDto) throws BadRequestException, NotFoundException {
+    public RegisterRequestDto createUser(RegisterRequestDto registerRequestDto) throws BadRequestException, NotFoundException, MessagingException {
         User user = new User();
 
         //   validatePassword(registerRequestDto.getPassword(), registerRequestDto.getConfirmPassword());
@@ -139,6 +142,7 @@ public class UserService extends BaseService {
         this.userRepository.save(user);
 
         registerRequestDto.setLoginId(user.getLoginId());
+
 
         EmailNotifyDto emailNotifyDto = new EmailNotifyDto();
         emailNotifyDto.setFullName(user.getFullName());
@@ -230,6 +234,7 @@ public class UserService extends BaseService {
 
         return registerRequestDto;
     }
+
     public UserDetailDto updateUserDetail(UserDetailDto userDetailDto, Integer userId) throws BadRequestException, NotFoundException {
         User user = findById(userId);
 
@@ -455,7 +460,11 @@ public class UserService extends BaseService {
                     + "<br>"
                     + "<p>Ignore this email if you do remember your password, "
                     + "or you have not made the request.</p>";
-            service.sendEmailWithAttachment(resetPasswordDto.getEmail(), content, subject);
+            MailTemplate mailTemplate= new MailTemplate();
+            mailTemplate.setSubject(subject);
+            mailTemplate.setRecipients(Collections.singletonList(resetPasswordDto.getEmail()));
+            mailTemplate.setBody(content);
+            service.sendEmailWithAttachment(mailTemplate);
         } catch (Exception ex) {
             log.info("sendEmail error, error msg: {}", ex.getMessage());
         }
@@ -463,13 +472,12 @@ public class UserService extends BaseService {
     }
 
     public User createAccountMail(EmailNotifyDto emailNotifyDto) throws NotFoundException {
+
         Optional<User> user = this.userRepository.findByEmail(emailNotifyDto.getEmail());
         if (!user.isPresent()) {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
         }
-
-
         try {
             String subject = "Orphan Management – Hi " + emailNotifyDto.getFullName();
             String content = "<p>Hello,</p>"
@@ -480,11 +488,15 @@ public class UserService extends BaseService {
                     + "<br>"
                     + "Password: " + emailNotifyDto.getPassword()
                     + "</h2>"
-                    +"<br>"
-                    +"<p>Thank you and regards," +
+                    + "<br>"
+                    + "<p>Thank you and regards," +
                     "<br>" +
                     "CYF team</p>";
-            service.sendEmailWithAttachment(emailNotifyDto.getEmail(), content, subject);
+            MailTemplate mailTemplate= new MailTemplate();
+            mailTemplate.setSubject(subject);
+            mailTemplate.setRecipients(Collections.singletonList(emailNotifyDto.getEmail()));
+            mailTemplate.setBody(content);
+            service.sendEmailWithAttachment(mailTemplate);
         } catch (Exception ex) {
             log.info("sendEmail error, error msg: {}", ex.getMessage());
         }
@@ -521,7 +533,7 @@ public class UserService extends BaseService {
             NotFoundException, BadRequestException {
         User user = this.getUserByLoginId(String.valueOf(userId)).get();
 
-        if(!passwordEncoder.matches(passwordDto.getCurrentPassword(),user.getPassword())){
+        if (!passwordEncoder.matches(passwordDto.getCurrentPassword(), user.getPassword())) {
             throw new BadRequestException(BadRequestException.ERROR_CHANGE_PASSWORD_BAD_REQUEST,
                     "Current Password does not match");
         }
@@ -615,12 +627,13 @@ public class UserService extends BaseService {
         List<StatisticsByDateResponse> statisticsByDateRespons = userRepository.countUserArchivedByMonth();
         return statisticsByDateRespons;
     }
+
     public List<StatisticsByDateResponse> countUserArchivedByYear() {
         List<StatisticsByDateResponse> statisticsByDateRespons = userRepository.countUserArchivedByYear();
         return statisticsByDateRespons;
     }
-    //mapper
 
+    //mapper
     public RoleDto RoleToRoleDto(Role role) {
         RoleDto roleDto = new RoleDto();
         roleDto.setRoleName(role.getName());
