@@ -22,6 +22,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.io.IOException;
 
@@ -63,7 +64,7 @@ public class AdminController {
     @ApiOperation("Create User")
     @PostMapping()
     public ResponseEntity<?> createUser(@RequestBody @Valid RegisterRequestDto newUserRegisterInfo
-            , Errors errors) throws BadRequestException, NotFoundException {
+            , Errors errors) throws BadRequestException, NotFoundException, MessagingException {
         if (errors.hasErrors()) {
             JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
             throw new BadRequestException(BadRequestException.ERROR_REGISTER_USER_INVALID, messages.toString(), true);

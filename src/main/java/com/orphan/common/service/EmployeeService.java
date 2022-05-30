@@ -7,6 +7,7 @@ import com.orphan.common.entity.Role;
 import com.orphan.common.entity.User;
 import com.orphan.common.repository.RoleRepository;
 import com.orphan.common.repository.UserRepository;
+import com.orphan.common.request.MailTemplateDTO;
 import com.orphan.common.vo.PageInfo;
 import com.orphan.enums.ERole;
 import com.orphan.enums.UserStatus;
@@ -15,6 +16,7 @@ import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
 import com.orphan.utils.constants.APIConstants;
 import com.orphan.utils.constants.Constants;
+import com.orphan.utils.constants.MailTemplateConstants;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +25,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,13 +40,14 @@ public class EmployeeService extends BaseService {
     private final PasswordEncoder passwordEncoder;
 
     private final RoleRepository roleRepository;
+    private final SendMailService sendMailService;
 
     private final UserService userService;
 
     private static final Logger logger = LoggerFactory.getLogger(EmployeeService.class);
 
-    public List<UserDto> viewAllEmployeeByStatusDELETED(String role,String status) {
-        List<User> employeeList = userRepository.findByRoleAndStatusDELETED(role,status);
+    public List<UserDto> viewAllEmployeeByStatusDELETED(String role, String status) {
+        List<User> employeeList = userRepository.findByRoleAndStatusDELETED(role, status);
         if (employeeList.isEmpty()) {
             return null;
         }
@@ -58,9 +61,10 @@ public class EmployeeService extends BaseService {
         }).collect(Collectors.toList());
         return employeeDtoList;
     }
-    public PageInfo<UserDto> viewUsersByPageByStatusDELETED(Integer page, Integer limit,String role,String status) throws NotFoundException {
+
+    public PageInfo<UserDto> viewUsersByPageByStatusDELETED(Integer page, Integer limit, String role, String status) throws NotFoundException {
         PageRequest pageRequest = buildPageRequest(page, limit);
-        Page<User> userPage = userRepository.findByRoleAndStatusDELETED(role,status, pageRequest);
+        Page<User> userPage = userRepository.findByRoleAndStatusDELETED(role, status, pageRequest);
         if (userPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
@@ -82,8 +86,8 @@ public class EmployeeService extends BaseService {
         return userDtoPageInfo;
     }
 
-    public List<UserDto> viewAllEmployeeByStatusACTIVED(String role,String status) {
-        List<User> employeeList = userRepository.findByRoleAndStatus(role,status);
+    public List<UserDto> viewAllEmployeeByStatusACTIVED(String role, String status) {
+        List<User> employeeList = userRepository.findByRoleAndStatus(role, status);
         if (employeeList.isEmpty()) {
             return null;
         }
@@ -97,9 +101,10 @@ public class EmployeeService extends BaseService {
         }).collect(Collectors.toList());
         return employeeDtoList;
     }
-    public PageInfo<UserDto> viewUsersByPageByStatusACTIVED(Integer page, Integer limit,String role,String status) throws NotFoundException {
+
+    public PageInfo<UserDto> viewUsersByPageByStatusACTIVED(Integer page, Integer limit, String role, String status) throws NotFoundException {
         PageRequest pageRequest = buildPageRequest(page, limit);
-        Page<User> userPage = userRepository.findByRoleAndStatus(role,status, pageRequest);
+        Page<User> userPage = userRepository.findByRoleAndStatus(role, status, pageRequest);
         if (userPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
@@ -162,7 +167,7 @@ public class EmployeeService extends BaseService {
 //    }
 
     //Create Employee
-    public AccountRequest createEmployee(AccountRequest accountRequest) throws BadRequestException, NotFoundException {
+    public AccountRequest createEmployee(AccountRequest accountRequest) throws BadRequestException, NotFoundException, MessagingException {
         User user = new User();
 
         if (userRepository.existsByEmail(accountRequest.getEmail())) {
@@ -238,7 +243,7 @@ public class EmployeeService extends BaseService {
             user.setIdentification(accountRequest.getIdentification());
         }
 
-        if (accountRequest.getImage() != ""&& accountRequest.getImage()!=null) {
+        if (accountRequest.getImage() != "" && accountRequest.getImage() != null) {
             user.setImage(accountRequest.getImage());
         }
 
@@ -275,8 +280,6 @@ public class EmployeeService extends BaseService {
 
         return accountRequest;
     }
-
-
 
 
 }

@@ -22,6 +22,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.io.IOException;
 
@@ -43,7 +44,7 @@ public class EmployeeController {
 
     @ApiOperation("Create new Employee")
     @PostMapping
-    public APIResponse<?> createEmployee(@Valid @RequestBody AccountRequest accountRequest, Errors errors) throws BadRequestException, NotFoundException {
+    public APIResponse<?> createEmployee(@Valid @RequestBody AccountRequest accountRequest, Errors errors) throws BadRequestException, NotFoundException, MessagingException {
         if (errors.hasErrors()) {
             JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
             throw new BadRequestException(BadRequestException.ERROR_REGISTER_USER_INVALID, messages.toString(), true);

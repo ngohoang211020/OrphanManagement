@@ -5,13 +5,15 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
+import java.util.function.Supplier;
+
 /**
  * NotFound Exception
  *
  */
 @Getter
 @Setter
-public class NotFoundException extends Exception {
+public class NotFoundException extends Exception{
 
     public static final String ERROR_USER_NOT_FOUND = "ERROR_USER_NOT_FOUND";
 
@@ -33,6 +35,8 @@ public class NotFoundException extends Exception {
     public static final String ERROR_FURNITURE_REQUEST_FORM_NOT_FOUND = "ERROR_FURNITURE_REQUEST_FORM_NOT_FOUND";
     public static final String ERROR_FURNITURE_CATEGORY_NOT_FOUND = "ERROR_FURNITURE_CATEGORY_NOT_FOUND";
     public static final String ERROR_PICNIC_NOT_FOUND="ERROR_PICNIC_NOT_FOUND";
+
+    public static final String ERROR_FEEDBACK_NOT_FOUND="ERROR_FEEDBACK_NOT_FOUND";
 
     private static final long serialVersionUID = 1L;
     private String error;
