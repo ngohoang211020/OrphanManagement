@@ -28,29 +28,17 @@ public class MailTrackingEntity extends BaseEntity {
 
     private Boolean isCompleted=false;
 
-    private LocalDateTime dateSend=null;
-    @Column(name = "opt_counter")
-    private Long optCounter;
+    private LocalDateTime dateSend;
 
     private Boolean isAllRole=false;
 
     @Column(columnDefinition = "text")
     private String roles;
 
+    private String type;
 
     @ManyToOne
     @JoinColumn(name = "feedback_id")
-    private FeedbackEntity feedback;
+    private FeedbackEntity feedback = null;
 
-    @PrePersist
-    public void prePersist() {
-        this.setOptCounter(0L);
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        Long counter = this.optCounter;
-        counter = counter + 1L;
-        this.setOptCounter(counter);
-    }
 }

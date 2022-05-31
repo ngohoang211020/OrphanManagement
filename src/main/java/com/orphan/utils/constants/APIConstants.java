@@ -30,5 +30,6 @@ public class APIConstants {
     public static final String ERROR_EMAIL_EXISTED = "Email register is Existed";
 
     public static final String FEEDBACK = "Feedback";
+    public static final String MAIl_NOTIFICATION = "Mail notification";
 
 }

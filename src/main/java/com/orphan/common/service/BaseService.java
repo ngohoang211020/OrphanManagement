@@ -1,12 +1,12 @@
 package com.orphan.common.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orphan.common.entity.User;
 import com.orphan.common.repository.*;
 import com.orphan.config.jwt.AccessToken;
 import com.orphan.config.jwt.JwtUtils;
 import com.orphan.config.security.UserPrincipal;
 import com.orphan.utils.constants.PageableConstants;
-import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,11 +39,15 @@ public class BaseService {
 
     private static final Logger logger = LoggerFactory.getLogger(BaseService.class);
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     /**
      * Get current userid has logged.
      *
      * @return
      */
+
     public Integer getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
@@ -84,6 +88,7 @@ public class BaseService {
     public AccessToken jwtForAPIResponse(Authentication authentication, boolean isRememberMe) {
         return jwtProvider.createAccessToken(authentication, isRememberMe);
     }
+
     /**
      * Create Token register
      *
@@ -94,12 +99,6 @@ public class BaseService {
         return jwtProvider.createTokenRegister(email);
     }
 
-    /**
-     * get information user by Email
-     *
-     * @return User
-     * @throws NotFoundException
-     */
     public Optional<User> getUserByLoginId(String loginId) throws com.orphan.exception.NotFoundException {
         Optional<User> user = this.userRepository.findByLoginId(Integer.parseInt(loginId));
         if (user.isPresent()) {
@@ -116,7 +115,6 @@ public class BaseService {
         return Optional.empty();
     }
 
-
     public Boolean isExpiredToken(String token) {
         return jwtProvider.isTokenExpired(token);
     }
@@ -125,27 +123,12 @@ public class BaseService {
         return jwtProvider.getUserNameFromJwtToken(token);
     }
 
-    /**
-     * Build {@link PageRequest} with page and limit
-     *
-     * @param page
-     * @param limit
-     * @return
-     */
     public PageRequest buildPageRequest(Integer page, Integer limit) {
         page = (limit == null || page == null) ? PageableConstants.DEFAULT_PAGE : page - PageableConstants.DEFAULT_PAGE_INIT;
         limit = limit == null ? PageableConstants.DEFAULT_SIZE : limit;
         return PageRequest.of(page, limit);
     }
 
-    /**
-     * Build {@link PageRequest} with page, limit and sort
-     *
-     * @param page
-     * @param limit
-     * @param sort
-     * @return
-     */
     public PageRequest buildPageRequest(Integer page, Integer limit, Sort sort) {
         page = page == null ? PageableConstants.DEFAULT_PAGE : page - PageableConstants.DEFAULT_PAGE_INIT;
         limit = limit == null ? PageableConstants.DEFAULT_SIZE : limit;
