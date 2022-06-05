@@ -1,15 +1,12 @@
 package com.orphan.common.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orphan.common.entity.User;
-import com.orphan.common.repository.*;
+import com.orphan.common.repository.UserRepository;
 import com.orphan.config.jwt.AccessToken;
 import com.orphan.config.jwt.JwtUtils;
 import com.orphan.config.security.UserPrincipal;
 import com.orphan.utils.constants.PageableConstants;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -27,20 +24,7 @@ public class BaseService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private ChildrenRepository childrenRepository;
-    @Autowired
-    private RoleRepository roleRepository;
-    @Autowired
-    private OrphanIntroducerRepository orphanIntroducerRepository;
-    @Autowired
-    private OrphanNurturerRepository orphanNuturerRepository;
-    @Autowired
     private JwtUtils jwtProvider;
-
-    private static final Logger logger = LoggerFactory.getLogger(BaseService.class);
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     /**
      * Get current userid has logged.
