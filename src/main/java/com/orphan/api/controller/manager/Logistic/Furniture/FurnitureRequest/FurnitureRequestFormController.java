@@ -3,13 +3,12 @@ package com.orphan.api.controller.manager.Logistic.Furniture.FurnitureRequest;
 import com.google.gson.JsonObject;
 import com.orphan.api.controller.manager.Logistic.Furniture.FurnitureRequest.dto.FurnitureRequestFormDetail;
 import com.orphan.api.controller.manager.Logistic.Furniture.FurnitureRequest.dto.FurnitureRequestFormDto;
-import com.orphan.api.controller.manager.Logistic.Furniture.dto.FurnitureDto;
-import com.orphan.api.controller.manager.Logistic.Furniture.dto.FurnitureRequest;
-import com.orphan.common.entity.FurnitureRequestForm;
 import com.orphan.common.response.APIResponse;
+import com.orphan.common.service.EmployeeService;
 import com.orphan.common.service.FurnitureRequestFormService;
-import com.orphan.common.service.FurnitureService;
 import com.orphan.common.vo.PageInfo;
+import com.orphan.enums.ERole;
+import com.orphan.enums.UserStatus;
 import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
@@ -29,6 +28,14 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class FurnitureRequestFormController {
     private final FurnitureRequestFormService furnitureRequestFormService;
+
+    private final EmployeeService employeeService;
+
+    @ApiOperation("Get All Employees Actived")
+    @GetMapping("/employee")
+    public APIResponse<?> viewAllEmployeesActived() {
+        return APIResponse.okStatus(employeeService.viewAllEmployeeByStatusACTIVED(ERole.ROLE_EMPLOYEE.getCode(), UserStatus.ACTIVED.getCode()));
+    }
 
     @ApiOperation("Get All Furniture Request Forms")
     @GetMapping("/all")
