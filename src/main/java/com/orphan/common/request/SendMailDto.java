@@ -17,4 +17,5 @@ public class SendMailDto {
     private Boolean isCompleted;
     private String type;
     private Integer feedBackId;
+    private Integer createdId;
 }

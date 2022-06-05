@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -117,6 +118,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query(value = "select year(u.recoveryExpirationDate) as year, count(distinct u) as amount from User u where u.UserStatus='DELETED' group by month(u.recoveryExpirationDate),year(u.recoveryExpirationDate)")
     List<StatisticsByDateResponse> countUserArchivedByYear();
+
+    @Query("select u from User u inner join u.roles roles where roles.name in ?1 and u.UserStatus = 'ACTIVED' ")
+    List<User> findByRoles_NameIn(Collection<String> names);
 
 
 }
