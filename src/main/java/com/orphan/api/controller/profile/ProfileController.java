@@ -3,7 +3,6 @@ package com.orphan.api.controller.profile;
 import com.google.gson.JsonObject;
 import com.orphan.api.controller.admin.dto.UserDetailDto;
 import com.orphan.api.controller.common.dto.PasswordDto;
-import com.orphan.api.controller.common.dto.RegisterRequestDto;
 import com.orphan.common.response.APIResponse;
 import com.orphan.common.service.UserService;
 import com.orphan.exception.BadRequestException;
@@ -80,5 +79,12 @@ public class ProfileController {
     public ResponseEntity<?> deleteAccount() throws NotFoundException, BadRequestException {
         userService.deleteUserById(userService.getCurrentUserId());
         return APIResponse.okStatus();
+    }
+
+    @ApiOperation("View User Detail By id")
+    @GetMapping("/account/{id}")
+    public APIResponse<?> viewUserDetail(@PathVariable("id") Integer id) throws NotFoundException, IOException {
+        UserDetailDto userDetailDto = userService.viewUserDetail(id);
+        return APIResponse.okStatus(userDetailDto);
     }
 }
