@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -16,13 +17,23 @@ import java.util.stream.Collectors;
 public class UserNotifyService extends BaseService {
     private final UserNotifyRepository userNotifyRepository;
 
-    public List<NotificationDto> findListNotifyById() {
+    public List<NotificationDto> findListNotifyByUserId() {
 
         List<UserNotifyEntity> userNotifyEntities = userNotifyRepository.findByUser_LoginIdOrderByDateSendDesc(getCurrentUserId());
         if (userNotifyEntities.isEmpty()) {
             return null;
         } else {
             return userNotifyEntities.stream().map(userNotifyEntity -> toDto(userNotifyEntity)).collect(Collectors.toList());
+        }
+    }
+
+    public NotificationDto findNotifyById(Integer id) {
+
+        Optional<UserNotifyEntity> userNotifyEntity = userNotifyRepository.findById(id);
+        if (!userNotifyEntity.isPresent()) {
+            return null;
+        } else {
+            return toDto(userNotifyEntity.get());
         }
     }
 

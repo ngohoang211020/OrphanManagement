@@ -97,6 +97,12 @@ public class ProfileController {
     @ApiOperation("View list notify of user logged")
     @GetMapping("/notify")
     public APIResponse<?> viewListNotify() {
-        return APIResponse.okStatus(userNotifyService.findListNotifyById());
+        return APIResponse.okStatus(userNotifyService.findListNotifyByUserId());
+    }
+
+    @ApiOperation("View specify notify of user logged")
+    @GetMapping("/notify/{id}")
+    public APIResponse<?> viewListNotify(@PathVariable("id") Integer id) {
+        return APIResponse.okStatus(userNotifyService.findNotifyById(id));
     }
 }
