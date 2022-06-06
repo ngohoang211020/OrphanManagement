@@ -2,8 +2,10 @@ package com.orphan.common.service;
 
 import com.orphan.common.entity.MailTrackingEntity;
 import com.orphan.common.entity.User;
+import com.orphan.common.entity.UserNotifyEntity;
 import com.orphan.common.repository.FeedBackRepository;
 import com.orphan.common.repository.MailTrackingRepository;
+import com.orphan.common.repository.UserNotifyRepository;
 import com.orphan.common.repository.UserRepository;
 import com.orphan.common.request.MailTemplate;
 import com.orphan.common.request.SendMailDto;
@@ -35,6 +37,9 @@ public class NotificationService extends BaseService {
     private final EmailSenderService emailSenderService;
 
     private final FeedBackRepository feedBackRepository;
+
+    private final UserNotifyRepository userNotifyRepository;
+
     private final MailTrackingRepository mailTrackingRepository;
     private final UserRepository userRepository;
 
@@ -105,10 +110,28 @@ public class NotificationService extends BaseService {
         mailTemplate.setSubject(sendMailDto.getSubject());
         emailSenderService.sendEmailWithAttachment(mailTemplate);
         sendMailDto.setIsCompleted(true);
+        saveListUserNotify(mailTemplate, sendMailDto);
         mailTrackingRepository.save(toEntity(sendMailDto));
     }
 
     //mapper
+
+    public void saveListUserNotify(MailTemplate mailTemplate, SendMailDto sendMailDto) {
+        List<UserNotifyEntity> userNotifyEntities = new ArrayList<>();
+        User createdUser = userRepository.findById(sendMailDto.getCreatedId()).get();
+        for (String mail : mailTemplate.getRecipients()) {
+            User user = userRepository.findByEmail(mail).orElse(null);
+            UserNotifyEntity userNotifyEntity = new UserNotifyEntity();
+            userNotifyEntity.setSender(createdUser);
+            userNotifyEntity.setUser(user);
+            userNotifyEntity.setContent(sendMailDto.getBody());
+            userNotifyEntity.setSubject(sendMailDto.getSubject());
+            userNotifyEntity.setDateSend(OrphanUtils.StringToDateTime(sendMailDto.getDateSend()));
+            userNotifyEntities.add(userNotifyEntity);
+        }
+        userNotifyRepository.saveAll(userNotifyEntities);
+
+    }
 
     private SendMailDto toDto(MailTrackingEntity mailTrackingEntity) {
         SendMailDto sendMailDto = new SendMailDto();
