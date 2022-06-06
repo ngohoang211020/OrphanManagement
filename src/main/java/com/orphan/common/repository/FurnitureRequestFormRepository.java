@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.List;
 
 @Repository
 public interface FurnitureRequestFormRepository extends JpaRepository<FurnitureRequestForm, Integer> {
@@ -19,7 +18,7 @@ public interface FurnitureRequestFormRepository extends JpaRepository<FurnitureR
     @Query("update FurnitureRequestForm f set f.status = ?1 where f.status = ?2 and f.finishDate = ?3")
     void updateStatusByStatusAndFinishDate(String status, String status1, Date finishDate);
 
-    @Query("select f from FurnitureRequestForm f order by f.createdAt")
+    @Query("select f from FurnitureRequestForm f order by f.createdAt desc")
     Page<FurnitureRequestForm> findByOrderByCreatedAtAsc(Pageable pageable);
 
 //    @Query("select f from FurnitureRequestForm f where f.finishDate = ?1 and f.status = ?2")

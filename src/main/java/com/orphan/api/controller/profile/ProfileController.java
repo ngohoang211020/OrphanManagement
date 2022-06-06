@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.orphan.api.controller.admin.dto.UserDetailDto;
 import com.orphan.api.controller.common.dto.PasswordDto;
 import com.orphan.common.response.APIResponse;
+import com.orphan.common.service.UserNotifyService;
 import com.orphan.common.service.UserService;
 import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
@@ -26,8 +27,11 @@ public class ProfileController {
 
     private final UserService userService;
 
+    private final UserNotifyService userNotifyService;
+
     /**
      * View User login
+     *
      * @return APIResponse
      * @throws NotFoundException
      */
@@ -35,17 +39,17 @@ public class ProfileController {
     @ApiOperation("View detail info of the currently logged user")
     @GetMapping("/account")
     public APIResponse<?> viewLoggedUserDetail() throws NotFoundException, IOException {
-        UserDetailDto userDetailDto=userService.viewUserDetail(userService.getCurrentUserId());
+        UserDetailDto userDetailDto = userService.viewUserDetail(userService.getCurrentUserId());
         return APIResponse.okStatus(userDetailDto);
     }
 
     /**
      * Update User login
-     * @Param registerRequestDto RegisterRequestDto
+     *
      * @return APIResponse
      * @throws NotFoundException
+     * @Param registerRequestDto RegisterRequestDto
      */
-
 
 
     @ApiOperation("Update detail info of the currently logged user")
@@ -55,7 +59,7 @@ public class ProfileController {
             JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
             throw new BadRequestException(BadRequestException.ERROR_REGISTER_USER_INVALID, messages.toString(), true);
         }
-        userDetailDto=userService.updateUserDetail(userDetailDto,userService.getCurrentUserId());
+        userDetailDto = userService.updateUserDetail(userDetailDto, userService.getCurrentUserId());
         return APIResponse.okStatus(userDetailDto);
     }
 
@@ -66,11 +70,13 @@ public class ProfileController {
             JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
             throw new BadRequestException(BadRequestException.ERROR_REGISTER_USER_INVALID, messages.toString(), true);
         }
-        userService.changePassWord(passwordDto,userService.getCurrentUserId());
+        userService.changePassWord(passwordDto, userService.getCurrentUserId());
         return APIResponse.okStatus();
     }
+
     /**
      * Delete User Logged
+     *
      * @return APIResponse
      * @throws NotFoundException
      */
@@ -86,5 +92,11 @@ public class ProfileController {
     public APIResponse<?> viewUserDetail(@PathVariable("id") Integer id) throws NotFoundException, IOException {
         UserDetailDto userDetailDto = userService.viewUserDetail(id);
         return APIResponse.okStatus(userDetailDto);
+    }
+
+    @ApiOperation("View list notify of user logged")
+    @GetMapping("/notify")
+    public APIResponse<?> viewListNotify() {
+        return APIResponse.okStatus(userNotifyService.findListNotifyById());
     }
 }
