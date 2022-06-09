@@ -1,7 +1,6 @@
 package com.orphan.common.repository;
 
 import com.orphan.common.entity.OrphanIntroducer;
-import com.orphan.common.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,7 +17,7 @@ public interface OrphanIntroducerRepository extends JpaRepository<OrphanIntroduc
 
     boolean existsByIdentification(String identification);
 
-    @Query("select o from OrphanIntroducer o order by o.createdAt")
+    @Query("select o from OrphanIntroducer o")
     Page<OrphanIntroducer> findByOrderByCreatedAtAsc(Pageable pageable);
 
 

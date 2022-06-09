@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -318,7 +319,7 @@ private final SendMailService sendMailService;
 
     //View By Page
     public PageInfo<UserDto> viewUsersDeletedByPage(Integer page, Integer limit, String status) throws NotFoundException {
-        PageRequest pageRequest = buildPageRequest(page, limit);
+        PageRequest pageRequest = buildPageRequest(page, limit, Sort.by("recoveryExpirationDate").ascending());
         Page<User> userPage = userRepository.findByUserDeleted(status, pageRequest);
         if (userPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
@@ -360,7 +361,7 @@ private final SendMailService sendMailService;
     }
 
     public PageInfo<UserDto> viewUsersActivedByPage(Integer page, Integer limit, String status) throws NotFoundException {
-        PageRequest pageRequest = buildPageRequest(page, limit);
+        PageRequest pageRequest = buildPageRequest(page, limit, Sort.by("loginId").ascending());
         Page<User> userPage = userRepository.findByUserActived(status, pageRequest);
         if (userPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,

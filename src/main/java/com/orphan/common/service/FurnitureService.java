@@ -5,7 +5,6 @@ import com.orphan.api.controller.manager.Logistic.Furniture.dto.FurnitureRequest
 import com.orphan.common.entity.Furniture;
 import com.orphan.common.repository.FurnitureRepository;
 import com.orphan.common.vo.PageInfo;
-import com.orphan.enums.FurnitureStatus;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.constants.APIConstants;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,7 +80,7 @@ public class FurnitureService extends BaseService {
     }
 
     public PageInfo<FurnitureDto> viewFurnituresByPage(Integer page, Integer limit) throws NotFoundException {
-        PageRequest pageRequest = buildPageRequest(page, limit);
+        PageRequest pageRequest = buildPageRequest(page, limit, Sort.by("furnitureId").ascending());
         Page<Furniture> furniturePage = furnitureRepository.findByOrderByCreatedAtAsc(pageRequest);
         if (furniturePage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_FURNITURE_NOT_FOUND,

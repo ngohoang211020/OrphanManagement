@@ -19,6 +19,7 @@ import com.orphan.utils.constants.APIConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -105,7 +106,7 @@ public class ChildrenService extends BaseService {
     }
 
     public PageInfo<ChildrenDto> viewChildrensByPage(Integer page, Integer limit) throws NotFoundException {
-        PageRequest pageRequest = buildPageRequest(page, limit);
+        PageRequest pageRequest = buildPageRequest(page, limit, Sort.by("id"));
         Page<Children> childrenPage = childrenRepository.findByOrderByCreatedAtAsc(pageRequest);
         if (childrenPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_CHILDREN_NOT_FOUND,

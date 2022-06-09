@@ -1,19 +1,14 @@
 package com.orphan.common.service;
 
-import com.orphan.api.controller.admin.dto.UserDto;
 import com.orphan.api.controller.manager.Children.ChildrenCommonDto;
 import com.orphan.api.controller.manager.Children.CommonChildrenService;
 import com.orphan.api.controller.manager.Children.introducer.dto.IntroducerDetailDto;
 import com.orphan.api.controller.manager.Children.introducer.dto.IntroducerDto;
 import com.orphan.api.controller.manager.Children.introducer.dto.IntroducerRequest;
-import com.orphan.api.controller.manager.Children.nurturer.dto.NurturerDto;
 import com.orphan.common.entity.OrphanIntroducer;
-import com.orphan.common.entity.OrphanNurturer;
-import com.orphan.common.entity.User;
 import com.orphan.common.repository.ChildrenRepository;
 import com.orphan.common.repository.OrphanIntroducerRepository;
 import com.orphan.common.vo.PageInfo;
-import com.orphan.enums.UserStatus;
 import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
@@ -23,10 +18,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -135,7 +130,7 @@ public class OrphanIntroducerService extends BaseService {
 
     //View By Page
     public PageInfo<IntroducerDto> viewIntroducersByPage(Integer page, Integer limit) throws NotFoundException {
-        PageRequest pageRequest = buildPageRequest(page, limit);
+        PageRequest pageRequest = buildPageRequest(page, limit, Sort.by("introducerId").ascending());
         Page<OrphanIntroducer> introducerPage = orphanIntroducerRepository.findByOrderByCreatedAtAsc(pageRequest);
         if (introducerPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_ORPHAN_INTRODUCER_NOT_FOUND,

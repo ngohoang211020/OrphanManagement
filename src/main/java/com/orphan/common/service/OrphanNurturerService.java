@@ -2,11 +2,9 @@ package com.orphan.common.service;
 
 import com.orphan.api.controller.manager.Children.ChildrenCommonDto;
 import com.orphan.api.controller.manager.Children.CommonChildrenService;
-import com.orphan.api.controller.manager.Children.introducer.dto.IntroducerDto;
 import com.orphan.api.controller.manager.Children.nurturer.dto.NurturerDetailDto;
 import com.orphan.api.controller.manager.Children.nurturer.dto.NurturerDto;
 import com.orphan.api.controller.manager.Children.nurturer.dto.NurturerRequest;
-import com.orphan.common.entity.OrphanIntroducer;
 import com.orphan.common.entity.OrphanNurturer;
 import com.orphan.common.repository.ChildrenRepository;
 import com.orphan.common.repository.OrphanNurturerRepository;
@@ -20,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -132,7 +131,7 @@ public class OrphanNurturerService extends BaseService {
 
     //View By Page
     public PageInfo<NurturerDto> viewNurturersByPage(Integer page, Integer limit) throws NotFoundException {
-        PageRequest pageRequest = buildPageRequest(page, limit);
+        PageRequest pageRequest = buildPageRequest(page, limit, Sort.by("nurturerId").descending());
         Page<OrphanNurturer> nurturerPage = orphanNurturerRepository.findByOrderByCreatedAtAsc(pageRequest);
         if (nurturerPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_ORPHAN_NURTURER_NOT_FOUND,
