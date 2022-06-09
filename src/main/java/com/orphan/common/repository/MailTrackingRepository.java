@@ -15,7 +15,7 @@ public interface MailTrackingRepository extends JpaRepository<MailTrackingEntity
     @Query("select m from MailTrackingEntity m where m.isCompleted = false and m.isSendImmediately = true")
     List<MailTrackingEntity> findByIsCompletedAndIsSendImmediately();
 
-    @Query("select m from MailTrackingEntity m order by m.dateSend DESC")
+    @Query("select m from MailTrackingEntity m")
     Page<MailTrackingEntity> findByOrderByDateSendDesc(Pageable pageable);
 
     @Query("select m from MailTrackingEntity m where m.isSendImmediately = ?1 and m.isCompleted = false ")

@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,7 +79,7 @@ public class FeedbackService extends BaseService {
     }
 
     public PageInfo<FeedbackDetail> viewFeedbacksByPage(Integer page, Integer limit) throws NotFoundException {
-        PageRequest pageRequest = buildPageRequest(page, limit);
+        PageRequest pageRequest = buildPageRequest(page, limit, Sort.by("createdAt").descending());
         Page<FeedbackEntity> feedbackEntityPage = feedBackRepository.findByOrderByCreatedAtDesc(pageRequest);
         if (feedbackEntityPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_FEEDBACK_NOT_FOUND,

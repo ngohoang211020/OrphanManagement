@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FeedBackRepository extends JpaRepository<FeedbackEntity,Integer> {
-    @Query("select f from FeedbackEntity f order by f.createdAt DESC")
+    @Query("select f from FeedbackEntity f")
     Page<FeedbackEntity> findByOrderByCreatedAtDesc(Pageable pageable);
 
 }

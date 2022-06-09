@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,7 +72,7 @@ public class PicnicService extends BaseService {
     }
 
     public PageInfo<PicnicDto> viewPicnicsByPage(Integer page, Integer limit) throws NotFoundException {
-        PageRequest pageRequest=buildPageRequest(page,limit);
+        PageRequest pageRequest = buildPageRequest(page, limit, Sort.by("dateStart").descending());
         Page<Picnic> entertainmentPage = picnicRepository.findByOrderByDateOfPicnicAsc(pageRequest);
         if (entertainmentPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_PICNIC_NOT_FOUND,

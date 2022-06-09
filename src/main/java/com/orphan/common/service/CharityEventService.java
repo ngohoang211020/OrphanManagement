@@ -1,7 +1,8 @@
 package com.orphan.common.service;
 
-import com.orphan.api.controller.manager.Logistic.CharityEvent.dto.*;
-import com.orphan.common.entity.Benefactor;
+import com.orphan.api.controller.manager.Logistic.CharityEvent.dto.BenefactorCharityRequest;
+import com.orphan.api.controller.manager.Logistic.CharityEvent.dto.CharityEventDetailDto;
+import com.orphan.api.controller.manager.Logistic.CharityEvent.dto.CharityRequest;
 import com.orphan.common.entity.BenefactorCharity;
 import com.orphan.common.entity.CharityEvent;
 import com.orphan.common.repository.BenefactorCharityRepository;
@@ -16,10 +17,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -64,7 +65,7 @@ public class CharityEventService extends BaseService {
         charityEventRepository.deleteById(eventId);
     }
     public PageInfo<CharityEventDetailDto> viewEventByPage(Integer page, Integer limit) throws NotFoundException {
-        PageRequest pageRequest = buildPageRequest(page, limit);
+        PageRequest pageRequest = buildPageRequest(page, limit, Sort.by("dateStart"));
         Page<CharityEvent> charityEventPage = charityEventRepository.findByOrderByDateOfEventAsc(pageRequest);
         if (charityEventPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_EVENT_NOT_FOUND,

@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,7 +64,7 @@ public class NotificationService extends BaseService {
     }
 
     public PageInfo<SendMailDto> viewMailNotifyByPage(Integer page, Integer limit) throws NotFoundException {
-        PageRequest pageRequest = buildPageRequest(page, limit);
+        PageRequest pageRequest = buildPageRequest(page, limit, Sort.by("dateSend").descending());
         Page<MailTrackingEntity> sendMailDtoPage = mailTrackingRepository.findByOrderByDateSendDesc(pageRequest);
         if (sendMailDtoPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_MAIL_NOTIFY_NOT_FOUND,
