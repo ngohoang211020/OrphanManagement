@@ -3,12 +3,13 @@ package com.orphan.api.controller.employee.FurnitureManager;
 import com.orphan.api.controller.manager.Logistic.Furniture.FurnitureRequest.dto.ExtensionTimeDateDto;
 import com.orphan.api.controller.manager.Logistic.Furniture.FurnitureRequest.dto.FurnitureRequestFormDetail;
 import com.orphan.api.controller.manager.Logistic.Furniture.FurnitureRequest.dto.TotalMoneyDto;
+import com.orphan.api.controller.manager.Logistic.Furniture.dto.FurnitureDto;
 import com.orphan.common.response.APIResponse;
 import com.orphan.common.service.EmployeeFurnitureRequestFormService;
 import com.orphan.common.service.FurnitureRequestFormService;
+import com.orphan.common.service.FurnitureService;
 import com.orphan.common.vo.PageInfo;
 import com.orphan.exception.NotFoundException;
-import com.orphan.utils.constants.PageableConstants;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -25,15 +26,17 @@ public class EmployeeFurnitureFormController {
     private final FurnitureRequestFormService furnitureRequestFormService;
     private final EmployeeFurnitureRequestFormService employeeFurnitureRequestFormService;
 
+    private final FurnitureService furnitureService;
+
     @ApiOperation("Get Furniture Request Forms By Pages")
     @GetMapping
     public APIResponse<?> viewFurnitureRequestFormsByPages(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
-            ,@ApiParam(value = "Limit", required = false) @RequestParam(value = "limit", required = false) Integer limit) throws NotFoundException {
+            , @ApiParam(value = "Limit", required = false) @RequestParam(value = "limit", required = false) Integer limit) throws NotFoundException {
         PageInfo<FurnitureRequestFormDetail> furnitureRequestFormDetailPageInfo;
         if (page != null) {
-            furnitureRequestFormDetailPageInfo = employeeFurnitureRequestFormService.viewFurnitureRequestFormsByPage(furnitureRequestFormService.getCurrentUserId(),page, limit);
+            furnitureRequestFormDetailPageInfo = employeeFurnitureRequestFormService.viewFurnitureRequestFormsByPage(furnitureRequestFormService.getCurrentUserId(), page, limit);
         } else {
-            furnitureRequestFormDetailPageInfo = employeeFurnitureRequestFormService.viewFurnitureRequestFormsByPage(furnitureRequestFormService.getCurrentUserId(),1, limit);
+            furnitureRequestFormDetailPageInfo = employeeFurnitureRequestFormService.viewFurnitureRequestFormsByPage(furnitureRequestFormService.getCurrentUserId(), 1, limit);
 
         }
         return APIResponse.okStatus(furnitureRequestFormDetailPageInfo);
@@ -65,5 +68,12 @@ public class EmployeeFurnitureFormController {
     public APIResponse<?> extendDeadlineDate(@Valid @RequestBody ExtensionTimeDateDto extensionTimeDateDto) throws NotFoundException {
         furnitureRequestFormService.extensionOfTime(extensionTimeDateDto);
         return APIResponse.okStatus();
+    }
+
+    @ApiOperation("View Furniture Detail")
+    @GetMapping("/furnitureDetail/{furnitureId}")
+    public APIResponse<?> viewFurnitureDetail(@PathVariable("furnitureId") Integer furnitureId) throws NotFoundException {
+        FurnitureDto furnitureDto = furnitureService.viewFurnitureDetail(furnitureId);
+        return APIResponse.okStatus(furnitureDto);
     }
 }
