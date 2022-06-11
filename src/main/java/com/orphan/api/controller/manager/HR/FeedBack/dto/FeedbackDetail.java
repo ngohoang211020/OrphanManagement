@@ -7,8 +7,8 @@ public class FeedbackDetail {
     private Integer id;
     private String email;
     private String fullName;
-    private String title;
-    private String content;
+    private String subject;
+    private String body;
     private String dateFeedback;
     private String dateReply;
     private Boolean isReplied;
