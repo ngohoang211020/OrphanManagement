@@ -106,21 +106,22 @@ public class FeedbackService extends BaseService {
 
     private FeedbackEntity toEntity(FeedbackDto feedbackDto) {
         FeedbackEntity feedbackEntity = new FeedbackEntity();
-        feedbackEntity.setContent(feedbackDto.getContent());
+        feedbackEntity.setContent(feedbackDto.getBody());
         feedbackEntity.setFullName(feedbackDto.getFullName());
         feedbackEntity.setEmail(feedbackDto.getEmail());
-        feedbackEntity.setTitle(feedbackDto.getTitle());
+        feedbackEntity.setTitle(feedbackDto.getSubject());
         return feedbackEntity;
     }
 
     private FeedbackDetail toDto(FeedbackEntity feedbackEntity) {
         FeedbackDetail feedbackDetail = new FeedbackDetail();
-        feedbackDetail.setContent(feedbackEntity.getContent());
+        feedbackDetail.setBody(feedbackEntity.getContent());
         feedbackDetail.setFullName(feedbackEntity.getFullName());
         feedbackDetail.setEmail(feedbackEntity.getEmail());
-        feedbackDetail.setTitle(feedbackEntity.getTitle());
+        feedbackDetail.setSubject(feedbackEntity.getTitle());
         feedbackDetail.setIsReplied(feedbackEntity.getIsReplied());
         feedbackDetail.setDateFeedback(OrphanUtils.DateTimeToString(feedbackEntity.getCreatedAt()));
+        feedbackDetail.setId(feedbackEntity.getId());
         return feedbackDetail;
     }
 }
