@@ -142,7 +142,8 @@ public class NotificationService extends BaseService {
         SendMailDto sendMailDto = new SendMailDto();
         sendMailDto.setId(mailTrackingEntity.getId());
         sendMailDto.setBody(Objects.requireNonNull(mailTrackingEntity.getContent(), ""));
-        sendMailDto.setDateSend(OrphanUtils.DateTimeToString(mailTrackingEntity.getDateSend()));
+        sendMailDto.setDateSend(Objects.requireNonNull(
+                OrphanUtils.DateTimeToString(mailTrackingEntity.getDateSend()), ""));
         sendMailDto.setIsAllRole(mailTrackingEntity.getIsAllRole());
         if (mailTrackingEntity.getRecipients() != "" && mailTrackingEntity.getRecipients() != null) {
             if (mailTrackingEntity.getRecipients().contains(",")) {
