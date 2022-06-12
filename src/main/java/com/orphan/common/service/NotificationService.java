@@ -203,7 +203,7 @@ public class NotificationService extends BaseService {
             mailTrackingEntity.setIsAllRole(true);
             mailTrackingEntity.setRecipients(null);
             mailTrackingEntity.setRoles(null);
-        } else if (mailTemplate.getRoles() != null) {
+        } else if (mailTemplate.getRoles() != null && mailTemplate.getRoles().size() > 0) {
             mailTrackingEntity.setIsAllRole(false);
             mailTrackingEntity.setRoles(
                     mailTemplate.getRoles().toString().replace("[", "").replace("]", ""));
@@ -214,16 +214,6 @@ public class NotificationService extends BaseService {
             mailTrackingEntity.setIsAllRole(false);
             mailTrackingEntity.setRoles(null);
         }
-//        Optional<FeedbackEntity> feedbackEntityOptional = null;
-//        if(mailTemplate.getFeedBackId().equals(null)){
-//            feedbackEntityOptional = feedBackRepository.findById(mailTemplate.getFeedBackId());
-//        }
-//
-//        if (feedbackEntityOptional.isPresent()) {
-//            mailTrackingEntity.setFeedback(feedbackEntityOptional.get());
-//        } else {
-//            mailTrackingEntity.setFeedback(null);
-//        }
         return mailTrackingEntity;
     }
 
