@@ -93,6 +93,7 @@ public class CharityEventService extends BaseService {
         charityEvent.setImage(charityRequest.getImage());
         charityEvent.setTitle(charityRequest.getTitle());
         charityEvent.setIsCompleted(charityRequest.getIsCompleted());
+        charityEvent.setMoney(charityRequest.getTotalDonation());
         return charityEvent;
     }
     public CharityRequest toCharityRequestDto(CharityEvent charityEvent){
@@ -104,14 +105,16 @@ public class CharityEventService extends BaseService {
         charityRequest.setContent(charityEvent.getContent());
         charityRequest.setImage(charityEvent.getImage());
         charityRequest.setTitle(charityEvent.getTitle());
+        charityRequest.setTotalDonation(charityEvent.getMoney());
         return charityRequest;
     }
 
     private CharityEventDetailDto toDto(CharityEvent charityEvent) {
         CharityEventDetailDto charityEventDetailDto = new CharityEventDetailDto();
         charityEventDetailDto.setId(charityEvent.getId());
-        charityEventDetailDto.setTotalDonation(charityEventDetailDto.getTotalDonation());
-        charityEventDetailDto.setDateStart(OrphanUtils.DateTimeToString(charityEvent.getDateStart()));
+        charityEventDetailDto.setTotalDonation(charityEvent.getMoney());
+        charityEventDetailDto.setDateStart(
+                OrphanUtils.DateTimeToString(charityEvent.getDateStart()));
         charityEventDetailDto.setDateEnd(OrphanUtils.DateTimeToString(charityEvent.getDateEnd()));
         charityEventDetailDto.setImage(charityEvent.getImage());
         charityEventDetailDto.setTitle(charityEvent.getTitle());
