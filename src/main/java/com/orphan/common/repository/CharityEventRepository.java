@@ -7,11 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface CharityEventRepository extends JpaRepository<CharityEvent,Integer> {
-    @Query("select c from CharityEvent c order by c.dateStart")
+    @Query("select c from CharityEvent c")
     Page<CharityEvent> findByOrderByDateOfEventAsc(Pageable pageable);
 
 

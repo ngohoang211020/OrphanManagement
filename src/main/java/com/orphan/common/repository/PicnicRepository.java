@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PicnicRepository extends JpaRepository<Picnic,Integer> {
-    @Query("select p from Picnic p order by p.dateStart ASC ")
+    @Query("select p from Picnic p")
     Page<Picnic> findByOrderByDateOfPicnicAsc(Pageable pageable);
 }

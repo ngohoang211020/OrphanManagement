@@ -18,7 +18,7 @@ public interface FurnitureRequestFormRepository extends JpaRepository<FurnitureR
     @Query("update FurnitureRequestForm f set f.status = ?1 where f.status = ?2 and f.finishDate = ?3")
     void updateStatusByStatusAndFinishDate(String status, String status1, Date finishDate);
 
-    @Query("select f from FurnitureRequestForm f order by f.createdAt desc")
+    @Query("select f from FurnitureRequestForm f")
     Page<FurnitureRequestForm> findByOrderByCreatedAtAsc(Pageable pageable);
 
 //    @Query("select f from FurnitureRequestForm f where f.finishDate = ?1 and f.status = ?2")
@@ -26,7 +26,7 @@ public interface FurnitureRequestFormRepository extends JpaRepository<FurnitureR
 //
 //    List<FurnitureRequestForm> findByStartDateAndStatus(Date startDate, String status);
 
-    @Query("select f from FurnitureRequestForm f where f.user.loginId = ?1 order by f.startDate")
+    @Query("select f from FurnitureRequestForm f where f.user.loginId = ?1")
     Page<FurnitureRequestForm> findByUser_LoginIdOrderByStartDateAsc(Integer loginId, Pageable pageable);
 
     @Transactional

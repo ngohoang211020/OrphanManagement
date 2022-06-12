@@ -49,8 +49,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     List<User> findByRoleAndStatusDELETED(String name, String UserStatus);
 
     @Query("select u from User u inner join u.roles roles " +
-            "where roles.name = ?1 and u.UserStatus = ?2 " +
-            "order by u.recoveryExpirationDate asc ")
+            "where roles.name = ?1 and u.UserStatus = ?2 ")
     Page<User> findByRoleAndStatusDELETED(String name, String UserStatus, Pageable pageable);
 
     @Transactional
@@ -64,7 +63,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     void deleteByRecoveryExpirationDateAndUserStatus(Date recoveryExpirationDate, String UserStatus);
 
     //view
-    @Query("select u from User u where u.UserStatus = ?1 order by u.recoveryExpirationDate asc ")
+    @Query("select u from User u where u.UserStatus = ?1 ")
     Page<User> findByUserDeleted(String UserStatus, Pageable pageable);
 
 
@@ -78,8 +77,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     List<User> findByRoleAndStatus(String name, String UserStatus);
 
     @Query("select u from User u inner join u.roles roles " +
-            "where roles.name = ?1 and u.UserStatus = ?2 " +
-            "order by u.loginId asc")
+            "where roles.name = ?1 and u.UserStatus = ?2 ")
     Page<User> findByRoleAndStatus(String name, String UserStatus, Pageable pageable);
 
 
@@ -87,7 +85,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("select u from User u where u.UserStatus = ?1 order by u.loginId asc ")
     List<User> findByUserActived(String UserStatus);
 
-    @Query("select u from User u where u.UserStatus = ?1 order by u.loginId asc ")
+    @Query("select u from User u where u.UserStatus = ?1")
     Page<User> findByUserActived(String UserStatus, Pageable pageable);
 
     @Query(value = "select roles.name as keyword,count(distinct u) as value from User u inner join u.roles roles where u.UserStatus=?1 group by roles.name")

@@ -17,6 +17,7 @@ import com.orphan.utils.constants.APIConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -113,7 +114,7 @@ public class FurnitureRequestFormService extends BaseService {
     }
 
     public PageInfo<FurnitureRequestFormDetail> viewFurnitureRequestFormsByPage(Integer page, Integer limit) throws NotFoundException {
-        PageRequest pageRequest = buildPageRequest(page, limit);
+        PageRequest pageRequest = buildPageRequest(page, limit, Sort.by("startDate").descending());
         Page<FurnitureRequestForm> furnitureRequestFormPage = furnitureRequestFormRepository.findByOrderByCreatedAtAsc(pageRequest);
         if (furnitureRequestFormPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_FURNITURE_REQUEST_FORM_NOT_FOUND,

@@ -7,7 +7,6 @@ import com.orphan.common.entity.Role;
 import com.orphan.common.entity.User;
 import com.orphan.common.repository.RoleRepository;
 import com.orphan.common.repository.UserRepository;
-import com.orphan.common.request.MailTemplateDTO;
 import com.orphan.common.vo.PageInfo;
 import com.orphan.enums.ERole;
 import com.orphan.enums.UserStatus;
@@ -16,18 +15,19 @@ import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
 import com.orphan.utils.constants.APIConstants;
 import com.orphan.utils.constants.Constants;
-import com.orphan.utils.constants.MailTemplateConstants;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -63,7 +63,7 @@ public class EmployeeService extends BaseService {
     }
 
     public PageInfo<UserDto> viewUsersByPageByStatusDELETED(Integer page, Integer limit, String role, String status) throws NotFoundException {
-        PageRequest pageRequest = buildPageRequest(page, limit);
+        PageRequest pageRequest = buildPageRequest(page, limit, Sort.by("recoveryExpirationDate").ascending());
         Page<User> userPage = userRepository.findByRoleAndStatusDELETED(role, status, pageRequest);
         if (userPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
@@ -103,7 +103,7 @@ public class EmployeeService extends BaseService {
     }
 
     public PageInfo<UserDto> viewUsersByPageByStatusACTIVED(Integer page, Integer limit, String role, String status) throws NotFoundException {
-        PageRequest pageRequest = buildPageRequest(page, limit);
+        PageRequest pageRequest = buildPageRequest(page, limit, Sort.by("loginId").ascending());
         Page<User> userPage = userRepository.findByRoleAndStatus(role, status, pageRequest);
         if (userPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
