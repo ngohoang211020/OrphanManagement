@@ -16,6 +16,15 @@ import com.orphan.enums.UserStatus;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
 import com.orphan.utils.constants.APIConstants;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,11 +33,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.mail.MessagingException;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -187,7 +191,8 @@ public class NotificationService extends BaseService {
         }
 
         if (!mailTemplate.getIsSendImmediately()) {
-            mailTrackingEntity.setDateSend(OrphanUtils.StringToDateTime(mailTemplate.getDateSend()));
+            mailTrackingEntity.setDateSend(
+                    OrphanUtils.StringToDateTime(mailTemplate.getDateSend()));
             mailTrackingEntity.setIsSendImmediately(false);
         } else {
             mailTrackingEntity.setIsSendImmediately(true);
@@ -197,12 +202,14 @@ public class NotificationService extends BaseService {
             mailTrackingEntity.setIsAllRole(true);
             mailTrackingEntity.setRecipients(null);
             mailTrackingEntity.setRoles(null);
-        } else if (!mailTemplate.getRoles().isEmpty()) {
+        } else if (mailTemplate.getRoles() != null) {
             mailTrackingEntity.setIsAllRole(false);
-            mailTrackingEntity.setRoles(mailTemplate.getRoles().toString().replace("[", "").replace("]", ""));
+            mailTrackingEntity.setRoles(
+                    mailTemplate.getRoles().toString().replace("[", "").replace("]", ""));
             mailTrackingEntity.setRecipients(null);
         } else if (!mailTemplate.getRecipients().isEmpty()) {
-            mailTrackingEntity.setRecipients(mailTemplate.getRecipients().toString().replace("[", "").replace("]", ""));
+            mailTrackingEntity.setRecipients(
+                    mailTemplate.getRecipients().toString().replace("[", "").replace("]", ""));
             mailTrackingEntity.setIsAllRole(false);
             mailTrackingEntity.setRoles(null);
         }
