@@ -101,7 +101,7 @@ public class NotificationService extends BaseService {
         if (sendMailDto.getIsAllRole()) {
             List<User> users = userRepository.findByUserActived(UserStatus.ACTIVED.getCode());
             mailTemplate.setRecipients(users.stream().map(user -> user.getEmail()).collect(Collectors.toList()));
-        } else if (!sendMailDto.getRoles().isEmpty()) {
+        } else if (sendMailDto.getRoles()!=null) {
             List<User> users = userRepository.findByRoles_NameIn(sendMailDto.getRoles());
             mailTemplate.setRecipients(users.stream().map(user -> user.getEmail()).collect(Collectors.toList()));
         } else {

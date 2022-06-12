@@ -10,6 +10,7 @@ import com.orphan.common.repository.MailTrackingRepository;
 import com.orphan.common.request.MailTemplate;
 import com.orphan.common.vo.PageInfo;
 import com.orphan.config.EmailSenderService;
+import com.orphan.enums.MailTrackingType;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
 import com.orphan.utils.constants.APIConstants;
@@ -64,22 +65,25 @@ public class FeedbackService extends BaseService {
         MailTrackingEntity mailTrackingEntity = sendMailService.toEntity(mailTemplate);
 
         try {
-            emailSenderService.sendEmailWithAttachment(mailTemplate);
+//            emailSenderService.sendEmailWithAttachment(mailTemplate);
             FeedbackEntity feedbackEntity = findById(feedBackId);
             feedbackEntity.setIsReplied(true);
             feedbackEntity.setDateReply(LocalDateTime.now());
             mailTrackingEntity.setDateSend(LocalDateTime.now());
-            mailTrackingEntity.setIsCompleted(true);
+            mailTrackingEntity.setIsCompleted(false);
+            mailTrackingEntity.setIsSendImmediately(true);
             mailTrackingEntity.setFeedback(feedbackEntity);
+            mailTrackingEntity.setCreatedId(getCurrentUserId().toString());
+            mailTrackingEntity.setType(MailTrackingType.MAIL_FEEDBACK.getCode());
         } catch (Exception ex) {
             log.info("sendEmail error, error msg: {}", ex.getMessage());
-            mailTrackingEntity.setIsCompleted(false);
+//            mailTrackingEntity.setIsCompleted(false);
         }
         mailTrackingRepository.save(mailTrackingEntity);
     }
 
     public PageInfo<FeedbackDetail> viewFeedbacksByPage(Integer page, Integer limit) throws NotFoundException {
-        PageRequest pageRequest = buildPageRequest(page, limit, Sort.by("createdAt").descending());
+        PageRequest pageRequest = buildPageRequest(page, limit, Sort.by("dateReply").descending());
         Page<FeedbackEntity> feedbackEntityPage = feedBackRepository.findByOrderByCreatedAtDesc(pageRequest);
         if (feedbackEntityPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_FEEDBACK_NOT_FOUND,
@@ -94,16 +98,7 @@ public class FeedbackService extends BaseService {
         feedbackDetailPageInfo.setPages(feedbackEntityPage.getTotalPages());
         return feedbackDetailPageInfo;
     }
-
     //mapper
-//    private MailTrackingEntity toEntity(MailDTO mailDTO) {
-//        MailTrackingEntity mailTrackingEntity = new MailTrackingEntity();
-//        mailTrackingEntity.setEmail(mailDTO.getRecipients().toString());
-//        mailTrackingEntity.setContent(mailDTO.getNoTemplate().getBody());
-//        mailTrackingEntity.setTitle(mailDTO.getNoTemplate().getSubject());
-//        return mailTrackingEntity;
-//    }
-
     private FeedbackEntity toEntity(FeedbackDto feedbackDto) {
         FeedbackEntity feedbackEntity = new FeedbackEntity();
         feedbackEntity.setContent(feedbackDto.getBody());
@@ -114,14 +109,15 @@ public class FeedbackService extends BaseService {
     }
 
     private FeedbackDetail toDto(FeedbackEntity feedbackEntity) {
-        FeedbackDetail feedbackDetail = new FeedbackDetail();
-        feedbackDetail.setBody(feedbackEntity.getContent());
+      FeedbackDetail feedbackDetail = new FeedbackDetail();
+        feedbackDetail.setId(feedbackEntity.getId());
+        feedbackDetail.setContent(feedbackEntity.getContent());
         feedbackDetail.setFullName(feedbackEntity.getFullName());
+        feedbackDetail.setDateReply(OrphanUtils.DateTimeToString(feedbackEntity.getDateReply()));
         feedbackDetail.setEmail(feedbackEntity.getEmail());
-        feedbackDetail.setSubject(feedbackEntity.getTitle());
+        feedbackDetail.setTitle(feedbackEntity.getTitle());
         feedbackDetail.setIsReplied(feedbackEntity.getIsReplied());
         feedbackDetail.setDateFeedback(OrphanUtils.DateTimeToString(feedbackEntity.getCreatedAt()));
-        feedbackDetail.setId(feedbackEntity.getId());
         return feedbackDetail;
     }
 }
