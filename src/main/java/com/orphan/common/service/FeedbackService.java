@@ -101,21 +101,21 @@ public class FeedbackService extends BaseService {
     //mapper
     private FeedbackEntity toEntity(FeedbackDto feedbackDto) {
         FeedbackEntity feedbackEntity = new FeedbackEntity();
-        feedbackEntity.setContent(feedbackDto.getContent());
+        feedbackEntity.setContent(feedbackDto.getBody());
         feedbackEntity.setFullName(feedbackDto.getFullName());
         feedbackEntity.setEmail(feedbackDto.getEmail());
-        feedbackEntity.setTitle(feedbackDto.getTitle());
+        feedbackEntity.setTitle(feedbackDto.getSubject());
         return feedbackEntity;
     }
 
     private FeedbackDetail toDto(FeedbackEntity feedbackEntity) {
-        FeedbackDetail feedbackDetail = new FeedbackDetail();
+      FeedbackDetail feedbackDetail = new FeedbackDetail();
         feedbackDetail.setId(feedbackEntity.getId());
-        feedbackDetail.setContent(feedbackEntity.getContent());
+        feedbackDetail.setBody(feedbackEntity.getContent());
         feedbackDetail.setFullName(feedbackEntity.getFullName());
         feedbackDetail.setDateReply(OrphanUtils.DateTimeToString(feedbackEntity.getDateReply()));
         feedbackDetail.setEmail(feedbackEntity.getEmail());
-        feedbackDetail.setTitle(feedbackEntity.getTitle());
+        feedbackDetail.setSubject(feedbackEntity.getTitle());
         feedbackDetail.setIsReplied(feedbackEntity.getIsReplied());
         feedbackDetail.setDateFeedback(OrphanUtils.DateTimeToString(feedbackEntity.getCreatedAt()));
         return feedbackDetail;
