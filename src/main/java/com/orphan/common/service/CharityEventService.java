@@ -1,17 +1,16 @@
 package com.orphan.common.service;
 
-import com.orphan.api.controller.manager.Logistic.CharityEvent.dto.BenefactorCharityRequest;
 import com.orphan.api.controller.manager.Logistic.CharityEvent.dto.CharityEventDetailDto;
 import com.orphan.api.controller.manager.Logistic.CharityEvent.dto.CharityRequest;
-import com.orphan.common.entity.BenefactorCharity;
 import com.orphan.common.entity.CharityEvent;
-import com.orphan.common.repository.BenefactorCharityRepository;
-import com.orphan.common.repository.BenefactorRepository;
 import com.orphan.common.repository.CharityEventRepository;
 import com.orphan.common.vo.PageInfo;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
 import com.orphan.utils.constants.APIConstants;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +20,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 
 @RequiredArgsConstructor
 @Service
@@ -33,9 +28,6 @@ public class CharityEventService extends BaseService {
 
     private static final Logger logger = LoggerFactory.getLogger(CharityEventService.class);
     private final CharityEventRepository charityEventRepository;
-    private final BenefactorRepository benefactorRepository;
-
-    private final BenefactorCharityRepository benefactorCharityRepository;
 
     private final FurnitureRequestFormService furnitureRequestFormService;
     public CharityEvent findById(Integer eventId) throws NotFoundException {
@@ -80,16 +72,15 @@ public class CharityEventService extends BaseService {
         eventDtoPageInfo.setPages(charityEventPage.getTotalPages());
         return eventDtoPageInfo;
     }
+
     public CharityEventDetailDto viewEventDetail(Integer id) throws NotFoundException {
         CharityEvent charityEvent = findById(id);
         return toDto(charityEvent);
     }
 
-//    public BenefactorListRequest createListBenefactorForCharity(BenefactorListRequest benefactorListRequest){
-//        List<BenefactorCharity> benefactorCharities=toEntity(benefactorListRequest);
-//        this.benefactorCharityRepository.saveAll(benefactorCharities);
-//        return benefactorListRequest;
-//    }
+    public void updateIsCompletedTrue() {
+        charityEventRepository.updateIsCompletedTrue();
+    }
 
     //mapper
     private CharityEvent toEntity(CharityRequest charityRequest) {
@@ -127,51 +118,6 @@ public class CharityEventService extends BaseService {
         charityEventDetailDto.setContent(charityEvent.getContent());
         charityEventDetailDto.setCharityName(charityEvent.getNameCharity());
         charityEventDetailDto.setIsCompleted(charityEvent.getIsCompleted());
-        List<BenefactorCharity> benefactorCharities = charityEvent.getBenefactorCharities();
-        List<BenefactorCharityRequest> benefactorCharityRequestList;
-        benefactorCharityRequestList = benefactorCharities.stream().map(
-                benefactorCharity -> toDto(benefactorCharity)
-        ).collect(Collectors.toList());
-        Long totalDonation = benefactorCharities.stream().mapToLong(benefactorCharity -> benefactorCharity.getDonation()).sum();
-        charityEventDetailDto.setBenefactorCharityRequestList(benefactorCharityRequestList);
-        charityEventDetailDto.setTotalDonation(totalDonation);
         return charityEventDetailDto;
     }
-
-    private BenefactorCharityRequest toDto(BenefactorCharity benefactorCharity) {
-        BenefactorCharityRequest benefactorCharityRequest = new BenefactorCharityRequest();
-        benefactorCharityRequest.setId(benefactorCharity.getBenefactorEventId());
-        benefactorCharityRequest.setCharityEventId(benefactorCharity.getCharityEvent().getId());
-        benefactorCharityRequest.setBenefactorId(benefactorCharity.getBenefactor().getBenefactorId());
-        benefactorCharityRequest.setContent(benefactorCharity.getContent());
-        benefactorCharityRequest.setDonation(benefactorCharity.getDonation());
-        return benefactorCharityRequest;
-    }
-
-//    private BenefactorCharity toEntity(BenefactorRequest benefactorRequest,Integer charityEventId){
-//        Benefactor benefactor=benefactorRepository.findByPhone(benefactorRequest.getPhone()).orElse(new Benefactor());
-//        benefactor.setAddress(benefactorRequest.getAddress());
-//        benefactor.setBenefactorId(benefactorRequest.getId());
-//        benefactor.setFullName(benefactorRequest.getFullName());
-//        benefactor.setPhone(benefactorRequest.getPhone());
-//        this.benefactorRepository.save(benefactor);
-//        BenefactorCharity benefactorCharity=new BenefactorCharity();
-//        benefactorCharity.setBenefactor(benefactor);
-//        benefactorCharity.setCharityEvent(charityEventRepository.findById(charityEventId).get());
-//        benefactorCharity.setDonation(benefactorRequest.getDonation());
-//        benefactorCharity.setContent(benefactorRequest.getContent());
-//        List<BenefactorCharity> benefactorCharities=new ArrayList<>();
-//        benefactorCharities.add(benefactorCharity
-//        );
-//        benefactor.setBenefactorCharities(benefactorCharities);
-//        this.benefactorRepository.save(benefactor);
-//
-//        return benefactorCharity;
-//    }
-//    private List<BenefactorCharity> toEntity(BenefactorListRequest benefactorListRequest){
-//        List<BenefactorCharity> benefactorCharities=benefactorListRequest.getBenefactorRequestList()
-//                .stream().map(benefactorRequest -> toEntity(benefactorRequest,benefactorListRequest.getCharityEventId())).collect(Collectors.toList());
-//        return benefactorCharities;
-//    }
-
 }

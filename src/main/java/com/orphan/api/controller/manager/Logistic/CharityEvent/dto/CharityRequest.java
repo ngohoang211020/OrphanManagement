@@ -12,4 +12,5 @@ public class CharityRequest {
     private String dateStart;
     private String dateEnd;
     private Boolean isCompleted;
+    private Long totalDonation;
 }

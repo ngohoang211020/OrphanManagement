@@ -1,7 +1,6 @@
 package com.orphan.api.controller.manager.Logistic.CharityEvent.dto;
-import lombok.Data;
 
-import java.util.List;
+import lombok.Data;
 
 @Data
 public class CharityEventDetailDto {
@@ -11,7 +10,6 @@ public class CharityEventDetailDto {
     private String title;
     private String content;
 
-    private List<BenefactorCharityRequest> benefactorCharityRequestList;
     private String dateStart;
     private String dateEnd;
     private String image;
