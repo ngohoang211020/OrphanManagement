@@ -7,6 +7,7 @@ import com.orphan.enums.UserStatus;
 import com.orphan.exception.NotFoundException;
 import java.util.Date;
 import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,6 +21,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 public class OrphanManagementApplication {
 
     public static void main(String[] args) {
+        InternetAddress address = new InternetAddress();
+        address.setAddress("cyfcenter.quantrivien@gmail.com");
+
         SpringApplication.run(OrphanManagementApplication.class, args);
     }
 

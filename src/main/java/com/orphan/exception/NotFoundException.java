@@ -37,6 +37,7 @@ public class NotFoundException extends Exception{
     public static final String ERROR_FEEDBACK_NOT_FOUND = "ERROR_FEEDBACK_NOT_FOUND";
 
     public static final String ERROR_MAIL_NOTIFY_NOT_FOUND = "ERROR_MAIL_NOTIFY_NOT_FOUND";
+    public static final String ERROR_FUND_NOT_FOUND = "ERROR_FUND_IN/OUT_NOT_FOUND";
 
     private static final long serialVersionUID = 1L;
     private String error;

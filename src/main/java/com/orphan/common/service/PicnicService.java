@@ -2,14 +2,21 @@ package com.orphan.common.service;
 
 import com.orphan.api.controller.manager.Logistic.Picnic.dto.PicnicDto;
 import com.orphan.api.controller.manager.Logistic.Picnic.dto.PicnicRequest;
+import com.orphan.common.entity.FundManagement;
 import com.orphan.common.entity.Picnic;
 import com.orphan.common.entity.User;
+import com.orphan.common.repository.FundManagementRepository;
 import com.orphan.common.repository.PicnicRepository;
 import com.orphan.common.repository.UserRepository;
 import com.orphan.common.vo.PageInfo;
+import com.orphan.enums.FundType;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
 import com.orphan.utils.constants.APIConstants;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,10 +25,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -32,6 +35,7 @@ public class PicnicService extends BaseService {
     private final UserRepository userRepository;
     private final PicnicRepository picnicRepository;
 
+    private final FundManagementRepository fundManagementRepository;
     public Picnic findById(Integer entertainmentId) throws NotFoundException {
         Optional<Picnic> entertainment = picnicRepository.findById(entertainmentId);
         if (!entertainment.isPresent()) {
@@ -44,7 +48,6 @@ public class PicnicService extends BaseService {
     public PicnicRequest createPicnic(PicnicRequest picnicRequest) {
         Picnic picnic = toEntity(picnicRequest);
         picnic.setCreatedId(String.valueOf(getCurrentUserId()));
-
         picnic =this.picnicRepository.save(picnic);
 
         picnicRequest.setId(picnic.getId());
@@ -54,12 +57,27 @@ public class PicnicService extends BaseService {
     public PicnicRequest updatePicnic(PicnicRequest picnicRequest, Integer picnicId) throws NotFoundException {
         picnicRequest.setId(picnicId);
         Picnic picnic = toEntity(picnicRequest);
-        if(picnicRequest.getImage()!=""){
+        if (picnicRequest.getImage() != "") {
             picnic.setNamePicnic(picnicRequest.getImage());
             picnicRequest.setImage(picnic.getImage());
         }
+
         picnic.setModifiedId(String.valueOf(getCurrentUserId()));
         this.picnicRepository.save(picnic);
+        if (picnicRequest.getMoney() > 0) {
+            String type = FundType.PICNIC.getCode();
+            String description = picnic.getNamePicnic();
+            Long money = picnic.getMoney();
+            Date date = new Date((new Date()).getTime());
+            FundManagement fundManagement = fundManagementRepository.findByTypeAndDateAndDescriptionIsLike(
+                    type, date, description).orElse(new FundManagement());
+            fundManagement.setMoney(money);
+            fundManagement.setDate(date);
+            fundManagement.setType(type);
+            fundManagement.setDescription(description);
+            fundManagement.setUserId(Integer.parseInt(picnic.getModifiedId()));
+            fundManagementRepository.save(fundManagement);
+        }
         return picnicRequest;
     }
 
