@@ -7,6 +7,7 @@ import com.orphan.utils.constants.Constants;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import org.slf4j.Logger;
@@ -140,6 +141,10 @@ public class OrphanUtils {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         String formattedDateTime = date.format(formatter); // "1986-04-08 12:30"
         return formattedDateTime;
+    }
+
+    public static Date LocalDateTimeToDate(LocalDateTime dateTime) {
+        return Date.from(dateTime.toInstant(ZoneOffset.UTC));
     }
 
     public static Integer daysBetween2Dates(Date x, Date y) {

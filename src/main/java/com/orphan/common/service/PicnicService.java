@@ -48,13 +48,18 @@ public class PicnicService extends BaseService {
     public PicnicRequest createPicnic(PicnicRequest picnicRequest) {
         Picnic picnic = toEntity(picnicRequest);
         picnic.setCreatedId(String.valueOf(getCurrentUserId()));
-        picnic =this.picnicRepository.save(picnic);
+        picnic = this.picnicRepository.save(picnic);
 
         picnicRequest.setId(picnic.getId());
         return picnicRequest;
     }
 
-    public PicnicRequest updatePicnic(PicnicRequest picnicRequest, Integer picnicId) throws NotFoundException {
+    public void updateIsCompletedTrue() {
+        picnicRepository.updateIsCompletedTrue();
+    }
+
+    public PicnicRequest updatePicnic(PicnicRequest picnicRequest, Integer picnicId)
+            throws NotFoundException {
         picnicRequest.setId(picnicId);
         Picnic picnic = toEntity(picnicRequest);
         if (picnicRequest.getImage() != "") {
@@ -68,7 +73,7 @@ public class PicnicService extends BaseService {
             String type = FundType.PICNIC.getCode();
             String description = picnic.getNamePicnic();
             Long money = picnic.getMoney();
-            Date date = new Date((new Date()).getTime());
+            Date date = OrphanUtils.LocalDateTimeToDate(picnic.getDateEnd());
             FundManagement fundManagement = fundManagementRepository.findByTypeAndDateAndDescriptionIsLike(
                     type, date, description).orElse(new FundManagement());
             fundManagement.setMoney(money);
