@@ -1,5 +1,6 @@
 package com.orphan;
 
+import com.orphan.common.repository.PicnicRepository;
 import com.orphan.common.repository.UserRepository;
 import com.orphan.common.service.CharityEventService;
 import com.orphan.common.service.NotificationService;
@@ -7,7 +8,6 @@ import com.orphan.enums.UserStatus;
 import com.orphan.exception.NotFoundException;
 import java.util.Date;
 import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,9 +21,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 public class OrphanManagementApplication {
 
     public static void main(String[] args) {
-        InternetAddress address = new InternetAddress();
-        address.setAddress("cyfcenter.quantrivien@gmail.com");
-
         SpringApplication.run(OrphanManagementApplication.class, args);
     }
 
@@ -35,28 +32,21 @@ public class OrphanManagementApplication {
     @Autowired
     private CharityEventService charityEventService;
 
-//    @Autowired
-//    private FurnitureRequestFormService furnitureRequestFormService;
+    @Autowired
+    private PicnicRepository picnicRepository;
 
     @Scheduled(cron = "*/30 * * * * *")
     public void myMethod() throws MessagingException, NotFoundException {
-//        furnitureRequestFormService.updateAutoFurnitureForm();
-        // do your logic
         notificationService.sendMailImmediately();
         notificationService.sendMailAtDateSend();
     }
 
     @Scheduled(cron = "* 30 * * * *")
-    public void myMethod2() throws MessagingException, NotFoundException {
+    public void myMethod2() {
         userRepository.deleteByRecoveryExpirationDateAndUserStatus(new Date(),
                 UserStatus.DELETED.getCode());
-//        furnitureRequestFormService.updateAutoFurnitureForm();
-        // do your logic
+        picnicRepository.updateIsCompletedTrue();
         charityEventService.updateIsCompletedTrue();
     }
 
-//    @Scheduled(fixedDelay = 1000*60*60*24)
-//    public void fundInfundOut(){
-//        furnitureRequestFormService.updateFundInFundOut();
-//    }
 }

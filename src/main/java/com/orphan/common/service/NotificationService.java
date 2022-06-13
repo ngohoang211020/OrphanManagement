@@ -132,7 +132,9 @@ public class NotificationService extends BaseService {
             userNotifyEntity.setContent(sendMailDto.getBody());
             userNotifyEntity.setSubject(sendMailDto.getSubject());
             userNotifyEntity.setDateSend(OrphanUtils.StringToDateTime(sendMailDto.getDateSend()));
+            userNotifyEntity.setType(sendMailDto.getType());
             userNotifyEntities.add(userNotifyEntity);
+
         }
         userNotifyRepository.saveAll(userNotifyEntities);
 

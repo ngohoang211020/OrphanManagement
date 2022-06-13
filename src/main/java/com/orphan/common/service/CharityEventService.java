@@ -59,7 +59,7 @@ public class CharityEventService extends BaseService {
             String type = FundType.CHARITY_EVENT.getCode();
             String description = charityEvent1.getNameCharity();
             Long money = charityEvent1.getMoney();
-            Date date = new Date((new Date()).getTime());
+            Date date = OrphanUtils.LocalDateTimeToDate(charityEvent1.getDateEnd());
             FundManagement fundManagement = fundManagementRepository.findByTypeAndDateAndDescriptionIsLike(
                     type, date, description).orElse(new FundManagement());
             fundManagement.setMoney(money);

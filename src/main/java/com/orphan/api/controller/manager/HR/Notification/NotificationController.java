@@ -68,7 +68,7 @@ public class NotificationController {
     @ApiOperation("Create new Notification")
     @PostMapping
     public APIResponse<?> createNotification(@Valid @RequestBody SendMailDto sendMailDto,
-            Errors errors) throws NotFoundException, BadRequestException {
+            Errors errors) throws BadRequestException {
         if (errors.hasErrors()) {
             JsonObject messages = OrphanUtils.getMessageListFromErrorsValidation(errors);
             throw new BadRequestException(BadRequestException.ERROR_REGISTER_USER_INVALID,
