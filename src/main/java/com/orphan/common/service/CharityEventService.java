@@ -3,11 +3,15 @@ package com.orphan.common.service;
 import com.orphan.api.controller.manager.Logistic.CharityEvent.dto.CharityEventDetailDto;
 import com.orphan.api.controller.manager.Logistic.CharityEvent.dto.CharityRequest;
 import com.orphan.common.entity.CharityEvent;
+import com.orphan.common.entity.FundManagement;
 import com.orphan.common.repository.CharityEventRepository;
+import com.orphan.common.repository.FundManagementRepository;
 import com.orphan.common.vo.PageInfo;
+import com.orphan.enums.FundType;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
 import com.orphan.utils.constants.APIConstants;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,12 +33,16 @@ public class CharityEventService extends BaseService {
     private static final Logger logger = LoggerFactory.getLogger(CharityEventService.class);
     private final CharityEventRepository charityEventRepository;
 
+    private final FundManagementRepository fundManagementRepository;
+
     private final FurnitureRequestFormService furnitureRequestFormService;
+
     public CharityEvent findById(Integer eventId) throws NotFoundException {
         Optional<CharityEvent> charityEvent = charityEventRepository.findById(eventId);
         if (!charityEvent.isPresent()) {
             throw new NotFoundException(NotFoundException.ERROR_EVENT_NOT_FOUND,
-                    APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.EVENT));
+                    APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR,
+                            APIConstants.EVENT));
         }
         return charityEvent.get();
     }
@@ -46,6 +54,21 @@ public class CharityEventService extends BaseService {
     }
     public CharityRequest update(CharityRequest charityEvent) throws NotFoundException {
         CharityEvent charityEvent1 = toEntity(charityEvent);
+        charityEvent1.setModifiedId(getCurrentUserId().toString());
+        if (charityEvent1.getMoney() > 0) {
+            String type = FundType.CHARITY_EVENT.getCode();
+            String description = charityEvent1.getNameCharity();
+            Long money = charityEvent1.getMoney();
+            Date date = new Date((new Date()).getTime());
+            FundManagement fundManagement = fundManagementRepository.findByTypeAndDateAndDescriptionIsLike(
+                    type, date, description).orElse(new FundManagement());
+            fundManagement.setMoney(money);
+            fundManagement.setDate(date);
+            fundManagement.setType(type);
+            fundManagement.setDescription(description);
+            fundManagement.setUserId(Integer.parseInt(charityEvent1.getModifiedId()));
+            fundManagementRepository.save(fundManagement);
+        }
         this.charityEventRepository.save(charityEvent1);
         return toCharityRequestDto(charityEvent1);
     }
