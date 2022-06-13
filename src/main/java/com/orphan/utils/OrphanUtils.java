@@ -4,17 +4,16 @@ import com.google.gson.JsonObject;
 import com.orphan.exception.BadRequestException;
 import com.orphan.utils.constants.APIConstants;
 import com.orphan.utils.constants.Constants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.validation.Errors;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 
 public class OrphanUtils {
     private static final Logger log = LoggerFactory.getLogger(OrphanUtils.class);
@@ -135,6 +134,9 @@ public class OrphanUtils {
     }
 
     public static String DateTimeToString(LocalDateTime date) {
+        if (date == null) {
+            return null;
+        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         String formattedDateTime = date.format(formatter); // "1986-04-08 12:30"
         return formattedDateTime;
