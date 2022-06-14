@@ -61,8 +61,7 @@ public class UserService extends BaseService {
 
     private final MessageService messageService;
 
-    private final SendMailService sendMailService;
-    private static final String URL_CHANGE_PASSWORD_OPEN_WEB = "https://cyfdemo.herokuapp.com/changepassword";
+    private static final String URL_CHANGE_PASSWORD_OPEN_WEB = "https://cyfcenter.herokuapp.com/changepassword";
 
     //findUserById
     public User findById(Integer userId) throws NotFoundException {

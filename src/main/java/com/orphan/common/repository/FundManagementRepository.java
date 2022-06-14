@@ -26,6 +26,10 @@ public interface FundManagementRepository extends JpaRepository<FundManagement, 
     Optional<FundManagement> findByTypeAndDateAndDescriptionIsLike(String type, Date date,
             String description);
 
+    @Query("select f from FundManagement f where f.type = ?1 and f.description like ?2")
+    Optional<FundManagement> findByTypeAndDateAndDescriptionIsLike(String type,
+            String description);
+
     @Query(value = "select month(f.date) as month,year(f.date) as year, sum(f.money) as amount from FundManagement f where f.type =?1 group by month(f.date),year(f.date)")
     List<StatisticsByDateResponse> moneyByMonth(String type);
 
