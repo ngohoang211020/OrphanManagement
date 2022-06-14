@@ -145,7 +145,7 @@ public class FurnitureRequestFormService extends BaseService {
 
         String type = FundType.FURNITURE_REQUEST.getCode();
         String description =
-                "Chi phí chi trả cho việc nhập/sửa vật dụng " + furnitureRequestFormOptional.get()
+                type + " " + furnitureRequestFormOptional.get()
                         .getFurnitureRequestId();
         Long money = totalMoneyDto.getTotalMoney();
         Date date = new Date((new Date()).getTime());

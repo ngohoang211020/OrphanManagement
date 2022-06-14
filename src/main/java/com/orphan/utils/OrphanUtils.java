@@ -144,6 +144,9 @@ public class OrphanUtils {
     }
 
     public static Date LocalDateTimeToDate(LocalDateTime dateTime) {
+        if (dateTime.equals(null)) {
+            return null;
+        }
         return Date.from(dateTime.toInstant(ZoneOffset.UTC));
     }
 
