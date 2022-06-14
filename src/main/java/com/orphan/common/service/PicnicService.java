@@ -74,8 +74,6 @@ public class PicnicService extends BaseService {
             String description = type + " " + picnic.getId();
             Long money = picnic.getMoney();
             Date date = OrphanUtils.LocalDateTimeToDate(picnic.getDateEnd());
-//            FundManagement fundManagement = fundManagementRepository.findByTypeAndDateAndDescriptionIsLike(
-//                    type, date, description).orElse(new FundManagement());
             FundManagement fundManagement = fundManagementRepository.findByTypeAndDateAndDescriptionIsLike(
                     type, description).orElse(new FundManagement());
             fundManagement.setMoney(money);

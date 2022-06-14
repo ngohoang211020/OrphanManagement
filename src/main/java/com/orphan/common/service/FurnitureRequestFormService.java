@@ -149,8 +149,6 @@ public class FurnitureRequestFormService extends BaseService {
                         .getFurnitureRequestId();
         Long money = totalMoneyDto.getTotalMoney();
         Date date = new Date((new Date()).getTime());
-//        FundManagement fundManagement = fundManagementRepository.findByTypeAndDateAndDescriptionIsLike(
-//                type, date, description).orElse(new FundManagement());
         FundManagement fundManagement = fundManagementRepository.findByTypeAndDateAndDescriptionIsLike(
                 type, description).orElse(new FundManagement());
         fundManagement.setMoney(money);
