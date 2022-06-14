@@ -23,6 +23,16 @@ import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
 import com.orphan.utils.constants.APIConstants;
 import com.orphan.utils.constants.Constants;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,11 +43,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.context.Context;
-
-import javax.mail.MessagingException;
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -56,8 +61,8 @@ public class UserService extends BaseService {
 
     private final MessageService messageService;
 
-private final SendMailService sendMailService;
-    private static final String URL_CHANGE_PASSWORD_OPEN_WEB = "http://localhost:3000/changepassword";
+    private final SendMailService sendMailService;
+    private static final String URL_CHANGE_PASSWORD_OPEN_WEB = "https://cyfdemo.herokuapp.com/changepassword";
 
     //findUserById
     public User findById(Integer userId) throws NotFoundException {
