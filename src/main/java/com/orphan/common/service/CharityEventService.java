@@ -80,8 +80,9 @@ public class CharityEventService extends BaseService {
         charityEventRepository.deleteById(eventId);
     }
     public PageInfo<CharityEventDetailDto> viewEventByPage(Integer page, Integer limit) throws NotFoundException {
-        PageRequest pageRequest = buildPageRequest(page, limit, Sort.by("dateStart"));
-        Page<CharityEvent> charityEventPage = charityEventRepository.findByOrderByDateOfEventAsc(pageRequest);
+        PageRequest pageRequest = buildPageRequest(page, limit, Sort.by("dateStart").descending());
+        Page<CharityEvent> charityEventPage = charityEventRepository.findByOrderByDateOfEventAsc(
+                pageRequest);
         if (charityEventPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_EVENT_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.EVENT));

@@ -82,8 +82,9 @@ public class FeedbackService extends BaseService {
     }
 
     public PageInfo<FeedbackDetail> viewFeedbacksByPage(Integer page, Integer limit) throws NotFoundException {
-        PageRequest pageRequest = buildPageRequest(page, limit, Sort.by("dateReply").descending());
-        Page<FeedbackEntity> feedbackEntityPage = feedBackRepository.findByOrderByCreatedAtDesc(pageRequest);
+        PageRequest pageRequest = buildPageRequest(page, limit, Sort.by("createdAt").descending());
+        Page<FeedbackEntity> feedbackEntityPage = feedBackRepository.findByOrderByCreatedAtDesc(
+                pageRequest);
         if (feedbackEntityPage.getContent().isEmpty()) {
             throw new NotFoundException(NotFoundException.ERROR_FEEDBACK_NOT_FOUND,
                     APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.FEEDBACK));

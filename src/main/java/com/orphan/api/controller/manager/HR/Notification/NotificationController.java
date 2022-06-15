@@ -8,6 +8,7 @@ import com.orphan.common.response.APIResponse;
 import com.orphan.common.service.NotificationService;
 import com.orphan.common.service.UserService;
 import com.orphan.common.vo.PageInfo;
+import com.orphan.enums.UserStatus;
 import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
@@ -35,10 +36,19 @@ public class NotificationController {
     private final NotificationService notificationService;
     private final UserService userService;
 
+    @ApiOperation("View All Users ACTIVED")
+    @GetMapping("/user/all")
+    public APIResponse<?> viewAllActivedUsers() throws NotFoundException, IOException {
+        return APIResponse.okStatus(userService.viewAllUsersActived(UserStatus.ACTIVED.getCode()));
+    }
+
     @ApiOperation("Get Notifications By Pages")
     @GetMapping
-    public APIResponse<?> viewNotificationsByPages(@ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
-            , @ApiParam(value = "Limit", required = false) @RequestParam(value = "limit", required = false) Integer limit) throws NotFoundException {
+    public APIResponse<?> viewNotificationsByPages(
+            @ApiParam(value = "Page", required = false) @RequestParam(value = "page", required = false) Integer page
+            ,
+            @ApiParam(value = "Limit", required = false) @RequestParam(value = "limit", required = false) Integer limit)
+            throws NotFoundException {
         PageInfo<SendMailDto> sendMailDtoPageInfo;
         if (page != null) {
             sendMailDtoPageInfo = notificationService.viewMailNotifyByPage(page, limit);
