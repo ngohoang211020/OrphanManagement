@@ -414,7 +414,7 @@ public class UserService extends BaseService {
 
     //delete by id
     public void deleteUserById(Integer userId) throws NotFoundException {
-        if (userRepository.existsByLoginIdAndUserStatusAllIgnoreCase(userId,
+        if (userRepository.existsByLoginIdAndUserStatus(userId,
                 UserStatus.DELETED.getCode())) {
             userRepository.deleteById(userId);
         } else {

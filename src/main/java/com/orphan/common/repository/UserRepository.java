@@ -32,8 +32,10 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     boolean existsByIdentification(String identification);
 
-    boolean existsByLoginIdAndUserStatusAllIgnoreCase(
+    @Query("select (count(u) > 0) from User u where u.loginId = ?1 and u.UserStatus = ?2")
+    boolean existsByLoginIdAndUserStatus(
             Integer loginId, String UserStatus);
+
 
     boolean existsByLoginId(Integer loginId);
 
