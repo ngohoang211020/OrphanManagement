@@ -12,19 +12,25 @@ import com.orphan.enums.UserStatus;
 import com.orphan.exception.BadRequestException;
 import com.orphan.exception.NotFoundException;
 import com.orphan.utils.OrphanUtils;
-import com.orphan.utils.constants.PageableConstants;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import java.io.IOException;
+import javax.mail.MessagingException;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.*;
-
-import javax.mail.MessagingException;
-import javax.validation.Valid;
-import java.io.IOException;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/admin")
@@ -90,14 +96,15 @@ public class AdminController {
 
     @ApiOperation("Delete User Forever")
     @DeleteMapping("/{userId}")
-    public ResponseEntity<?> deleteUser(@PathVariable("userId") Integer userId) throws NotFoundException, BadRequestException {
+    public ResponseEntity<?> deleteUser(@PathVariable("userId") Integer userId)
+            throws NotFoundException {
         userService.deleteUserById(userId);
         return APIResponse.okStatus();
     }
 
     @ApiOperation("View All Users Deleted")
     @GetMapping("/all/deleted")
-    public APIResponse<?> viewAllUsersDeleted() throws NotFoundException, IOException {
+    public APIResponse<?> viewAllUsersDeleted() throws NotFoundException {
         return APIResponse.okStatus(userService.viewAllUsersDeleted(UserStatus.DELETED.getCode()));
     }
 

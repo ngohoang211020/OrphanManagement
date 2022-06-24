@@ -414,11 +414,13 @@ public class UserService extends BaseService {
 
     //delete by id
     public void deleteUserById(Integer userId) throws NotFoundException {
-        if (userRepository.existsByLoginId(userId)) {
+        if (userRepository.existsByLoginIdAndUserStatusAllIgnoreCase(userId,
+                UserStatus.DELETED.getCode())) {
             userRepository.deleteById(userId);
         } else {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
-                    APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR, APIConstants.USER));
+                    APIConstants.NOT_FOUND_MESSAGE.replace(APIConstants.REPLACE_CHAR,
+                            APIConstants.USER));
         }
     }
 
