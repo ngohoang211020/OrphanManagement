@@ -471,11 +471,12 @@ public class UserService extends BaseService {
                     + "<br>"
                     + "<p>Ignore this email if you do remember your password, "
                     + "or you have not made the request.</p>";
-            MailTemplate mailTemplate= new MailTemplate();
+            MailTemplate mailTemplate = new MailTemplate();
             mailTemplate.setSubject(subject);
             mailTemplate.setRecipients(Collections.singletonList(resetPasswordDto.getEmail()));
             mailTemplate.setBody(content);
-            service.sendEmailWithAttachment(mailTemplate);
+            service.sendEmailWithAttachment(user.get().getEmail(), mailTemplate.getBody(),
+                    mailTemplate.getSubject());
         } catch (Exception ex) {
             log.info("sendEmail error, error msg: {}", ex.getMessage());
         }
@@ -503,11 +504,12 @@ public class UserService extends BaseService {
                     + "<p>Thank you and regards," +
                     "<br>" +
                     "CYF team</p>";
-            MailTemplate mailTemplate= new MailTemplate();
+            MailTemplate mailTemplate = new MailTemplate();
             mailTemplate.setSubject(subject);
             mailTemplate.setRecipients(Collections.singletonList(emailNotifyDto.getEmail()));
             mailTemplate.setBody(content);
-            service.sendEmailWithAttachment(mailTemplate);
+            service.sendEmailWithAttachment(user.get().getEmail(), mailTemplate.getBody(),
+                    mailTemplate.getSubject());
         } catch (Exception ex) {
             log.info("sendEmail error, error msg: {}", ex.getMessage());
         }
