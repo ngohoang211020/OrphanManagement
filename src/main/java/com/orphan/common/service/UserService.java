@@ -10,6 +10,7 @@ import com.orphan.api.controller.common.dto.ResetPasswordDto;
 import com.orphan.common.entity.Role;
 import com.orphan.common.entity.User;
 import com.orphan.common.repository.RoleRepository;
+import com.orphan.common.repository.UserNotifyRepository;
 import com.orphan.common.repository.UserRepository;
 import com.orphan.common.request.MailTemplate;
 import com.orphan.common.response.StatisticsByDateResponse;
@@ -52,6 +53,8 @@ public class UserService extends BaseService {
     private final Logger log = LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
+
+    private final UserNotifyRepository userNotifyRepository;
 
     private final RoleRepository roleRepository;
 
@@ -416,6 +419,7 @@ public class UserService extends BaseService {
     public void deleteUserById(Integer userId) throws NotFoundException {
         if (userRepository.existsByLoginIdAndUserStatus(userId,
                 UserStatus.DELETED.getCode())) {
+            userNotifyRepository.deleteByUserId(userId);
             userRepository.deleteById(userId);
         } else {
             throw new NotFoundException(NotFoundException.ERROR_USER_NOT_FOUND,
@@ -557,8 +561,10 @@ public class UserService extends BaseService {
             if (userRepository.findById(userId).get().getUserStatus().equals(UserStatus.ACTIVED.getCode())) {
                 long now = (new Date()).getTime();
                 long dateToMilliseconds = 60 * 60 * 1000;
-                userRepository.updateUserStatusAndRecoveryExpirationDateByLoginId(UserStatus.DELETED.getCode(), new Date(now + 7 * 24 * dateToMilliseconds), userId);
-
+                userRepository.updateUserStatusAndRecoveryExpirationDateByLoginId(
+                        UserStatus.DELETED.getCode(), new Date(now + 7 * 24 * dateToMilliseconds),
+                        userId);
+                userNotifyRepository.deleteByUserId(userId);
             } else {
                 userRepository.updateUserStatusAndRecoveryExpirationDateByLoginId(UserStatus.ACTIVED.getCode(), null, userId);
             }
