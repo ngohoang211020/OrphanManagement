@@ -3,6 +3,8 @@ def COLOR_MAP = [
     'FAILURE': 'danger',
 ]
 pipeline {
+    agent any
+
     environment {
          DOCKER_CREDENTIALS = credentials('docker-builder')
          BUILD_USER         = 'Jenkins'
