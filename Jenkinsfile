@@ -6,16 +6,20 @@ pipeline {
     agent any
 
     environment {
-         DOCKER_CREDENTIALS = credentials('docker-builder')
          BUILD_USER         = 'Jenkins'
          PROJECT            = 'Java'
          VERSION            = 'latest'
-         DOCKER_IMAGE_NAME = '211020/orphan-management'
+         DOCKER_HUB_REPO = '211020/orphan-management'
          DOCKER_HUB_USERNAME = credentials('hoanggg2110@gmail.com')
          DOCKER_HUB_PASSWORD = credentials('Giacbavanh@2110')
 
     }
     stages {
+        stage('Checkout') {
+            steps {
+                    checkout scm
+            }
+        }
         stage("Maven build") {
             agent {
                 docker {
@@ -29,30 +33,28 @@ pipeline {
             }
         }
         stage('Build and Push Docker Image') {
-                    steps {
-                        script {
-                            def dockerImage = docker.build("${DOCKER_IMAGE_NAME}:${VERSION}")
-                            docker.withRegistry("https://registry.hub.docker.com", "docker-hub-credentials") {
-                                dockerImage.push()
+            steps {
+                 script {
+                    def dockerImage = docker.build("${DOCKER_HUB_REPO}:${VERSION}")
+                    docker.withRegistry("https://registry.hub.docker.com", "docker-hub-credentials") {
+                    dockerImage.push()
                             }
                         }
                     }
                 }
         stage("Deploy") {
-                  steps {
-                    sh "docker-compose pull"
-                    sh "docker-compose down | echo IGNORE"
-                    sh "docker-compose up -d"
-                  }
-              }
+            steps {
+                sh "docker-compose up -d"
+                }
+            }
     }
     post {
         success {
-            echo 'Deployment succeeded!'
+            cho 'Deployment succeeded!'
             }
 
         failure {
-            echo 'Deployment failed!'
+            sh 'echo "Deployment failed!"'
             }
         }
 }
