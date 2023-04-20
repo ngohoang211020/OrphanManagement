@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  orphan-management-server:
+    image: 211020/orphan-management:latest
+    container_name: orphan-management-server
+    ports:
+      - "8888:8888"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://mh-rental.cceyhlcvjfnk.us-east-1.rds.amazonaws.com:5432/mhrental
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=5RQI9yPAExiQUy7gCaXX
+    networks:
+      - mh-network
+    restart: unless-stopped
+    dns:
+      - 192.168.200.4
+      - 8.8.8.8
+networks:
+  mh-network:
+    driver: bridge
