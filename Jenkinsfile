@@ -11,7 +11,8 @@ pipeline {
          PROJECT            = 'Java'
          VERSION            = 'latest'
          DOCKER_IMAGE_NAME = '211020/orphan-management'
-         DOCKER_REGISTRY_CREDENTIALS = credentials('docker-hub-credentials')
+         DOCKER_HUB_USERNAME = credentials('hoanggg2110@gmail.com')
+         DOCKER_HUB_PASSWORD = credentials('Giacbavanh@2110')
 
     }
     stages {
@@ -27,16 +28,16 @@ pipeline {
                 sh 'mvn -s /root/.m2/settings.xml -q -U clean install -Dmaven.test.skip=true -P server'
             }
         }
-        stage("Docker build") {
-            steps {
-              sh "docker build --network=host --tag ${DOCKER_IMAGE_NAME}:${VERSION} ."
-            }
-        }
-        stage("Docker Push") {
-            steps {
-                sh "docker push ${DOCKER_IMAGE_NAME}:${VERSION}"
-            }
-        }
+         stage('Build and Push Docker Image') {
+                    steps {
+                        script {
+                            def dockerImage = docker.build("${DOCKER_IMAGE_NAME}:${VERSION}")
+                            docker.withRegistry("https://registry.hub.docker.com", "docker-hub-credentials") {
+                                dockerImage.push()
+                            }
+                        }
+                    }
+                }
        stage("Deploy") {
                   steps {
                     sh "docker-compose pull"
@@ -45,4 +46,13 @@ pipeline {
                   }
               }
     }
+       post {
+            success {
+                echo 'Deployment succeeded!'
+            }
+
+            failure {
+                echo 'Deployment failed!'
+            }
+        }
 }
