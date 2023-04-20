@@ -28,7 +28,7 @@ pipeline {
                 sh 'mvn -s /root/.m2/settings.xml -q -U clean install -Dmaven.test.skip=true -P server'
             }
         }
-         stage('Build and Push Docker Image') {
+        stage('Build and Push Docker Image') {
                     steps {
                         script {
                             def dockerImage = docker.build("${DOCKER_IMAGE_NAME}:${VERSION}")
@@ -38,7 +38,7 @@ pipeline {
                         }
                     }
                 }
-       stage("Deploy") {
+        stage("Deploy") {
                   steps {
                     sh "docker-compose pull"
                     sh "docker-compose down | echo IGNORE"
@@ -46,13 +46,13 @@ pipeline {
                   }
               }
     }
-       post {
-            success {
-                echo 'Deployment succeeded!'
+    post {
+        success {
+            echo 'Deployment succeeded!'
             }
 
-            failure {
-                echo 'Deployment failed!'
+        failure {
+            echo 'Deployment failed!'
             }
         }
 }
