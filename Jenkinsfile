@@ -28,11 +28,12 @@ pipeline {
                         }
                 }
                 stage("Docker Push") {
-                        steps {
-                         withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: '${DOCKER_HUB_USERNAME}', passwordVariable: '${DOCKER_HUB_PASSWORD}')]) {
-                                            sh "echo ${DOCKER_HUB_PASSWORD} | docker login --username ${DOCKER_HUB_USERNAME} --password-stdin"
-                            sh "docker push ${DOCKER_IMAGE_NAME}:${VERSION}"
-                        }
+                                 steps {
+                                     withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
+                                         sh "echo ${DOCKER_HUB_PASSWORD} | docker login --username ${DOCKER_HUB_USERNAME} --password-stdin"
+                                         sh "docker push ${DOCKER_IMAGE_NAME}:${VERSION}"
+                                     }
+                                 }
                 }
     }
 
