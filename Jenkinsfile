@@ -1,6 +1,5 @@
 pipeline {
     agent any
-
     environment {
          DOCKER_CREDENTIALS = credentials('docker-builder')
          BUILD_USER         = 'Jenkins'
