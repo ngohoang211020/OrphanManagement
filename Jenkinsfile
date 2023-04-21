@@ -5,15 +5,6 @@ def COLOR_MAP = [
 pipeline {
     agent any
 
-    environment {
-         DOCKER_CREDENTIALS = credentials('docker-builder')
-         BUILD_USER         = 'Jenkins'
-         PROJECT            = 'Java'
-         VERSION            = 'latest'
-         DOCKER_IMAGE_NAME = '211020/orphan-management'
-         DOCKER_REGISTRY_CREDENTIALS = credentials('docker-hub-credentials')
-
-    }
     stages {
         stage("Maven build") {
                     agent {
