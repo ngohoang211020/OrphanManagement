@@ -20,21 +20,11 @@ pipeline {
                 docker {
                      image 'maven:3.6.3-jdk-11'
                      args '-v /root/.m2:/root/.m2'
-                     }
                 }
-            steps {
-                sh 'mvn -q -U clean install -Dmaven.test.skip=true -P server'
             }
-        }
-        stage("Docker build") {
-                steps {
-                    sh "docker build --network=host --tag ${DOCKER_IMAGE_NAME}:${VERSION} ."
-                }
-        }
-        stage("Docker Push") {
-                steps {
-                    sh "docker push ${DOCKER_IMAGE_NAME}:${VERSION}"
-                }
+            steps {
+                sh 'mvn -s /root/.m2/settings-docker.xml -q -U clean install -Dmaven.test.skip=true -P server'
+            }
         }
     }
 
