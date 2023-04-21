@@ -1,3 +1,7 @@
+def COLOR_MAP = [
+    'SUCCESS': 'good',
+    'FAILURE': 'danger',
+]
 pipeline {
     agent {
         docker {
@@ -8,7 +12,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'mvn -B -DskipTests clean package'
+                sh 'mvn -s /root/.m2/settings.xml -q -U clean install deploy -Dmaven.test.skip=true'
             }
         }
     }
