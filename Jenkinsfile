@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'mvn -q -U clean install deploy -Dmaven.test.skip=true'
+                sh 'mvn -q -U clean install -Dmaven.test.skip=true -P server'
             }
         }
     }
