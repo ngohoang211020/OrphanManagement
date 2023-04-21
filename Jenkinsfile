@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'mvn -s /root/.m2/settings.xml -q -U clean install deploy -Dmaven.test.skip=true'
+                sh 'mvn -q -U clean install deploy -Dmaven.test.skip=true'
             }
         }
     }
