@@ -26,15 +26,16 @@ pipeline {
                 sh 'mvn -q -U clean install -Dmaven.test.skip=true -P server'
             }
         }
-    }
-    stage("Docker build") {
-        steps {
-            sh "docker build --network=host --tag ${DOCKER_IMAGE_NAME}:${VERSION} ."
+        stage("Docker build") {
+                steps {
+                    sh "docker build --network=host --tag ${DOCKER_IMAGE_NAME}:${VERSION} ."
+                }
+        }
+        stage("Docker Push") {
+                steps {
+                    sh "docker push ${DOCKER_IMAGE_NAME}:${VERSION}"
+                }
         }
     }
-    stage("Docker Push") {
-        steps {
-            sh "docker push ${DOCKER_IMAGE_NAME}:${VERSION}"
-            }
-        }
+
 }
