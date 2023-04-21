@@ -23,7 +23,7 @@ pipeline {
         }
          stage("Docker build") {
                         steps {
-                            sh "docker build --network=host --tag ${DOCKER_IMAGE_NAME}:${VERSION} ."
+                            sh "docker build -t ${DOCKER_IMAGE_NAME}:${VERSION} ."
                         }
                 }
                 stage("Docker Push") {
