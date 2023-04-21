@@ -7,6 +7,8 @@ pipeline {
     environment {
              VERSION            = 'latest'
              DOCKER_IMAGE_NAME = '211020/orphan-management'
+             DOCKER_HUB_PASSWORD = 'Giacbavanh@2110'
+             DOCKER_HUB_USERNAME ='hoanggg2110@gmail.com'
         }
     stages {
         stage("Maven build") {
@@ -27,6 +29,8 @@ pipeline {
                 }
                 stage("Docker Push") {
                         steps {
+                         withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: '${DOCKER_HUB_USERNAME}', passwordVariable: '${DOCKER_HUB_PASSWORD}')]) {
+                                            sh "echo ${DOCKER_HUB_PASSWORD} | docker login --username ${DOCKER_HUB_USERNAME} --password-stdin"
                             sh "docker push ${DOCKER_IMAGE_NAME}:${VERSION}"
                         }
                 }
