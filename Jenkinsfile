@@ -38,19 +38,19 @@ pipeline {
                     def dockerImage = docker.build("${DOCKER_HUB_REPO}:${VERSION}")
                     docker.withRegistry("https://registry.hub.docker.com", "docker-hub-credentials") {
                     dockerImage.push()
-                            }
-                        }
                     }
-                }
+                 }
+            }
+        }
         stage("Deploy") {
             steps {
                 sh "docker-compose up -d"
-                }
             }
+        }
     }
     post {
         success {
-            cho 'Deployment succeeded!'
+            sh 'echo "Deployment succeeded!"'
             }
 
         failure {
