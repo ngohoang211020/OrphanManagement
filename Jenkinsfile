@@ -2,8 +2,14 @@ pipeline {
   agent any
   stages {
     stage('Build image') {
-      steps {
-        sh 'docker build -t 211020/orphan-management:${latest} .'
+        steps {
+        sh '''
+          docker version
+          docker info
+          docker compose version
+          curl --version
+          jq --version
+        '''
       }
     }
   }
