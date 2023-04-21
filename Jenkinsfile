@@ -17,6 +17,7 @@ pipeline {
                         }
                     }
                     steps {
+                        sh 'mvn clean'
                         sh 'mvn -s /root/.m2/settings-docker.xml -q -U clean install -Dmaven.test.skip=true -P server'
                     }
         }
