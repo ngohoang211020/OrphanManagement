@@ -1,7 +1,3 @@
-def COLOR_MAP = [
-    'SUCCESS': 'good',
-    'FAILURE': 'danger',
-]
 pipeline {
     agent any
 
@@ -15,27 +11,16 @@ pipeline {
 
     }
     stages {
+        agent {
+                docker {
+                    image 'maven:3.6.3-jdk-11'
+                    args '-v /root/.m2:/root/.m2'
+                }
+        }
         stage("Maven build") {
             steps {
-                sh 'mvn -s /root/.m2/settings.xml -q -U clean install -Dmaven.test.skip=true -P server'
+                sh 'mvn -B -DskipTests clean package'
             }
         }
-        stage("Docker build") {
-            steps {
-              sh "docker build --network=host --tag ${DOCKER_IMAGE_NAME}:${VERSION} ."
-            }
-        }
-        stage("Docker Push") {
-            steps {
-                sh "docker push ${DOCKER_IMAGE_NAME}:${VERSION}"
-            }
-        }
-       stage("Deploy") {
-                  steps {
-                    sh "docker-compose pull"
-                    sh "docker-compose down | echo IGNORE"
-                    sh "docker-compose up -d"
-                  }
-              }
     }
 }
