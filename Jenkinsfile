@@ -15,13 +15,13 @@ pipeline {
 
     }
     stages {
-         agent {
-            docker {
-                image 'maven:3.6.3-jdk-11'
-                args '-v /root/.m2:/root/.m2'
-                }
-         }
         stage('Build') {
+            agent {
+                docker {
+                     image 'maven:3.6.3-jdk-11'
+                     args '-v /root/.m2:/root/.m2'
+                     }
+                }
             steps {
                 sh 'mvn -q -U clean install -Dmaven.test.skip=true -P server'
             }
