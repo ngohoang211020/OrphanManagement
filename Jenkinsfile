@@ -8,7 +8,7 @@ pipeline {
              VERSION            = 'latest'
              DOCKER_IMAGE_NAME = '211020/orphan-management'
              DOCKERHUB_CREDENTIALS = credentials('dockerhub')
-        }
+    }
     stages {
         stage("Maven build") {
                     agent {
@@ -22,28 +22,25 @@ pipeline {
                     }
         }
          stage("Docker build") {
-                        steps {
-                            sh "docker build --network=host --tag ${DOCKER_IMAGE_NAME}:${VERSION} ."
-                        }
-                }
-                 stage('Login') {
-                      steps {
-                        sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                      }
+                    steps {
+                        sh "docker build --network=host --tag ${DOCKER_IMAGE_NAME}:${VERSION} ."
                     }
-                stage("Docker Push") {
-                                 steps {
-                                         sh "docker push ${DOCKER_IMAGE_NAME}:${VERSION}"
-                                     }
-
-                }
-                 stage("Deploy") {
-                            steps {
-                              sh "docker-compose pull"
-                              sh "docker-compose down | echo IGNORE"
-                              sh "docker-compose up -d"
-                            }
-                        }
+         }
+         stage('Login') {
+                    steps {
+                        sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                    }
+         }
+         stage("Docker Push") {
+                    steps {
+                        sh "docker push ${DOCKER_IMAGE_NAME}:${VERSION}"
+                    }
+         }
+         stage("Deploy") {
+                    steps {
+                        sh "docker-compose up -d"
+                    }
+         }
     }
 
 }
