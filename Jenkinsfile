@@ -7,10 +7,7 @@ pipeline {
     environment {
              VERSION            = 'latest'
              DOCKER_IMAGE_NAME = '211020/orphan-management'
-             DOCKER_HUB_PASSWORD = 'Giacbavanh@2110'
-             DOCKER_HUB_USERNAME ='hoanggg2110@gmail.com'
-                 DOCKERHUB_CREDENTIALS = credentials('dockerhub')
-
+             DOCKERHUB_CREDENTIALS = credentials('dockerhub')
         }
     stages {
         stage("Maven build") {
@@ -40,6 +37,13 @@ pipeline {
                                      }
 
                 }
+                 stage("Deploy") {
+                            steps {
+                              sh "docker-compose pull"
+                              sh "docker-compose down | echo IGNORE"
+                              sh "docker-compose up -d"
+                            }
+                        }
     }
 
 }
