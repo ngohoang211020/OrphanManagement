@@ -38,7 +38,7 @@ pipeline {
                                  steps {
                                          sh "docker push ${DOCKER_IMAGE_NAME}:${VERSION}"
                                      }
-                                 }
+
                 }
     }
 
