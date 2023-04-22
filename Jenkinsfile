@@ -38,6 +38,9 @@ pipeline {
          }
          stage("Deploy") {
                     steps {
+                        sh 'apk update && apk add docker-compose'
+                        sh "docker-compose pull"
+                        sh "docker-compose down | echo IGNORE"
                         sh "docker-compose up -d"
                     }
          }
