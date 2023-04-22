@@ -1,7 +1,3 @@
-def COLOR_MAP = [
-    'SUCCESS': 'good',
-    'FAILURE': 'danger',
-]
 pipeline {
     agent any
     environment {
@@ -26,19 +22,16 @@ pipeline {
                         sh "docker build --network=host --tag ${DOCKER_IMAGE_NAME}:${VERSION} ."
                     }
          }
-         stage('Login') {
+         stage("Docker Push") {
                     steps {
                         sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
                     }
-         }
-         stage("Docker Push") {
                     steps {
                         sh "docker push ${DOCKER_IMAGE_NAME}:${VERSION}"
                     }
          }
          stage("Deploy") {
                     steps {
-                        sh 'apk update && apk add docker-compose'
                         sh "docker-compose pull"
                         sh "docker-compose down | echo IGNORE"
                         sh "docker-compose up -d"
