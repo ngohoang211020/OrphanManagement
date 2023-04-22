@@ -6,9 +6,9 @@ services:
     ports:
       - "9000:9000"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://mh-rental.cceyhlcvjfnk.us-east-1.rds.amazonaws.com:5432/mhrental
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=5RQI9yPAExiQUy7gCaXX
+      SPRING_DATASOURCE_URL: jdbc:postgresql://mh-rental.cceyhlcvjfnk.us-east-1.rds.amazonaws.com:5432/mhrental
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 5RQI9yPAExiQUy7gCaXX
     networks:
       - mh-network
     restart: unless-stopped
