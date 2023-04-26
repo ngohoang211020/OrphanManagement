@@ -4,7 +4,7 @@ services:
     image: 211020/orphan-management:latest
     container_name: orphan-management-prod
     ports:
-      - "9000:9000"
+      - "7777:7777"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://mh-rental.cceyhlcvjfnk.us-east-1.rds.amazonaws.com:5432/mhrental
       - SPRING_DATASOURCE_USERNAME=postgres
