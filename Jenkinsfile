@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
              VERSION            = 'latest'
-             DOCKER_IMAGE_NAME = '211020/orphan-management'
+             PROJECT = 'orphan-management'
              DOCKERHUB_CREDENTIALS = credentials('dockerhub')
     }
     stages {
@@ -20,13 +20,12 @@ pipeline {
         }
          stage("Docker build") {
                     steps {
-                        sh "docker build --network=host --tag ${DOCKER_IMAGE_NAME}:${VERSION} ."
+                        sh "docker build --network=host --tag 211020/${PROJECT}:${VERSION} ."
                     }
          }
          stage("Docker Push") {
                     steps {
-                        sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                        sh "docker push ${DOCKER_IMAGE_NAME}:${VERSION}"
+                        sh "docker push 211020/${PROJECT}:${VERSION}"
                     }
          }
          stage("Deploy") {
