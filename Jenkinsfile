@@ -11,7 +11,6 @@ pipeline {
                         docker {
                             image 'maven:3.6.3-jdk-11'
                             args '-v /home/jenkins/.m2:/root/.m2 --network=host'
-                            reuseNode true
                         }
                     }
                     steps {
